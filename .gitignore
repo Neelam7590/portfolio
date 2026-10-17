@@ -1,0 +1,18 @@
+# Secrets — never commit these.
+.env
+.env.*
+!.env.example
+
+# Vercel
+.vercel
+
+# Node (not used by the site itself, only by the api/ function locally)
+node_modules/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.log
+
+# Unused leftovers from an earlier experiment — not part of the site.
+replit-logo/

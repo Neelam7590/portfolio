@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ---------- SEO ---------- -->
+  <title>Neelam Dhiman | Portfolio</title>
+  <meta
+    name="description"
+    content="Portfolio of Neelam Dhiman, a BA student from Kaithal, Haryana building websites, games and automation tools with HTML, CSS, JavaScript and Python."
+  />
+  <meta name="author" content="Neelam Dhiman" />
+  <meta name="theme-color" content="#FAF5EA" />
+
+  <!-- Favicon: a warm brown circle with a cream "N" (inline SVG, no extra file).
+       %23 is the URL-encoded "#" so the colour hex survives inside the data URI. -->
+  <link
+    rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23a8510e'/><text x='50' y='50' text-anchor='middle' dominant-baseline='central' font-family='Segoe UI,Verdana,sans-serif' font-size='62' font-weight='bold' fill='%23FAF5EA'>N</text></svg>"
+  />
+
+  <!-- ---------- Open Graph / social sharing ----------
+       Replace og:image and og:url with your own once you host the site. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Neelam Dhiman" />
+  <meta property="og:title" content="Neelam Dhiman | Portfolio" />
+  <meta
+    property="og:description"
+    content="Student, learner and builder from Kaithal, Haryana — websites, games and automation tools built with HTML, CSS, JavaScript and Python."
+  />
+  <meta property="og:image" content="assets/neelam.jpg" />
+  <meta property="og:image:alt" content="Neelam Dhiman" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Google Fonts:
+       Poppins   → whole site
+       Elephant  → hero name
+       Playfair Display (italic) → the rotating line under the name -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600;1,700&family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <!-- Elephant by the designer at cdnfonts.com — free for PERSONAL USE only.
+       Remove this line (and the --font-display fallback) if you ever want to
+       use the site commercially. -->
+  <link href="https://fonts.cdnfonts.com/css/elephant" rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Thin teal scroll progress bar (width driven by script.js) -->
+  <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
+
+  <!-- ============ ANIMATED BACKGROUND ============ -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+  <!-- ============ CUSTOM CURSOR (desktop only) ============ -->
+  <div class="cursor-ring" aria-hidden="true"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="#home" class="logo">
+        <span class="logo-name">NEELAM DHIMAN</span>
+        <span class="logo-sub">PORTFOLIO</span>
+      </a>
+
+      <nav class="nav-links" id="nav-links" aria-label="Main navigation">
+        <a href="#about" class="nav-link">ABOUT</a>
+        <a href="#journey" class="nav-link">JOURNEY</a>
+        <a href="#skills" class="nav-link">SKILLS</a>
+        <a href="#projects" class="nav-link">PROJECTS</a>
+        <a href="#vision" class="nav-link">VISION</a>
+        <a href="#contact" class="btn btn-nav">CONTACT</a>
+      </nav>
+
+      <!-- Mobile hamburger -->
+      <button
+        class="hamburger"
+        id="hamburger"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile overlay menu -->
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <a href="#about" class="mobile-link">ABOUT</a>
+    <a href="#journey" class="mobile-link">JOURNEY</a>
+    <a href="#skills" class="mobile-link">SKILLS</a>
+    <a href="#projects" class="mobile-link">PROJECTS</a>
+    <a href="#vision" class="mobile-link">VISION</a>
+    <a href="#contact" class="mobile-link">CONTACT</a>
+  </div>
+
+  <!-- ============ PAGE CONTENT ============ -->
+  <main>
+    <!-- Section content will be added step by step -->
+    <section class="section hero" id="home">
+  <div class="container hero-inner">
+
+    <!-- LEFT: text -->
+<div class="hero-text">
+        <!-- Small label above the name -->
+        <span class="hero-label hero-fade" style="--d:0.05s">Portfolio</span>
+
+        <h1 class="hero-title">
+          <span class="hero-word" style="--d:0.1s">I</span>
+          <span class="hero-word" style="--d:0.25s">am</span>
+          <span class="hero-word" style="--d:0.4s">Neelam</span>
+        </h1>
+
+        <!-- Rotating typing effect sits directly under the title, starting at
+             the same left edge. JS fills #typed-text; the cursor blinks after
+             it. The full list is repeated once in a visually hidden span so
+             screen readers announce it as a sentence, not letter by letter.
+             Edit the words in the initTyping block in script.js. -->
+        <p class="hero-meta hero-fade" style="--d:0.65s">
+          <span id="typed-text" aria-hidden="true"></span>
+          <span class="typed-cursor" aria-hidden="true"></span>
+          <span class="visually-hidden">Web developer, aspiring full stack developer, YouTube SEO, video editing, social media management and AI content creation.</span>
+        </p>
+
+        <!-- Short intro paragraph -->
+        <p class="hero-about hero-fade" style="--d:0.85s">
+          I create practical websites and small digital products with the help of
+          AI-powered development tools. Right now I'm strengthening my digital
+          marketing skills, covering SEO fundamentals, content creation, and
+          social media strategy. I'm Neelam Dhiman, a web developer and designer
+          from Kaithal, Haryana, helping small businesses in Kaithal and nearby
+          areas get online and manage their social media.
+        </p>
+
+      <div class="hero-buttons hero-fade" style="--d:1.05s">
+        <a href="#journey" class="btn">Explore My Journey</a>
+        <a href="#projects" class="btn">View Projects</a>
+      </div>
+    </div>
+
+    <!-- RIGHT: photo with rotating rings -->
+    <div class="hero-photo-wrap hero-fade" style="--d:0.5s">
+      <div class="hero-photo">
+        <span class="hero-ring hero-ring--outer"></span>
+        <span class="hero-ring hero-ring--inner"></span>
+        <span class="hero-orbit"><span class="hero-orbit-dot"></span></span>
+
+        <div class="hero-avatar">
+          <!-- Letter "N" shows behind the photo, visible only if the photo is missing -->
+          <span class="hero-initial" aria-hidden="true">N</span>
+          <img src="assets/neelam.jpg" alt="Neelam Dhiman" fetchpriority="high" onerror="this.style.display='none'" />
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bouncing scroll-down arrow -->
+  <a href="#about" class="hero-scroll" aria-label="Scroll down">↓</a>
+</section>
+    <!-- ================================================================
+         ABOUT SECTION
+         Part 1: Who is Neelam?   Part 2: My Story card
+         ================================================================ -->
+    <section class="section" id="about">
+      <div class="container">
+
+        <!-- ---------- PART 1: text on the left, photo on the right ---------- -->
+        <div class="about-intro">
+
+          <div class="about-intro__text">
+            <h2 class="section-heading">Who is <span class="section-heading-accent">Neelam?</span></h2>
+
+            <h3 class="about-subtitle">Student, Learner &amp; Builder from Kaithal, Haryana</h3>
+
+            <p class="about-paragraph">
+              Growing up in Kaithal, Haryana, I was always curious about how things work behind a screen.
+              Instead of just using websites and apps, I wanted to know how they are made. That curiosity
+              pulled me towards coding, and I haven't looked back since.
+            </p>
+
+            <p class="about-paragraph">
+              Today I'm a Bachelor of Arts student at Kurukshetra University, and alongside my studies I'm
+              building real skills. I completed my O Level course from NIELIT, and I'm
+              now doing a Digital Marketing with AI course at NIELIT.
+            </p>
+
+            <p class="about-paragraph">
+              I work with HTML, CSS, and JavaScript, and I'm learning Python and IoT basics. I don't just
+              watch tutorials, I build. A Telegram automation bot, a complete website for Tagore Global
+              School, and games like Tic Tac Toe are all proof of that.
+            </p>
+
+            <p class="about-paragraph">
+              I enjoy creative work, I love working in a team, and I think quickly when problems come up.
+              My goal is clear: to become a full stack developer who builds both the frontend and the
+              backend. <strong>I'm not here just to learn, I'm here to build something I'm proud of.</strong>
+            </p>
+          </div>
+
+          <div class="about-intro__photo">
+            <div class="about-photo">
+              <img src="assets/neelam.jpg" alt="Neelam Dhiman" loading="lazy" />
+              <!-- Shown by JS only if assets/neelam.jpg is missing -->
+              <span class="about-photo__initials" aria-hidden="true">ND</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ---------- PART 2: My Story card (full width) ---------- -->
+        <article class="about-story">
+          <!-- Decorative teal corner lines that draw in when the card appears -->
+          <span class="about-story__corner about-story__corner--tl" aria-hidden="true"></span>
+          <span class="about-story__corner about-story__corner--br" aria-hidden="true"></span>
+
+          <h3 class="about-story__title">My Story</h3>
+
+          <div class="about-story__body">
+            <p>
+              I'm not from a big tech background. I'm a student from a small city in Haryana, learning
+              step by step.
+            </p>
+
+            <p>
+              With curiosity, consistency, and a lot of practice, I went from basic HTML pages to building
+              bots, websites, and games. Every project taught me something new, and every mistake made me
+              better.
+            </p>
+
+            <p>
+              My journey from Kaithal to a full stack developer is driven by one thing: the belief that
+              if you keep building, you keep growing.
+            </p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+    <section class="section" id="journey">
+      <div class="container">
+
+        <!-- ---------- Section heading ---------- -->
+        <span class="journey-eyebrow reveal">My Journey</span>
+        <h2 class="journey-heading reveal reveal-delay-1">How I Got Here</h2>
+        <p class="journey-sub reveal reveal-delay-2">
+          Every step taught me something new — from school results to the work
+          I'm building today.
+        </p>
+
+        <div class="journey-box reveal reveal-delay-3" id="journeyBox">
+          <!-- Vertical timeline line down the middle (fills as you scroll) -->
+          <div class="journey-line"><span class="journey-line-fill" id="journeyLineFill"></span></div>
+
+          <!-- ============ EDIT YOUR TIMELINE HERE ============
+               Cards alternate left/right of the line automatically
+               (odd = left, even = right). Just copy one <li> block.
+               Drop the score pill if an item has no percentage. -->
+          <ol class="journey-list">
+
+            <li class="journey-item">
+              <span class="journey-dot" aria-hidden="true"></span>
+              <article class="journey-card">
+                <div class="journey-badges">
+                  <span class="journey-badge">2022</span>
+                  <span class="journey-badge journey-badge--score">81.2%</span>
+                </div>
+                <h3 class="journey-card-title">10th Standard</h3>
+                <p class="journey-card-desc">HBSE Board — completed with 81.2%.</p>
+              </article>
+            </li>
+
+            <li class="journey-item">
+              <span class="journey-dot" aria-hidden="true"></span>
+              <article class="journey-card">
+                <div class="journey-badges">
+                  <span class="journey-badge">2024</span>
+                  <span class="journey-badge journey-badge--score">88.2%</span>
+                </div>
+                <h3 class="journey-card-title">12th Standard</h3>
+                <p class="journey-card-desc">HBSE Board — completed with 88.2%.</p>
+              </article>
+            </li>
+
+            <li class="journey-item">
+              <span class="journey-dot" aria-hidden="true"></span>
+              <article class="journey-card">
+                <div class="journey-badges">
+                  <span class="journey-badge">2024 – 2027</span>
+                  <span class="journey-badge journey-badge--live">Pursuing</span>
+                </div>
+                <h3 class="journey-card-title">Bachelor of Arts</h3>
+                <p class="journey-card-desc">Kurukshetra University.</p>
+              </article>
+            </li>
+
+            <li class="journey-item">
+              <span class="journey-dot" aria-hidden="true"></span>
+              <article class="journey-card">
+                <div class="journey-badges">
+                  <span class="journey-badge">2024 – 2025</span>
+                </div>
+                <h3 class="journey-card-title">O Level</h3>
+                <p class="journey-card-desc">NIELIT — completed with B grade.</p>
+              </article>
+            </li>
+
+            <li class="journey-item">
+              <span class="journey-dot" aria-hidden="true"></span>
+              <article class="journey-card">
+                <div class="journey-badges">
+                  <span class="journey-badge">2026</span>
+                  <span class="journey-badge journey-badge--live">Pursuing</span>
+                </div>
+                <h3 class="journey-card-title">Digital Marketing with AI</h3>
+                <p class="journey-card-desc">NIELIT.</p>
+              </article>
+            </li>
+
+          </ol>
+        </div>
+      </div>
+    </section>
+    <!-- ================================================================
+         SKILLS SECTION
+         Part 1: Tools grid (Lucide icons)   Part 2: Stats with count-up
+         ================================================================ -->
+    <section class="section" id="skills">
+      <div class="container">
+
+<!-- ---------- Skills: numbered cards ---------- -->
+        <span class="skills-eyebrow reveal">What I Do</span>
+        <h2 class="skills-heading reveal reveal-delay-1">Skills That Turn Ideas Into Real Work</h2>
+
+
+        <ul class="skills-cards">
+          <li class="skill-card reveal reveal-scale">
+            <span class="skill-card__num">01</span>
+            <h3 class="skill-card__title">Web Development</h3>
+            <p class="skill-card__text">
+              I build clean, responsive websites with HTML, CSS and JavaScript that look
+              good on mobile, tablet and desktop. From a complete school website to
+              small interactive games, I enjoy turning an idea into something people
+              can actually use.
+            </p>
+          </li>
+
+          <li class="skill-card reveal reveal-scale">
+            <span class="skill-card__num">02</span>
+            <h3 class="skill-card__title">Digital Marketing with AI</h3>
+            <p class="skill-card__text">
+              I’m learning how digital marketing works through my NIELIT course, and how
+              AI can make it faster, from finding content ideas to planning campaigns,
+              so a brand can reach the right people online.
+            </p>
+          </li>
+
+          <li class="skill-card reveal reveal-scale">
+            <span class="skill-card__num">03</span>
+            <h3 class="skill-card__title">Python &amp; Automation</h3>
+            <p class="skill-card__text">
+              I use Python to automate repetitive work. My Telegram bot replies
+              automatically and sends scheduled messages on its own, which saves time and
+              shows how useful small automations can be.
+            </p>
+          </li>
+
+          <li class="skill-card reveal reveal-scale">
+            <span class="skill-card__num">04</span>
+            <h3 class="skill-card__title">Creative Content &amp; AI Media</h3>
+            <p class="skill-card__text">
+              I love creative work, and I use AI tools to turn ideas into visuals, videos
+              and voice. My goal is content that feels fresh, is simple to understand
+              and is enjoyable to watch.
+            </p>
+          </li>
+
+          <li class="skill-card reveal reveal-scale">
+            <span class="skill-card__num">05</span>
+            <h3 class="skill-card__title">AI Tools &amp; Vibe Coding</h3>
+            <p class="skill-card__text">
+              AI is part of my daily workflow. With tools like Claude, OpenAI GPT and
+              VS Code, I plan, build and fix projects much faster, while learning how
+              every part of the code works.
+            </p>
+          </li>
+
+          <li class="skill-card reveal reveal-scale">
+            <span class="skill-card__num">06</span>
+            <h3 class="skill-card__title">Teamwork &amp; Problem Solving</h3>
+            <p class="skill-card__text">
+              I think quickly when problems come up and I enjoy working with a team. My
+              aim is to grow into a full stack developer who can build both the frontend
+              and the backend of real products.
+            </p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         EDUCATION & TOOLKIT SECTION
+         The tool logos and the counting stats below the skills cards.
+         ================================================================ -->
+    <section class="section" id="education">
+      <div class="container">
+
+        <span class="skills-eyebrow reveal">Education &amp; Toolkit</span>
+        <h2 class="skills-heading reveal reveal-delay-1">What I&rsquo;ve Learned, Built and Use Every Day</h2>
+
+<!-- ---------- tool logos (3x3, on the concentric-ring panel) ---------- -->
+        <div class="skills-logos reveal">
+          <ul class="skills-grid">
+
+            <li class="skill-item reveal reveal-scale" style="--brand:#D97757">
+              <span class="skill-item__icon">
+                <svg class="brand" viewBox="1.17 0.35 22.66 23.3" aria-hidden="true" focusable="false">
+                  <path d="M12 8.9L12 1.8M13.55 9.32L16.69 3.87M14.68 10.45L20.83 6.9M15.1 12L21.38 12M14.68 13.55L20.83 17.1M13.55 14.68L16.69 20.13M12 15.1L12 22.2M10.45 14.68L7.31 20.13M9.32 13.55L3.17 17.1M8.9 12L2.62 12M9.32 10.45L3.17 6.9M10.45 9.32L7.31 3.87"
+                        stroke="#D97757" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+                </svg>
+              </span>
+              <span class="skill-item__name">Claude</span>
+            </li>
+
+            <li class="skill-item reveal reveal-scale" style="--brand:#10A37F">
+              <span class="skill-item__icon">
+                <svg class="brand" viewBox="-0.3 -0.3 24.6 24.6" aria-hidden="true" focusable="false">
+                  <circle cx="12" cy="12" r="12" fill="#10A37F"/>
+                  <path fill="#FFFFFF" transform="translate(12 12) scale(0.62) translate(-12 -12)"
+                        d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.5045 4.5045 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.5045 4.5045 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654 2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"/>
+                </svg>
+              </span>
+              <span class="skill-item__name">ChatGPT</span>
+            </li>
+
+            <li class="skill-item reveal reveal-scale" style="--brand:#111111">
+              <span class="skill-item__icon">
+                <svg class="brand" viewBox="1.2 1.2 21.6 21.6" aria-hidden="true" focusable="false">
+                  <rect x="4" y="4" width="16" height="16" rx="0"
+                        fill="none" stroke="#111111" stroke-width="4.6"/>
+                </svg>
+              </span>
+              <span class="skill-item__name">opencode</span>
+            </li>
+
+            <li class="skill-item reveal reveal-scale" style="--brand:#007ACC">
+              <span class="skill-item__icon">
+                <svg class="brand" viewBox="-0.3 -0.3 24.6 24.6" aria-hidden="true" focusable="false">
+                  <defs>
+                    <linearGradient id="vsCodeGrad" x1="0" y1="1" x2="1" y2="0">
+                      <stop offset="0%" stop-color="#0065A9"/>
+                      <stop offset="55%" stop-color="#007ACC"/>
+                      <stop offset="100%" stop-color="#1B9AAA"/>
+                    </linearGradient>
+                  </defs>
+                  <path fill="url(#vsCodeGrad)" d="M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479L1.65 17.94a.999.999 0 0 0 1.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 20.06V3.939a1.5 1.5 0 0 0-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z"/>
+                </svg>
+              </span>
+              <span class="skill-item__name">VS Code</span>
+            </li>
+
+            <li class="skill-item reveal reveal-scale" style="--brand:#FF4F00">
+              <span class="skill-item__icon">
+                <svg class="brand" viewBox="2.5 2.5 20 20" aria-hidden="true" focusable="false">
+                  <rect x="3" y="3" width="10" height="10" rx="2.8" fill="#FF4F00"/>
+                  <rect x="14.5" y="8" width="7.5" height="7.5" rx="2.2" fill="#FF4F00"/>
+                  <rect x="3" y="14.5" width="7.5" height="7.5" rx="2.2" fill="#FF4F00"/>
+                </svg>
+              </span>
+              <span class="skill-item__name">Replit</span>
+            </li>
+
+            <li class="skill-item reveal reveal-scale" style="--brand:#181717">
+              <span class="skill-item__icon">
+                <svg class="brand" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path fill="#181717" d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58l-.01-2.05c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.84 1.24 1.84 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.34-5.47-5.96 0-1.32.47-2.39 1.24-3.23-.13-.3-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.23 0 4.63-2.81 5.65-5.49 5.95.43.37.81 1.1.81 2.22l-.01 3.29c0 .32.21.7.82.58A12.01 12.01 0 0 0 24 12.5C24 5.87 18.63.5 12 .5Z"/>
+                </svg>
+              </span>
+              <span class="skill-item__name">Git &amp; GitHub</span>
+            </li>
+
+            <li class="skill-item reveal reveal-scale" style="--brand:#000000">
+              <span class="skill-item__icon">
+                <svg class="brand" viewBox="1.1 2.6 21.8 19" aria-hidden="true" focusable="false">
+                  <path fill="#000000" d="M12 2.6 22.9 21.6H1.1L12 2.6Z"/>
+                </svg>
+              </span>
+              <span class="skill-item__name">Vercel</span>
+            </li>
+
+            <li class="skill-item reveal reveal-scale" style="--brand:#5FA04E">
+              <span class="skill-item__icon">
+                <svg class="brand" viewBox="2.35 0.95 19.3 22.1" aria-hidden="true" focusable="false">
+                  <path d="M12 2.2 20.4 7.1v9.8L12 21.8 3.6 16.9V7.1L12 2.2Z"
+                        fill="none" stroke="#5FA04E" stroke-width="2.1" stroke-linejoin="round"/>
+                  <path d="M9.1 16.3V7.7M14.9 16.3V7.7M9.1 7.7 14.9 16.3"
+                        fill="none" stroke="#5FA04E" stroke-width="2.2"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <span class="skill-item__name">Node.js</span>
+            </li>
+
+            <li class="skill-item reveal reveal-scale" style="--brand:#00D8FF">
+              <span class="skill-item__icon">
+                <svg class="brand" viewBox="0.2 0.2 23.6 23.6" aria-hidden="true" focusable="false">
+                  <circle cx="12" cy="12" r="2.05" fill="#00D8FF"/>
+                  <g fill="none" stroke="#00D8FF" stroke-width="1">
+                    <ellipse cx="12" cy="12" rx="11" ry="4.2"/>
+                    <ellipse cx="12" cy="12" rx="11" ry="4.2" transform="rotate(60 12 12)"/>
+                    <ellipse cx="12" cy="12" rx="11" ry="4.2" transform="rotate(120 12 12)"/>
+                  </g>
+                </svg>
+              </span>
+              <span class="skill-item__name">React</span>
+            </li>
+
+          </ul>
+        </div>
+
+
+        <!-- ---------- divider + counting stats ---------- -->
+        <div class="skills-divider reveal" aria-hidden="true"></div>
+
+        <div class="skills-stats">
+          <!-- data-target = number to count up to, data-suffix = trailing text -->
+          <div class="skill-stat reveal reveal-delay-1">
+            <span class="skill-stat__number" data-target="20" data-suffix="+">0+</span>
+            <span class="skill-stat__label">Tools &amp; Languages Learned</span>
+          </div>
+
+          <div class="skill-stat reveal reveal-delay-2">
+            <span class="skill-stat__number" data-target="7" data-suffix="">0</span>
+            <span class="skill-stat__label">Projects Built</span>
+          </div>
+
+          <div class="skill-stat reveal reveal-delay-3">
+            <span class="skill-stat__number" data-target="2" data-suffix="">0</span>
+            <span class="skill-stat__label">Certifications Completed</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================================================================
+         PROJECTS SECTION
+         The project cards are rendered by script.js from the
+         `projects` array at the top of that file — edit the data there.
+         ================================================================ -->
+    <section class="section" id="projects">
+      <div class="container">
+        <h2 class="section-heading reveal">My <span class="section-heading-accent">Projects</span></h2>
+        <p class="section-subheading reveal reveal-delay-1">Things I've built while learning.</p>
+
+        <!-- Each project block is built here by renderProjects() -->
+        <div class="projects-list" id="projects-list"></div>
+
+        <!-- Show More / Show Less.
+             The first PROJECTS_PREVIEW projects are visible straight away;
+             the rest are hidden until this button is pressed. script.js
+             removes the [hidden] attribute and wires up the click, and hides
+             the whole row again if every project already fits in the preview.
+             The button sits outside .projects-list on purpose, so it cannot
+             disturb the even/odd left-right alternation of the cards. -->
+        <div class="projects-toggle reveal" id="projects-toggle" hidden>
+          <button
+            type="button"
+            class="btn btn-projects-more"
+            id="projects-more-btn"
+            aria-expanded="false"
+            aria-controls="projects-list"
+          >
+            <span class="projects-toggle__label" id="projects-more-label">Show More</span>
+            <span class="projects-toggle__icon" aria-hidden="true"><i data-lucide="chevron-down"></i></span>
+          </button>
+        </div>
+      </div>
+    </section>
+    <!-- ================================================================
+         VISION SECTION
+         The concentric rings are generated in script.js (buildVisionRings)
+         so index.html stays clean and the shapes are easy to tweak.
+         ================================================================ -->
+    <section class="section" id="vision">
+
+      <!-- Decorative background: teal glow + organic rings -->
+      <div class="vision-bg" aria-hidden="true">
+        <div class="vision-glow"></div>
+        <svg class="vision-rings" viewBox="0 0 1200 1200" preserveAspectRatio="xMidYMid slice">
+          <g id="vision-ring-group"><!-- filled by buildVisionRings() --></g>
+        </svg>
+      </div>
+
+      <div class="container">
+        <span class="vision-heading reveal">My Vision</span>
+        <h2 class="vision-title reveal reveal-delay-1">My Mission</h2>
+
+        <div class="vision-lines">
+          <p class="vision-line reveal">Turning Ideas Into Impact</p>
+          <p class="vision-line reveal">Building a Creative Digital Future</p>
+          <p class="vision-line reveal">Beyond Code, Beyond Creativity</p>
+          <p class="vision-line vision-line--accent reveal">Creating Digital Experiences That Matter</p>
+        </div>
+      </div>
+    </section>
+    <!-- ================================================================
+         CONTACT SECTION
+         ================================================================ -->
+    <section class="section" id="contact">
+      <div class="container">
+        <h2 class="section-heading reveal">Let's Build <span class="section-heading-accent">Something Together</span></h2>
+        <p class="section-subheading reveal reveal-delay-1">
+          Have an idea, an opportunity, or just want to connect? I'd love to hear from you.
+        </p>
+
+        <!-- ---------- Form ---------- -->
+        <!-- novalidate: we do our own inline validation in script.js -->
+        <form class="contact-form reveal reveal-delay-2" id="contact-form" novalidate>
+          <!-- short teal corner lines on top -->
+          <span class="contact-corner contact-corner--tl" aria-hidden="true"></span>
+          <span class="contact-corner contact-corner--tr" aria-hidden="true"></span>
+
+          <div class="form-field">
+            <label class="form-label" for="contact-name">Full Name</label>
+            <input
+              class="form-input" type="text" id="contact-name" name="name"
+              placeholder="Enter your name" autocomplete="name"
+            />
+            <p class="form-error" id="error-name" aria-live="polite"></p>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="contact-email">Email Address</label>
+            <input
+              class="form-input" type="email" id="contact-email" name="email"
+              placeholder="Enter your email" autocomplete="email"
+            />
+            <p class="form-error" id="error-email" aria-live="polite"></p>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="contact-message">Message</label>
+            <textarea
+              class="form-input form-textarea" id="contact-message" name="message" rows="5"
+              placeholder="Tell me about your project or idea"
+            ></textarea>
+            <p class="form-error" id="error-message" aria-live="polite"></p>
+          </div>
+
+          <!-- Bot trap. Hidden from people; automated form-fillers fill it in
+               and api/contact.js silently drops the submission. Must stay
+               outside .form-field or it inherits the visible field styles. -->
+          <div class="hp-field" aria-hidden="true">
+            <label for="contact-website">Website</label>
+            <input type="text" id="contact-website" name="website" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <button type="submit" class="btn btn-send form-submit">Send</button>
+
+          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+        </form>
+
+        <!-- ---------- Social links ---------- -->
+        <div class="contact-social reveal reveal-delay-3">
+          <!-- GitHub -->
+          <a class="social-link" href="https://github.com/Neelam7590" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <svg viewBox="-0.3 -0.3 24.6 24.6" aria-hidden="true" focusable="false">
+              <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+            </svg>
+          </a>
+
+          <!-- LinkedIn -->
+          <a class="social-link" href="https://linkedin.com/in/neelam-dhiman-b5a8b4422" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <svg viewBox="-0.3 -0.3 24.6 24.6" aria-hidden="true" focusable="false">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+
+          <!-- Email (Lucide icon) -->
+          <a class="social-link" href="mailto:neelamdhiman7590@gmail.com" aria-label="Email">
+            <i data-lucide="mail"></i>
+          </a>
+
+          <!-- Phone (Lucide icon) -->
+          <a class="social-link" href="tel:+918053124027" aria-label="Phone">
+            <i data-lucide="phone"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; <span id="year">2026</span> Neelam Dhiman. Built with curiosity and code.</p>
+
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="#about" class="footer-link">About</a>
+        <a href="#journey" class="footer-link">Journey</a>
+        <a href="#skills" class="footer-link">Skills</a>
+        <a href="#projects" class="footer-link">Projects</a>
+        <a href="#contact" class="footer-link">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- Full-screen screenshot viewer. Clicking a project screenshot opens it
+       here. Wired up by initLightbox() in script.js — Escape, the X, the
+       arrow keys, or a click on the backdrop all work. -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Screenshot viewer" hidden>
+    <button type="button" class="lightbox__btn lightbox__close" id="lightbox-close" aria-label="Close screenshot viewer">
+      <i data-lucide="x"></i>
+    </button>
+
+    <button type="button" class="lightbox__btn lightbox__prev" id="lightbox-prev" aria-label="Previous screenshot">
+      <i data-lucide="chevron-left"></i>
+    </button>
+
+    <img class="lightbox__img" id="lightbox-img" src="" alt="" />
+
+    <button type="button" class="lightbox__btn lightbox__next" id="lightbox-next" aria-label="Next screenshot">
+      <i data-lucide="chevron-right"></i>
+    </button>
+
+    <p class="lightbox__counter" id="lightbox-counter" aria-live="polite"></p>
+  </div>
+
+  <!-- Floating "back to top" button (JS shows it after 400px of scrolling) -->
+  <button class="to-top" id="to-top" aria-label="Back to top">
+    <i data-lucide="arrow-up"></i>
+  </button>
+
+  <!-- Lucide icons (line icons) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Script -->
+  <script src="script.js"></script>
+</body>
+</html>
