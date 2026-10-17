@@ -30,205 +30,219 @@
    --------------------------------------------------------------------------
    Each object:
      title      → heading on the card
+     slug       → folder name used for its screenshots (see below)
      tag        → small outlined badge, top-right
      description→ paragraph under the title
      features   → array of strings, shown as the "Key Features" list
      stack      → array of strings, shown as pill chips
-     images     → screenshots. Put files in
-                   assets/projects/<folder-name>/1.png, 2.png, 3.png ...
-                   Any image that does not exist is skipped automatically,
-                   and if none load you get the "Screenshots coming soon"
-                   placeholder instead — so you can add them one by one.
-link       → button URL. Leave it as "" to hide the button.
-    linkLabel  → button text, e.g. "View on GitHub"
+     images     → array of screenshot paths. Empty for now, so every card
+                   shows the "Screenshots coming soon" placeholder.
+     buttons    → array of { label, url, style }.
+                   style is "primary" (filled) or "secondary" (outlined).
 
-    Optional:
-      aspect     → CSS aspect-ratio for the screenshot box, e.g. "16 / 9".
-                   Match it to your screenshots so nothing gets cropped.
-                   Defaults to 16 / 10 when omitted.
-      fit        → "cover" (default, fills the box and crops) or "contain"
-                   (shows the whole screenshot, with thin bars if the
-                   ratios differ). Use "contain" for website screenshots.
-      links      → array of { url, label } for when a project has MORE than
-                   one button (live site + GitHub, say). Takes priority
-                   over link / linkLabel.
+   ADDING SCREENSHOTS LATER
+     Put files in assets/projects/<slug>/ and list them in images[], e.g.
+
+       assets/projects/tagore-global-school/1.png
+       assets/projects/tagore-global-school/2.png
+       assets/projects/tagore-global-school/3.png
+
+     The slugs in use are:
+       tagore-global-school   tic-tac-toe   calc-notebook
+       socratic-math-mentor   rasoi-mitra   telegram-bot   blog-agent
+
+     Any path listed that does not exist is skipped automatically, so you can
+     add screenshots one at a time. With none of them present you get the
+     placeholder instead. Any leftover thumbnail column at 1440px shows up as a
+     near-blank strip in the middle of the page, so prefer to add them in
+     batches of 3 or more.
+
+   Optional, only needed once a project has screenshots:
+     aspect     → CSS aspect-ratio for the screenshot box, e.g. "16 / 9".
+                  Match it to your screenshots so nothing gets cropped.
+                  Defaults to 16 / 10 when omitted.
+     fit        → "cover" (default, fills the box and crops) or "contain"
+                  (shows the whole screenshot, with thin bars if the
+                  ratios differ). Use "contain" for website screenshots.
+
+   BUTTON RULES
+     • Website            → primary "Visit Website"
+     • Game / tool / app  → primary "Try Now"
+     • No live link       → primary "View on GitHub" only
+     • Anything with a live link also gets a secondary "View Code" button.
+     • Only use URLs you have verified. Never invent one.
 
    HOW MANY SHOW FIRST
-    Only the first PROJECTS_PREVIEW projects are visible when the page
-    loads. The rest are still rendered, but hidden behind the "Show More"
-    button below the list. Change PROJECTS_PREVIEW to show more or fewer.
+     Only the first PROJECTS_PREVIEW projects are visible when the page
+     loads. The rest are still rendered, but hidden behind the "Show More"
+     button below the list. Change PROJECTS_PREVIEW to show more or fewer.
    ========================================================================== */
 const PROJECTS_PREVIEW = 3;
 
 const projects = [
   {
-    title: "Tagore Global School Website",
+    title: "Tagore Global School",
+    slug: "tagore-global-school",
     tag: "Website",
     description:
-      "A complete school website built for Tagore Global School — public pages, academics, admissions and an AI assistant that answers visitor questions on its own.",
+      "A complete school website with a clean, easy-to-use layout, built for Tagore Global School.",
     features: [
-      "AI assistant chatbot",
-      "Online admission form",
-      "Academics & gallery pages",
-      "Login portal for staff",
-      "Fully responsive",
+      "Clean, easy-to-use layout",
+      "Responsive on phone, tablet and desktop",
+      "Multiple sections for school information",
     ],
     stack: ["HTML", "CSS", "JavaScript"],
+    images: [
+      "assets/projects/tagore-global-school/1.jpg",
+      "assets/projects/tagore-global-school/2.jpg",
+      "assets/projects/tagore-global-school/3.jpg",
+      "assets/projects/tagore-global-school/4.jpg",
+      "assets/projects/tagore-global-school/5.jpg",
+    ],
     aspect: "16 / 9",
     fit: "contain",
-    images: [
-      "assets/projects/tagore-global-school-website/1.jpg",
-      "assets/projects/tagore-global-school-website/2.jpg",
-      "assets/projects/tagore-global-school-website/3.jpg",
-      "assets/projects/tagore-global-school-website/4.jpg",
-      "assets/projects/tagore-global-school-website/5.jpg",
-    ],
-    links: [
-      { url: "https://tagore-global-school.vercel.app/", label: "Visit Website" },
-      { url: "https://github.com/Neelam7590/Tagore-Global-School", label: "View on GitHub" },
+    buttons: [
+      { label: "Visit Website", url: "https://tagore-global-school.vercel.app/", style: "primary" },
+      { label: "View Code", url: "https://github.com/Neelam7590/Tagore-Global-School", style: "secondary" },
     ],
   },
   {
     title: "Tic Tac Toe",
+    slug: "tic-tac-toe",
     tag: "Game",
-    description: "The classic Tic Tac Toe game with simple logic and an interactive board.",
+    description:
+      "The classic Tic Tac Toe game with a simple, interactive board you can play right in your browser.",
     features: ["Two-player gameplay", "Win and draw detection", "Restart option"],
     stack: ["HTML", "CSS", "JavaScript"],
-    aspect: "16 / 9",
-    fit: "contain",
     images: [
       "assets/projects/tic-tac-toe/1.jpg",
       "assets/projects/tic-tac-toe/2.jpg",
       "assets/projects/tic-tac-toe/3.jpg",
       "assets/projects/tic-tac-toe/4.jpg",
     ],
-    links: [
-      { url: "https://tic-tac-toe-game-pearl-chi.vercel.app", label: "Visit Website" },
-      { url: "https://github.com/Neelam7590/Tic-Tac-Toe-Game", label: "View on GitHub" },
-    ],
-  },
-  /* Details below match what the screenshots show: a typed-or-photo input,
-   the listed topic coverage, and the chat UI with New Chat / Report / Copy.
-   Confirm the stack. */
-  {
-    title: "Socratic Math Mentor",
-    tag: "App",
-    description:
-      "A maths problem-solving app. Type a question or upload a photo of it, and work through the answer step by step with guided help instead of a bare solution.",
-    features: [
-      "Type a problem or upload a photo",
-      "Algebra, Calculus, Stats and Derivatives",
-      "Chat interface with step-by-step help",
-    ],
-    stack: ["HTML", "CSS", "JavaScript"],
     aspect: "16 / 9",
     fit: "contain",
+    buttons: [
+      { label: "Try Now", url: "https://tic-tac-toe-game-pearl-chi.vercel.app", style: "primary" },
+      { label: "View Code", url: "https://github.com/Neelam7590/Tic-Tac-Toe-Game", style: "secondary" },
+    ],
+  },
+  {
+    title: "Calc Notebook",
+    slug: "calc-notebook",
+    tag: "Web Tool",
+    description:
+      "An all-in-one calculator website for EMI, Age, Percentage, BMI and GST, in a notebook-style design.",
+    features: [
+      "Five calculators in one place",
+      "Notebook-style design",
+      "Works on phone and desktop",
+    ],
+    stack: ["HTML", "CSS", "JavaScript"],
+    images: [
+      "assets/projects/calc-notebook/1.jpg",
+      "assets/projects/calc-notebook/2.jpg",
+      "assets/projects/calc-notebook/3.jpg",
+    ],
+    aspect: "16 / 9",
+    fit: "contain",
+    buttons: [
+      { label: "Try Now", url: "https://calcnotebook.vercel.app", style: "primary" },
+      { label: "View Code", url: "https://github.com/Neelam7590/Calc-Notebook", style: "secondary" },
+    ],
+  },
+  {
+    title: "Socratic Math Mentor",
+    slug: "socratic-math-mentor",
+    tag: "AI App",
+    description:
+      "An AI math mentor that helps you learn by guiding you with questions instead of just giving answers.",
+    features: [
+      "Guides step by step with questions",
+      "Built in Google AI Studio",
+      "Deployed on Vercel through GitHub",
+    ],
+    stack: ["Google AI Studio", "GitHub", "Vercel"],
     images: [
       "assets/projects/socratic-math-mentor/1.jpg",
       "assets/projects/socratic-math-mentor/2.jpg",
       "assets/projects/socratic-math-mentor/3.jpg",
     ],
-    links: [
-      { url: "https://socratic-math-mentor.vercel.app", label: "Visit Website" },
-      { url: "https://github.com/Neelam7590/Socratic-Math-Mentor", label: "View on GitHub" },
+    aspect: "16 / 9",
+    fit: "contain",
+    buttons: [
+      { label: "Try Now", url: "https://socratic-math-mentor.vercel.app", style: "primary" },
+      { label: "View Code", url: "https://github.com/Neelam7590/Socratic-Math-Mentor", style: "secondary" },
     ],
   },
   {
-    title: "Telegram Automation",
+    title: "Rasoi Mitra",
+    slug: "rasoi-mitra",
+    tag: "AI App",
+    description:
+      "A recipe assistant app that helps you decide what to cook and how to make it.",
+    features: [
+      "Recipe suggestions and cooking help",
+      "Built on Replit",
+      "Live on Render",
+    ],
+    stack: ["Replit", "Render"],
+    images: [
+      "assets/projects/rasoi-mitra/1.jpg",
+      "assets/projects/rasoi-mitra/2.jpg",
+      "assets/projects/rasoi-mitra/3.jpg",
+    ],
+    aspect: "16 / 9",
+    fit: "contain",
+    buttons: [
+      { label: "Try Now", url: "https://rasoi-mitra-recipe.onrender.com/", style: "primary" },
+      { label: "View Code", url: "https://github.com/Neelam7590/Rasoi-Mitra-Recipe", style: "secondary" },
+    ],
+  },
+  {
+    title: "Telegram Bot",
+    slug: "telegram-bot",
     tag: "Automation",
     description:
-      "A Python bot built with python-telegram-bot that replies to messages automatically and sends scheduled messages on its own.",
+      "A Python Telegram bot with AI replies, scheduled messages and news updates.",
     features: [
-      "Automatic replies",
-      "Scheduled messages",
-      "Code hosted on GitHub",
-      "Render deployment planned",
+      "Automatic and AI-powered replies",
+      "Memory using Supabase",
+      "Scheduled messages and news updates",
     ],
-    stack: ["Python", "python-telegram-bot", "GitHub"],
+    stack: ["Python", "python-telegram-bot", "Groq", "Supabase"],
+    images: [
+      "assets/projects/telegram-bot/1.jpg",
+      "assets/projects/telegram-bot/2.jpg",
+    ],
     aspect: "16 / 9",
     fit: "contain",
-    images: [
-      "assets/projects/telegram-automation-bot/1.jpg",
-      "assets/projects/telegram-automation-bot/2.jpg",
-    ],
-    links: [
-      { url: "https://github.com/Neelam7590/Telegram-Bot", label: "View on GitHub" },
+    // No live link for this one, so it gets a single button.
+    buttons: [
+      { label: "View on GitHub", url: "https://github.com/Neelam7590/Telegram-Bot", style: "primary" },
     ],
   },
   {
-    title: "CalcNotebook",
-    tag: "Website",
-    description: "An all-in-one calculator website with a notebook-style design.",
-    features: [
-      "EMI, Stamp Duty, CGPA, Age, Percentage, GST and BMI calculators",
-      "Stamp Duty calculator built for Haryana circle rates",
-      "Built-in blog, grouped into 6 topic categories",
-      "Notebook-style design",
-      "Single page that runs in the browser",
-    ],
-    stack: ["HTML", "CSS", "JavaScript"],
-    aspect: "16 / 9",
-    fit: "contain",
-    images: [
-      "assets/projects/calcnotebook/1.jpg",
-      "assets/projects/calcnotebook/2.jpg",
-      "assets/projects/calcnotebook/3.jpg",
-    ],
-    links: [
-      { url: "https://calcnotebook.vercel.app", label: "Visit Website" },
-      { url: "https://github.com/Neelam7590/Calc-Notebook", label: "View on GitHub" },
-    ],
-  },
-  /* Details below match what the screenshots show: posts going out one per day
-   on the Blogger dashboard, with headings, a worked numeric example and
-   region-specific rates. Confirm the stack. */
-  {
-    title: "CalcNotebook Blogger Agent",
+    title: "CalcNotebook Blog Agent",
+    slug: "blog-agent",
     tag: "Automation",
     description:
-      "An automation agent that writes and publishes one full blog post every day to Blogger — researched topics, worked numeric examples and proper heading structure, ready to go without manual formatting.",
+      "An auto-blogging agent that writes and publishes posts to the CalcNotebook blog by itself.",
     features: [
-      "Publishes one post a day to Blogger",
-      "Step-by-step guides with worked examples",
-      "Region-specific rates, e.g. Delhi NCR",
-      "SEO tags applied to every post",
+      "Writes and publishes blog posts automatically",
+      "Runs on a schedule with GitHub Actions",
+      "Uses Groq AI and SerpApi for research",
     ],
-    stack: ["Python"],
+    stack: ["Python", "Groq", "SerpApi", "GitHub Actions"],
+    images: [
+      "assets/projects/blog-agent/1.jpg",
+      "assets/projects/blog-agent/2.jpg",
+    ],
     aspect: "16 / 9",
     fit: "contain",
-    images: [
-      "assets/projects/calcnotebook-blogger-agent/1.jpg",
-      "assets/projects/calcnotebook-blogger-agent/2.jpg",
-    ],
-    links: [
-      { url: "https://github.com/Neelam7590/Calcnotebook-Blog-Agent", label: "View on GitHub" },
-    ],
-  },
-  /* Details below match what the screenshots show: the conversation screen with
-   its starter prompts, the cooking-preferences panel and the portions control.
-   Confirm the stack. */
-  {
-    title: "Rasoi Mitra Recipe",
-    tag: "GPT",
-    description:
-      "A conversational kitchen companion. Ask what to cook in plain language — \"a 10-minute dinner with what I have\" — and get a recipe back, tuned to your diet, portion count and leftovers.",
-    features: [
-      "Chat-style recipe help in plain language",
-      "Cooking preferences: diet, meal and portions",
-      "Suggests ideas from what is already in the kitchen",
-      "Saved recipes and voice input",
-    ],
-    stack: ["Replit"],
-    aspect: "16 / 9",
-    fit: "contain",
-    images: [
-      "assets/projects/rasoi-mitra-recipe/1.jpg",
-      "assets/projects/rasoi-mitra-recipe/2.jpg",
-      "assets/projects/rasoi-mitra-recipe/3.jpg",
-    ],
-    links: [
-      { url: "https://rasoi-mitra-recipe.onrender.com/", label: "Visit Website" },
-      { url: "https://github.com/Neelam7590/Rasoi-Mitra-Recipe", label: "View on GitHub" },
+    // No live link for this one, so it gets a single button.
+    buttons: [
+      { label: "View on GitHub", url: "https://github.com/Neelam7590/Calcnotebook-Blog-Agent", style: "primary" },
     ],
   },
 ];
@@ -841,6 +855,16 @@ initSkillsStagger();
    an ease-out curve, the first time it scrolls into view.
      <span data-target="20" data-suffix="+">0</span>
    ========================================================================== */
+/* Keep the "Projects Built" counter in step with the projects array, so adding
+   or removing a project never leaves the number lying on the page. The
+   element opts in with data-from-projects in index.html. */
+(function syncProjectsStat() {
+  const el = $("[data-from-projects]");
+  if (!el) return;
+  el.dataset.target = String(projects.length);
+  el.textContent = "0" + (el.dataset.suffix || "");
+})();
+
 function initStatCounters() {
   const counters = $$("[data-target]");
   if (!counters.length) return;
@@ -997,7 +1021,15 @@ function mediaMarkup(project, images) {
     </div>`;
 }
 
-/* --- DETAILS SIDE: title, badge, features, stack, link button --- */
+/* --- Buttons: primary is filled with the accent, secondary is outlined --- */
+function buttonMarkup(button) {
+  // Anything that is not explicitly "secondary" renders as primary, so a
+  // typo can never silently produce an invisible button.
+  const style = button.style === "secondary" ? "btn-secondary" : "btn-primary";
+  return `<a class="btn ${style} project-link" href="${escapeHtml(button.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(button.label)}</a>`;
+}
+
+/* --- DETAILS SIDE: title, badge, features, stack, buttons --- */
 function detailsMarkup(project) {
   const features = (project.features || [])
     .map((feature) => `<li class="project-feature">${escapeHtml(feature)}</li>`)
@@ -1007,18 +1039,7 @@ function detailsMarkup(project) {
     .map((tech) => `<span class="project-chip">${escapeHtml(tech)}</span>`)
     .join("");
 
-  // A project can have one button (link/linkLabel) or several (links array).
-  const linkList = Array.isArray(project.links) && project.links.length
-    ? project.links
-    : project.link
-      ? [{ url: project.link, label: project.linkLabel || "Open project" }]
-      : [];
-
-  const buttons = linkList
-    .map(
-      (item) => `<a class="btn project-link" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.label)}</a>`
-    )
-    .join("");
+  const buttons = (project.buttons || []).map(buttonMarkup).join("");
 
   return `
     <div class="project-info slide-in slide-in--right">

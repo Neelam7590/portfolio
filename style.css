@@ -257,6 +257,39 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(1px);
 }
 
+/* --- Button variants used by the project cards ---
+   .btn itself is already the outlined look, so .btn-secondary only needs to
+   state that intent. .btn-primary is the filled, accent-coloured one. */
+.btn-secondary {
+  background-color: transparent;
+  border-color: var(--text);
+  color: var(--text);
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+}
+
+/* A filled button is already in its hover colour, so hovering must not try to
+   fill it again — just lift it with the usual glow and nudge the arrow. */
+.btn-primary:hover {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+  box-shadow: 0 8px 26px var(--glow);
+}
+
+/* The global focus ring is accent-on-cream. On a filled accent button that
+   would be invisible, so this one gets a dark ring against the fill and a
+   light halo outside it. */
+.btn-primary:focus-visible {
+  outline: 3px solid var(--text);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--bg);
+}
+
 
 /* ==========================================================================
    05. SCROLLBAR & SELECTION
@@ -1069,6 +1102,25 @@ body.has-custom-cursor * {
   height: 44px;
 }
 
+/* Brand marks loaded as files (assets/logos/*.svg|png) instead of inline SVG.
+   Sized to exactly match svg.brand above and scaled down to fit rather than
+   cropped, so a wide logo like Replit's stays whole. No background tile and no
+   filter here — the file already carries its own colours. */
+.skill-item__icon img.brand {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  display: block;
+}
+
+/* A Lucide line icon drawn at 44px instead of 34px needs a proportionally
+   lighter stroke, otherwise it reads far heavier than the solid brand marks
+   sitting next to it. Kept as a guard for any future line-icon chip: it only
+   matches an element that is itself a Lucide svg.brand inside a skill icon. */
+.skill-item__icon svg.lucide.brand {
+  stroke-width: 1.25;
+}
+
 /* Hover: the logo pops and glows in its own brand colour */
 .skill-item:hover .skill-item__icon {
   transform: translateY(-2px) scale(1.12);
@@ -1629,6 +1681,11 @@ body.lightbox-open {
 .carousel-thumbs {
   display: flex;
   flex-wrap: wrap;
+  /* Centre the strip instead of pinning it left. With only two screenshots the
+     thumbnails occupy about a third of the row, and left-aligning them left a
+     360px hole on one side that read as a broken empty column. Each wrapped
+     row is centred independently, so it still looks right at 360px. */
+  justify-content: center;
   gap: 10px;
   margin-top: 12px;
 }
