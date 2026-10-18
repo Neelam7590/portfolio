@@ -1,18 +1,53 @@
-# robots.txt
-# Neelam Dhiman — portfolio
-# https://neelamdhiman.vercel.app
-#
-# The whole site is public and there is nothing to hide, so every crawler is
-# welcome. This includes Googlebot and the AI crawlers (GPTBot, ClaudeBot,
-# PerplexityBot, Google-Extended) that read the JSON-LD in index.html.
-#
-# The Sitemap URL below must stay in step with the canonical URL in
-# index.html and with the <loc> in sitemap.xml — all three are the same origin.
-
 User-agent: *
 Allow: /
 
-# Nothing here is private, so there is no Disallow. If a staging or preview
-# deployment is ever created, block that origin instead of this one.
+# AI search engines are welcome. Listing them explicitly is not strictly
+# necessary while the wildcard above stands, but naming them documents the
+# intent and stops a future blanket "Disallow: /" from ever shutting them out.
+#
+# These read the JSON-LD in index.html, which is where the Person entity,
+# the 14-city service area and the FAQ answers come from.
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# Nothing on this site is private, so there is no Disallow.
+# If a staging or preview deployment is ever created, block that origin
+# instead of this one.
 
 Sitemap: https://neelamdhiman.vercel.app/sitemap.xml
