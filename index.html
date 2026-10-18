@@ -32,11 +32,25 @@
          #person  the human  (Person)
          #service what she sells (ProfessionalService)
 
-       "provider" and "employee" on the service node both point at #person, so
-       an entity extractor can resolve "Neelam Dhiman" as the service provider
-       without inferring it. areaServed and hasOfferCatalog live on the service
-       node, which is where schema.org expects them; knowsAbout and
-       knowsLanguage live on the person node, which is where they belong.
+       The two nodes are joined in BOTH directions with valid schema.org
+       properties, which the validator checks:
+
+         #person.worksFor  -> #service   (Person.worksFor, range Organization)
+         #service.employee -> #person    (Organization.employee)
+         #service.founder  -> #person    (Organization.founder)
+
+       so an entity extractor resolves the pair without inferring it.
+
+       Two properties were tried and REMOVED because schema.org does not accept
+       them in these positions — do not put them back:
+         "mainEntityOf" on Person  -> domain is CreativeWork only      (ERROR)
+         "provider" on ProfessionalService -> domain is Service /
+                                    CreativeWork / Invoice, NOT Organization (WARNING)
+       "worksFor" + "employee" + "founder" express the same link correctly.
+
+       areaServed and hasOfferCatalog live on the service node, which is where
+       schema.org expects them; knowsAbout and knowsLanguage live on the person
+       node, which is where they belong.
 
        Every absolute URL below must use the real live origin. Do NOT
        substitute the bare "vercel.app" domain: that is Vercel's own corporate
@@ -77,7 +91,7 @@
           "https://github.com/Neelam7590",
           "https://linkedin.com/in/neelam-dhiman-b5a8b4422"
         ],
-        "mainEntityOf": { "@id": "https://neelamdhiman.vercel.app/#service" }
+        "worksFor": { "@id": "https://neelamdhiman.vercel.app/#service" }
       },
       {
         "@type": "ProfessionalService",
@@ -85,7 +99,6 @@
         "name": "Neelam Dhiman",
         "description": "Web development, YouTube SEO and digital marketing, social media management, video editing and Python automation for businesses, schools and creators across Haryana.",
         "url": "https://neelamdhiman.vercel.app/",
-        "provider": { "@id": "https://neelamdhiman.vercel.app/#person" },
         "employee": { "@id": "https://neelamdhiman.vercel.app/#person" },
         "founder": { "@id": "https://neelamdhiman.vercel.app/#person" },
         "areaServed": [
