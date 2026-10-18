@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Neelam Dhiman — sitemap
+  Single-page site: the homepage is the only indexable URL, so it carries
+  priority 1.0.
+
+  Keep <loc> in step with the canonical URL in index.html and with the
+  Sitemap: line in robots.txt. All three must name the same origin: the
+  personal Vercel subdomain, never Vercel's bare corporate domain, which
+  does not serve this site. Pointing a sitemap at the wrong origin stops
+  search engines from ever reaching the portfolio.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://neelamdhiman.vercel.app/</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

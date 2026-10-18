@@ -969,11 +969,18 @@ function mediaMarkup(project, images) {
 
   const total = images.length;
 
+  /* Alt text describes the image and names the local context once, rather than
+     repeating a keyword list. Screen readers announce this verbatim, so a pile
+     of city names here would be read out loud before every screenshot. Kept to
+     one accurate mention of Kaithal, Haryana. */
+  const slideAlt = (project, n) =>
+    `${project.title} screenshot ${n} by Neelam Dhiman, web developer in Kaithal, Haryana`;
+
   const slides = images
     .map(
       (src, i) => `
         <div class="carousel-slide${i === 0 ? " is-active" : ""}">
-          <img src="${escapeHtml(src)}" alt="${escapeHtml(project.title)} screenshot ${i + 1}" loading="lazy" />
+          <img src="${escapeHtml(src)}" alt="${escapeHtml(slideAlt(project, i + 1))}" loading="lazy" />
         </div>`
     )
     .join("");

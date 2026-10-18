@@ -4,14 +4,97 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- ---------- SEO ---------- -->
-  <title>Neelam Dhiman | Portfolio</title>
+  <!-- ---------- SEO ----------
+       SITE_URL is the real, live origin of this site. Everything absolute
+       below (canonical, og:url, og:image, JSON-LD @id/url, sitemap.xml and
+       robots.txt) must use this one value. Do NOT substitute the bare
+       "vercel.app" domain here: that is Vercel's own corporate site, not
+       this portfolio, and pointing a canonical at it would tell Google the
+       real version of this page lives somewhere else — which de-indexes
+       the portfolio instead of helping it. -->
+  <title>Web Developer &amp; YouTube SEO Specialist in Kaithal, Haryana</title>
   <meta
     name="description"
-    content="Portfolio of Neelam Dhiman, a BA student from Kaithal, Haryana building websites, games and automation tools with HTML, CSS, JavaScript and Python."
+    content="Professional web developer and YouTube SEO specialist serving Kaithal, Kurukshetra, Karnal, Gurugram, Faridabad, Panipat, and across Haryana. Specializing in business websites, digital marketing, and video editing."
+  />
+  <meta
+    name="keywords"
+    content="web developer in kaithal, website designer kurukshetra, web development karnal, freelance developer gurugram, youtube seo specialist panipat, digital marketing haryana, python automation developer sonipat, freelance web designer ambala, rohtak website builder, faridabad web developer, pehowa, hisar, yamunanagar"
   />
   <meta name="author" content="Neelam Dhiman" />
+  <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#FAF5EA" />
+
+  <!-- ---------- Local business schema ----------
+       One graph node so search engines and AI assistants read the same
+       entity rather than two disconnected ones: @id is the canonical
+       identifier, "url" points at the live site, and every other reference
+       (sameAs, mainEntityOf) resolves back to that single @id.
+       Keep the "url" fields in step with SITE_URL above. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": ["ProfessionalService", "Person"],
+        "@id": "https://neelamdhiman.vercel.app/#person",
+        "name": "Neelam Dhiman",
+        "jobTitle": "Web Developer & YouTube SEO Specialist",
+        "description": "Web developer and YouTube SEO specialist from Kaithal, Haryana, building business websites, apps and automation tools, and handling digital marketing, social media and video editing for clients across Haryana.",
+        "url": "https://neelamdhiman.vercel.app/",
+        "image": "https://neelamdhiman.vercel.app/assets/neelam.jpg",
+        "email": "mailto:neelamdhiman7590@gmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Kaithal",
+          "addressRegion": "Haryana",
+          "addressCountry": "IN"
+        },
+        "areaServed": [
+          { "@type": "City", "name": "Kaithal" },
+          { "@type": "City", "name": "Kurukshetra" },
+          { "@type": "City", "name": "Karnal" },
+          { "@type": "City", "name": "Hisar" },
+          { "@type": "City", "name": "Pehowa" },
+          { "@type": "City", "name": "Faridabad" },
+          { "@type": "City", "name": "Gurugram" },
+          { "@type": "City", "name": "Panipat" },
+          { "@type": "City", "name": "Sonipat" },
+          { "@type": "City", "name": "Ambala" },
+          { "@type": "City", "name": "Rohtak" },
+          { "@type": "City", "name": "Yamunanagar" },
+          { "@type": "State", "name": "Haryana" },
+          { "@type": "Country", "name": "India" }
+        ],
+        "knowsLanguage": ["en", "hi"],
+        "knowsAbout": [
+          "Web Development",
+          "YouTube SEO",
+          "Digital Marketing",
+          "Search Engine Optimization",
+          "Python Automation",
+          "Social Media Management",
+          "Video Editing",
+          "Content Creation"
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Services",
+          "itemListElement": [
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Website & App Building" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "YouTube SEO & Digital Marketing" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Social Media Management" } },
+            { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Video Editing & Content Creation" } }
+          ]
+        },
+        "sameAs": [
+          "https://github.com/Neelam7590",
+          "https://linkedin.com/in/neelam-dhiman-b5a8b4422"
+        ]
+      }
+    ]
+  }
+  </script>
 
   <!-- Favicon: a warm brown circle with a cream "N" (inline SVG, no extra file).
        %23 is the URL-encoded "#" so the colour hex survives inside the data URI. -->
@@ -24,25 +107,29 @@
        og:image and og:url must be ABSOLUTE URLs. WhatsApp, LinkedIn and
        X cannot resolve a relative path like "assets/neelam.jpg", so the
        preview card comes out empty or broken when the link is shared.
-       SITEMAP_URL below must stay in step with SITE_URL. -->
+       These must stay in step with SITE_URL in the SEO block above and with
+       the canonical below. -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Neelam Dhiman" />
-  <meta property="og:title" content="Neelam Dhiman | Portfolio" />
+  <meta property="og:title" content="Web Developer &amp; YouTube SEO Specialist in Kaithal, Haryana" />
   <meta
     property="og:description"
-    content="Student, learner and builder from Kaithal, Haryana — websites, games and automation tools built with HTML, CSS, JavaScript and Python."
+    content="Professional web developer and YouTube SEO specialist serving Kaithal, Kurukshetra, Karnal, Gurugram, Faridabad, Panipat, and across Haryana. Specializing in business websites, digital marketing, and video editing."
   />
   <meta property="og:url" content="https://neelamdhiman.vercel.app/" />
   <meta property="og:image" content="https://neelamdhiman.vercel.app/assets/neelam.jpg" />
   <meta property="og:image:width" content="900" />
   <meta property="og:image:height" content="1200" />
-  <meta property="og:image:alt" content="Neelam Dhiman" />
+  <meta
+    property="og:image:alt"
+    content="Neelam Dhiman - freelance web developer and YouTube SEO expert in Kaithal, Haryana"
+  />
   <meta property="og:locale" content="en_IN" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Neelam Dhiman | Portfolio" />
+  <meta name="twitter:title" content="Web Developer &amp; YouTube SEO Specialist in Kaithal, Haryana" />
   <meta
     name="twitter:description"
-    content="Student, learner and builder from Kaithal, Haryana — websites, games and automation tools built with HTML, CSS, JavaScript and Python."
+    content="Professional web developer and YouTube SEO specialist serving Kaithal, Kurukshetra, Karnal, Gurugram, Faridabad, Panipat, and across Haryana. Specializing in business websites, digital marketing, and video editing."
   />
   <meta name="twitter:image" content="https://neelamdhiman.vercel.app/assets/neelam.jpg" />
   <link rel="canonical" href="https://neelamdhiman.vercel.app/" />
@@ -172,7 +259,7 @@
         <div class="hero-avatar">
           <!-- Letter "N" shows behind the photo, visible only if the photo is missing -->
           <span class="hero-initial" aria-hidden="true">N</span>
-          <img src="assets/neelam.jpg" alt="Neelam Dhiman" fetchpriority="high" onerror="this.style.display='none'" />
+          <img src="assets/neelam.jpg" alt="Neelam Dhiman, web developer and YouTube SEO specialist in Kaithal, Haryana" fetchpriority="high" onerror="this.style.display='none'" />
         </div>
       </div>
     </div>
@@ -224,7 +311,7 @@
 
           <div class="about-intro__photo">
             <div class="about-photo">
-              <img src="assets/neelam.jpg" alt="Neelam Dhiman" loading="lazy" />
+              <img src="assets/neelam.jpg" alt="Neelam Dhiman, web developer and YouTube SEO specialist in Kaithal, Haryana" loading="lazy" />
               <!-- Shown by JS only if assets/neelam.jpg is missing -->
               <span class="about-photo__initials" aria-hidden="true">ND</span>
             </div>
@@ -718,6 +805,78 @@
                 <p>
                   Use the contact form on this page or email neelamdhiman7590@gmail.com.
                   She is also on GitHub and LinkedIn.
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <!-- ---------- Local / Haryana service-area questions ----------
+               Appended to the same .faq-list rather than a second
+               <section id="faq">, because two elements may not share one id:
+               it would break the footer anchor and duplicate the whole block
+               for screen readers. Same markup and same styles as above. -->
+          <details class="faq-item reveal">
+            <summary class="faq-item__summary">
+              <span class="faq-item__question">Which areas in Haryana do you serve for web development and digital marketing?</span>
+              <span class="faq-item__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-item__wrap">
+              <div class="faq-item__body">
+                <p>
+                  Based in Kaithal, I provide top-tier web development, YouTube SEO, and
+                  digital marketing services to clients across Haryana, including major
+                  hubs like Kurukshetra, Karnal, Gurugram, Faridabad, Panipat, Sonipat,
+                  Ambala, Rohtak, Hisar, Pehowa, and Yamunanagar.
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary class="faq-item__summary">
+              <span class="faq-item__question">Can businesses in Gurugram, Faridabad, or Panipat hire you for remote web development?</span>
+              <span class="faq-item__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-item__wrap">
+              <div class="faq-item__body">
+                <p>
+                  Absolutely. I regularly collaborate remotely with small businesses,
+                  educational institutions, and startups across Haryana&rsquo;s tech and
+                  industrial centers like Gurugram, Faridabad, and Panipat to deliver
+                  fast, modern, and responsive corporate websites.
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary class="faq-item__summary">
+              <span class="faq-item__question">What makes you a top choice for a YouTube SEO specialist in Kaithal and nearby regions?</span>
+              <span class="faq-item__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-item__wrap">
+              <div class="faq-item__body">
+                <p>
+                  I leverage specialized marketing tools like vidIQ to perform in-depth
+                  keyword analysis, title optimization, and target audience tracking,
+                  helping content creators and local brands in Haryana scale their
+                  organic reach efficiently.
+                </p>
+              </div>
+            </div>
+          </details>
+
+          <details class="faq-item reveal">
+            <summary class="faq-item__summary">
+              <span class="faq-item__question">What full-stack digital solutions do you offer to businesses in regions like Rohtak or Ambala?</span>
+              <span class="faq-item__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-item__wrap">
+              <div class="faq-item__body">
+                <p>
+                  I offer an all-in-one digital growth package that includes custom
+                  frontend development (HTML/CSS/JS), automated Python tasks, strategic
+                  social media management, and high-retention video editing via CapCut.
                 </p>
               </div>
             </div>

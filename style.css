@@ -2157,6 +2157,10 @@ body.lightbox-open {
 .faq-item:nth-child(4) { transition-delay: 0.26s; }
 .faq-item:nth-child(5) { transition-delay: 0.33s; }
 .faq-item:nth-child(6) { transition-delay: 0.40s; }
+.faq-item:nth-child(7) { transition-delay: 0.47s; }
+.faq-item:nth-child(8) { transition-delay: 0.54s; }
+.faq-item:nth-child(9) { transition-delay: 0.61s; }
+.faq-item:nth-child(10) { transition-delay: 0.68s; }
 
 /* ---------- The summary row (the clickable, focusable part) ---------- */
 .faq-item__summary {
