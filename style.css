@@ -16,10 +16,11 @@
    12. Skills section
    13. Projects section
    14. Vision section
-   15. Contact section
-   16. Footer links + back to top
-   17. Responsive tweaks
-   18. Reduced motion
+   15. FAQ section
+   16. Contact section
+   17. Footer links + back to top
+   18. Responsive tweaks
+   19. Reduced motion
    ========================================================================== */
 
 
@@ -2103,7 +2104,197 @@ body.lightbox-open {
 
 
 /* ==========================================================================
-   15. CONTACT SECTION
+   15. FAQ SECTION
+   --------------------------------------------------------------------------
+   .faq-item     → one <details> card, same border/radius/surface recipe as
+                   .contact-form, with the same hover lift as .skill-card
+   .faq-item__icon → the plus, drawn with two pseudo-elements so it needs no
+                   extra markup or icon file; the vertical arm rotates 90deg
+                   when open and lines up with the horizontal one to make a minus
+   Colours come only from the theme variables, so re-theming :root re-themes
+   this section too. Nothing here depends on JavaScript.
+   ========================================================================== */
+.faq-list {
+  max-width: 800px;
+  margin: 52px auto 0;
+}
+
+/* ---------- The card ---------- */
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background-color: var(--surface);
+  box-shadow: 0 10px 26px rgba(var(--accent-rgb), 0.06);
+  overflow: hidden;                 /* keeps the sliding answer inside the radius */
+  transition:
+    transform 0.3s var(--ease-out),
+    box-shadow 0.3s var(--ease-out),
+    border-color 0.3s var(--ease-out);
+}
+
+.faq-item + .faq-item {
+  margin-top: 12px;
+}
+
+.faq-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 34px rgba(var(--accent-rgb), 0.09);
+  border-color: rgba(var(--accent-rgb), 0.28);
+}
+
+/* Only the open card gets the accent border, so the open state is obvious
+   even without reading the icon. */
+.faq-item[open] {
+  border-color: rgba(var(--accent-rgb), 0.4);
+}
+
+/* Questions arrive one after another (same :nth-child stagger as .vision-line).
+   Only .reveal's own transition is delayed — the open/close animation below
+   is on child elements, so it is never held up. */
+.faq-item:nth-child(1) { transition-delay: 0.05s; }
+.faq-item:nth-child(2) { transition-delay: 0.12s; }
+.faq-item:nth-child(3) { transition-delay: 0.19s; }
+.faq-item:nth-child(4) { transition-delay: 0.26s; }
+.faq-item:nth-child(5) { transition-delay: 0.33s; }
+.faq-item:nth-child(6) { transition-delay: 0.40s; }
+
+/* ---------- The summary row (the clickable, focusable part) ---------- */
+.faq-item__summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  cursor: pointer;
+  list-style: none;                 /* Firefox marker */
+  transition: background-color 0.3s var(--ease-out);
+}
+
+.faq-item__summary::-webkit-details-marker {
+  display: none;                    /* WebKit/Blink marker */
+}
+
+.faq-item__summary:hover {
+  background-color: rgba(var(--accent-rgb), 0.05);
+}
+
+/* The summary is what the keyboard focuses, so the ring has to be visible.
+   :focus-visible is already defined globally, this only trims the offset so
+   the ring hugs the row instead of floating off the card. */
+.faq-item__summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+  border-radius: 12px;
+}
+
+.faq-item__question {
+  flex: 1;
+  font-family: var(--font-heading);
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  line-height: 1.45;
+  text-align: left;
+}
+
+/* ---------- Plus that turns into a minus ---------- */
+.faq-item__icon {
+  position: relative;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--accent-soft);
+  transition: background-color 0.3s var(--ease-out),
+              transform 0.3s var(--ease-out);
+}
+
+.faq-item__icon::before,
+.faq-item__icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 2px;
+  background-color: var(--accent);
+  transform: translate(-50%, -50%);
+}
+
+.faq-item__icon::before {
+  width: 13px;
+  height: 2px;
+}
+
+.faq-item__icon::after {
+  width: 2px;
+  height: 13px;
+  transition: transform 0.3s var(--ease-out);
+}
+
+.faq-item[open] .faq-item__icon {
+  transform: rotate(180deg);
+}
+
+.faq-item[open] .faq-item__icon::after {
+  /* Horizontal arm folds onto the other one, leaving a single minus bar. */
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* ---------- Answer: collapses with no JavaScript ----------
+   grid-template-rows 0fr is what actually hides the answer, so the closed
+   state is guaranteed by layout alone and needs no script.
+
+   The height is deliberately NOT transitioned, and `transition: none` is
+   stated explicitly rather than left out. Without it transition-property
+   falls back to its initial value `all`, and the reduced-motion rule in
+   section 19 forces `transition-duration: 0.01ms !important` on every
+   element — which re-creates a grid-template-rows transition that can get
+   wedged in its running state and leave a closed item showing its answer.
+   Naming no properties keeps the collapse correct in both motion modes.
+
+   The soft fade below rides on top and cannot affect layout, so worst case
+   the answer simply appears without it. */
+.faq-item__wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: none;
+}
+
+.faq-item[open] .faq-item__wrap {
+  grid-template-rows: 1fr;
+}
+
+.faq-item__body {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.faq-item[open] .faq-item__body {
+  animation: faqAnswerIn 0.34s var(--ease-out);
+}
+
+@keyframes faqAnswerIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.faq-item__body p {
+  padding: 0 22px 20px;
+  font-size: 0.93rem;
+  line-height: 1.78;
+  color: var(--muted);
+  text-align: left;
+}
+
+
+/* ==========================================================================
+   16. CONTACT SECTION
    ========================================================================== */
 
 /* ---------- Form card ---------- */
@@ -2324,7 +2515,7 @@ body.lightbox-open {
 
 
 /* ==========================================================================
-   16. FOOTER LINKS + BACK TO TOP
+   17. FOOTER LINKS + BACK TO TOP
    ========================================================================== */
 .footer-links {
   display: flex;
@@ -2395,7 +2586,7 @@ body.lightbox-open {
 
 
 /* ==========================================================================
-   17. RESPONSIVE TWEAKS
+   18. RESPONSIVE TWEAKS
    ========================================================================== */
 @media (max-width: 900px) {
   .nav-links {
@@ -2586,7 +2777,7 @@ body.lightbox-open {
 
 
 /* ==========================================================================
-   18. REDUCED MOTION
+   19. REDUCED MOTION
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
   html {
