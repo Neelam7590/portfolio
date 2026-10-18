@@ -10,7 +10,7 @@
    05. Mobile menu (hamburger + full-screen overlay)
    06. Active nav link based on section in view
    07. Reveal on scroll (.in-view)
-   08. Animated background particles (canvas)
+   08. (removed) Animated background particles (canvas)
    09. Custom cursor (desktop only)
    10. About photo fallback
    11. Lucide icons
@@ -589,143 +589,16 @@ initReveal();
 
 
 /* ==========================================================================
-   08. ANIMATED BACKGROUND PARTICLES (CANVAS)
-   ~80 slow-drifting teal dots (30 on mobile) that wrap around the edges.
-   The animation pauses when the tab is hidden.
+   08. (REMOVED) ANIMATED BACKGROUND PARTICLES (CANVAS)
+   --------------------------------------------------------------------------
+   The drifting background dots were not wanted, so the whole canvas particle
+   system was deleted: the <canvas id="bg-canvas"> element, its #bg-canvas CSS
+   rule, initParticles() and its call site. Nothing else referenced any of it.
+
+   To bring it back, restore the block from git history and re-add the canvas
+   element plus the #bg-canvas rule.
+
    ========================================================================== */
-const canvas = $("#bg-canvas");
-
-function initParticles() {
-  if (!canvas) return;
-
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
-
-  const isMobile = window.matchMedia("(max-width: 768px)").matches;
-  const PARTICLE_COUNT = isMobile ? 24 : 70;
-
-  /* Read the accent colour straight out of the CSS custom property so the
-     particles always match the theme. Previously this was hard-coded, which
-     left teal dots behind after the accent was changed to brown.
-     Falls back to a neutral brown if the variable cannot be parsed. */
-  function readAccentRgb() {
-    const raw = window.getComputedStyle(document.documentElement)
-      .getPropertyValue("--accent-rgb")
-      .trim();
-
-    // Expects "168, 81, 14" (the --accent-rgb form).
-    const isValid = /^\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*$/.test(raw);
-    return isValid ? raw : "168, 81, 14";
-  }
-
-  const ACCENT_RGB = readAccentRgb();
-
-  let particles = [];
-  let width = 0;
-  let height = 0;
-  let dpr = 1;
-  let animationFrame = null;
-
-  /* --- Create a single particle with random size, position, direction --- */
-  function createParticle() {
-    return {
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: Math.random() * 3 + 1.2,                 // 1.2px – 4.2px
-      speedX: (Math.random() - 0.5) * 0.28,           // slow drift
-      speedY: (Math.random() - 0.5) * 0.28,
-      opacity: Math.random() * 0.35 + 0.15,           // 0.15 – 0.5
-      glowBlur: Math.random() * 6 + 3,               // soft glow radius
-    };
-  }
-
-  /* --- Size the canvas to the viewport (HiDPI aware) --- */
-  function resizeCanvas() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    width = window.innerWidth;
-    height = window.innerHeight;
-
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-    canvas.style.width = width + "px";
-    canvas.style.height = height + "px";
-
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    // Rebuild particles so they always fit the new size.
-    particles = Array.from({ length: PARTICLE_COUNT }, createParticle);
-  }
-
-  /* --- Draw one frame --- */
-  function drawParticle(particle) {
-    const { x, y, size, opacity, glowBlur } = particle;
-
-    // Soft glow
-    ctx.beginPath();
-    ctx.arc(x, y, size + 2, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${ACCENT_RGB}, ${opacity * 0.22})`;
-    ctx.shadowBlur = glowBlur;
-    ctx.shadowColor = `rgba(${ACCENT_RGB}, ${opacity * 0.55})`;
-    ctx.fill();
-
-    // Core dot
-    ctx.beginPath();
-    ctx.arc(x, y, size, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${ACCENT_RGB}, ${opacity})`;
-    ctx.fill();
-
-    ctx.shadowBlur = 0;
-  }
-
-  /* --- Animation loop --- */
-  function animate() {
-    ctx.clearRect(0, 0, width, height);
-
-    particles.forEach((particle) => {
-      particle.x += particle.speedX;
-      particle.y += particle.speedY;
-
-      // Wrap around the edges so dots reappear on the opposite side.
-      if (particle.x < -10) particle.x = width + 10;
-      if (particle.x > width + 10) particle.x = -10;
-      if (particle.y < -10) particle.y = height + 10;
-      if (particle.y > height + 10) particle.y = -10;
-
-      drawParticle(particle);
-    });
-
-    animationFrame = window.requestAnimationFrame(animate);
-  }
-
-  /* --- Start / stop (so nothing runs when the tab is hidden) --- */
-  function start() {
-    if (animationFrame !== null || prefersReducedMotion) return;
-    animationFrame = window.requestAnimationFrame(animate);
-  }
-
-  function stop() {
-    if (animationFrame === null) return;
-    window.cancelAnimationFrame(animationFrame);
-    animationFrame = null;
-  }
-
-  document.addEventListener("visibilitychange", () => {
-    document.hidden ? stop() : start();
-  });
-
-  // Redraw at the new size on window resize / orientation change.
-  window.addEventListener("resize", () => {
-    resizeCanvas();
-    if (document.hidden) return;
-    stop();
-    start();
-  });
-
-  resizeCanvas();
-  start();
-}
-
-initParticles();
 
 
 /* ==========================================================================
@@ -1793,15 +1666,20 @@ initBackToTop();
   const el = document.getElementById('typed-text');
   if (!el) return;
 
-  // Change these words anytime
-  const words = [
-    'Web Developer',
-    'Aspiring Full Stack Developer',
-    'YouTube SEO',
-    'Video Editing',
-    'Social Media Management',
-    'AI Content Creation'
-  ];
+    // Change these words anytime.
+    // "Web Developer in Kaithal, Haryana" is first on purpose: the animation
+    // starts there on every page load, so the location line is what a visitor
+    // (and a crawler reading the rendered text) meets first. The remaining
+    // phrases are unchanged and still cycle as before.
+    const words = [
+      'Web Developer in Kaithal, Haryana',
+      'Web Developer',
+      'Aspiring Full Stack Developer',
+      'YouTube SEO',
+      'Video Editing',
+      'Social Media Management',
+      'AI Content Creation'
+    ];
 
   // Less-motion users: no animation, just list them all at once.
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

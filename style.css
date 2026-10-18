@@ -392,17 +392,13 @@ html {
 
 /* ==========================================================================
    07. ANIMATED BACKGROUND
-   ========================================================================== */
-#bg-canvas {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
+   --------------------------------------------------------------------------
+   The particle canvas was removed - the drifting background dots were not
+   wanted. There is no #bg-canvas rule left, and script.js no longer creates a
+   canvas. The subtle dotted-grid texture on `body` (section 02) is a separate,
+   much fainter thing and is still in place.
 
-/* --- Scroll progress bar (thin, at the very top) ---
+   Scroll progress bar (thin, at the very top) ---
    JS sets transform: scaleX(0 → 1). transform-origin is on the left so it
    grows from the start of the page. Using transform means no layout/paint
    work on every scroll tick. */
