@@ -25,18 +25,29 @@
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#FAF5EA" />
 
-  <!-- ---------- Local business schema ----------
-       One graph node so search engines and AI assistants read the same
-       entity rather than two disconnected ones: @id is the canonical
-       identifier, "url" points at the live site, and every other reference
-       (sameAs, mainEntityOf) resolves back to that single @id.
-       Keep the "url" fields in step with SITE_URL above. -->
+  <!-- ---------- Structured data for search and AI engines ----------
+       Two nodes in one @graph, joined by explicit @id references rather than
+       two disconnected blocks:
+
+         #person  the human  (Person)
+         #service what she sells (ProfessionalService)
+
+       "provider" and "employee" on the service node both point at #person, so
+       an entity extractor can resolve "Neelam Dhiman" as the service provider
+       without inferring it. areaServed and hasOfferCatalog live on the service
+       node, which is where schema.org expects them; knowsAbout and
+       knowsLanguage live on the person node, which is where they belong.
+
+       Every absolute URL below must use the real live origin. Do NOT
+       substitute the bare "vercel.app" domain: that is Vercel's own corporate
+       site, it 308-redirects away from this portfolio, and pointing canonical,
+       schema or sitemap URLs at it de-indexes the site. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": ["ProfessionalService", "Person"],
+        "@type": "Person",
         "@id": "https://neelamdhiman.vercel.app/#person",
         "name": "Neelam Dhiman",
         "jobTitle": "Web Developer & YouTube SEO Specialist",
@@ -50,6 +61,33 @@
           "addressRegion": "Haryana",
           "addressCountry": "IN"
         },
+        "knowsLanguage": ["en", "hi"],
+        "knowsAbout": [
+          "Web Development",
+          "Frontend Development",
+          "JavaScript",
+          "Python Automation",
+          "YouTube SEO",
+          "Video Editing",
+          "Content Creation",
+          "AI Integration",
+          "Social Media Management"
+        ],
+        "sameAs": [
+          "https://github.com/Neelam7590",
+          "https://linkedin.com/in/neelam-dhiman-b5a8b4422"
+        ],
+        "mainEntityOf": { "@id": "https://neelamdhiman.vercel.app/#service" }
+      },
+      {
+        "@type": "ProfessionalService",
+        "@id": "https://neelamdhiman.vercel.app/#service",
+        "name": "Neelam Dhiman",
+        "description": "Web development, YouTube SEO and digital marketing, social media management, video editing and Python automation for businesses, schools and creators across Haryana.",
+        "url": "https://neelamdhiman.vercel.app/",
+        "provider": { "@id": "https://neelamdhiman.vercel.app/#person" },
+        "employee": { "@id": "https://neelamdhiman.vercel.app/#person" },
+        "founder": { "@id": "https://neelamdhiman.vercel.app/#person" },
         "areaServed": [
           { "@type": "City", "name": "Kaithal" },
           { "@type": "City", "name": "Kurukshetra" },
@@ -66,17 +104,6 @@
           { "@type": "State", "name": "Haryana" },
           { "@type": "Country", "name": "India" }
         ],
-        "knowsLanguage": ["en", "hi"],
-        "knowsAbout": [
-          "Web Development",
-          "YouTube SEO",
-          "Digital Marketing",
-          "Search Engine Optimization",
-          "Python Automation",
-          "Social Media Management",
-          "Video Editing",
-          "Content Creation"
-        ],
         "hasOfferCatalog": {
           "@type": "OfferCatalog",
           "name": "Services",
@@ -86,11 +113,7 @@
             { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Social Media Management" } },
             { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Video Editing & Content Creation" } }
           ]
-        },
-        "sameAs": [
-          "https://github.com/Neelam7590",
-          "https://linkedin.com/in/neelam-dhiman-b5a8b4422"
-        ]
+        }
       }
     ]
   }
@@ -208,7 +231,7 @@
   <!-- ============ PAGE CONTENT ============ -->
   <main>
     <!-- Section content will be added step by step -->
-    <section class="section hero" id="home">
+    <section class="section hero" id="home" aria-labelledby="h-home" title="Introduction: Neelam Dhiman, web developer and YouTube SEO specialist from Kaithal, Haryana, offering website building, digital marketing and video editing.">
   <div class="container hero-inner">
 
     <!-- LEFT: text -->
@@ -216,7 +239,7 @@
         <!-- Small label above the name -->
         <span class="hero-label hero-fade" style="--d:0.05s">Portfolio</span>
 
-        <h1 class="hero-title">
+        <h1 class="hero-title" id="h-home">
           <span class="hero-word" style="--d:0.1s">I</span>
           <span class="hero-word" style="--d:0.25s">am</span>
           <span class="hero-word" style="--d:0.4s">Neelam</span>
@@ -273,14 +296,14 @@
          ABOUT SECTION
          Part 1: Who is Neelam?   Part 2: My Story card
          ================================================================ -->
-    <section class="section" id="about">
+    <section class="section" id="about" aria-labelledby="h-about" title="About Neelam Dhiman: web developer and Bachelor of Arts student at Kurukshetra University, from Kaithal, Haryana, building websites, games and automation tools.">
       <div class="container">
 
         <!-- ---------- PART 1: text on the left, photo on the right ---------- -->
         <div class="about-intro">
 
           <div class="about-intro__text">
-            <h2 class="section-heading">Who is <span class="section-heading-accent">Neelam?</span></h2>
+            <h2 class="section-heading" id="h-about">Who is <span class="section-heading-accent">Neelam?</span></h2>
 
             <h3 class="about-subtitle">Student, Learner &amp; Builder from Kaithal, Haryana</h3>
 
@@ -348,12 +371,12 @@
 
       </div>
     </section>
-    <section class="section" id="journey">
+    <section class="section" id="journey" aria-labelledby="h-journey" title="Education and career journey of Neelam Dhiman: 10th and 12th standard, Bachelor of Arts at Kurukshetra University, O Level and Digital Marketing with AI at NIELIT.">
       <div class="container">
 
         <!-- ---------- Section heading ---------- -->
         <span class="journey-eyebrow reveal">My Journey</span>
-        <h2 class="journey-heading reveal reveal-delay-1">How I Got Here</h2>
+        <h2 class="journey-heading reveal reveal-delay-1" id="h-journey">How I Got Here</h2>
         <p class="journey-sub reveal reveal-delay-2">
           Every step taught me something new — from school results to the work
           I'm building today.
@@ -436,12 +459,12 @@
          SKILLS SECTION
          Part 1: Tools grid (Lucide icons)   Part 2: Stats with count-up
          ================================================================ -->
-    <section class="section" id="skills">
+    <section class="section" id="skills" aria-labelledby="h-skills" title="Services offered by Neelam Dhiman: website and app building, YouTube SEO and digital marketing, social media management, video editing, AI-assisted development and Python automation.">
       <div class="container">
 
 <!-- ---------- Skills: numbered cards ---------- -->
         <span class="skills-eyebrow reveal">What I Do</span>
-        <h2 class="skills-heading reveal reveal-delay-1">Skills That Turn Ideas Into Real Work</h2>
+        <h2 class="skills-heading reveal reveal-delay-1" id="h-skills">Skills That Turn Ideas Into Real Work</h2>
 
 
         <ul class="skills-cards">
@@ -454,7 +477,12 @@
             </p>
           </li>
 
-          <li class="skill-card reveal reveal-scale">
+          <!-- `title` adds a non-visible semantic description for AI/LLM
+               crawlers and intent matching. The visible text below is
+               unchanged, and `title` never replaces the accessible name of an
+               element that already has visible text, so screen readers are
+               unaffected. -->
+          <li class="skill-card reveal reveal-scale" title="YouTube SEO specialist service: keyword research with vidIQ, title and description optimisation, tag and thumbnail guidance, audience tracking, and channel growth strategy for creators and local Haryana brands.">
             <span class="skill-card__num">02</span>
             <h3 class="skill-card__title">YouTube SEO &amp; Digital Marketing</h3>
             <p class="skill-card__text">
@@ -493,7 +521,9 @@
             </p>
           </li>
 
-          <li class="skill-card reveal reveal-scale">
+          <!-- Same idea as card 02: declares the Python automation capability
+               in machine-readable form without touching the visible copy. -->
+          <li class="skill-card reveal reveal-scale" title="Python automation developer service: scripted and scheduled automation, Telegram bot auto-replies and scheduled messaging, repetitive task scripting, and AI-assisted workflow automation for small businesses.">
             <span class="skill-card__num">06</span>
             <h3 class="skill-card__title">Python Automation &amp; Teamwork</h3>
             <p class="skill-card__text">
@@ -510,11 +540,11 @@
          EDUCATION & TOOLKIT SECTION
          The tool logos and the counting stats below the skills cards.
          ================================================================ -->
-    <section class="section" id="education">
+    <section class="section" id="education" aria-labelledby="h-education" title="Technical toolkit used daily by Neelam Dhiman: HTML, CSS, JavaScript, Python, Claude, ChatGPT, opencode, VS Code, Replit, Git and GitHub, Vercel, CapCut and vidIQ.">
       <div class="container">
 
         <span class="skills-eyebrow reveal">Toolkit</span>
-        <h2 class="skills-heading reveal reveal-delay-1">What I&rsquo;ve Learned, Built and Use Every Day</h2>
+        <h2 class="skills-heading reveal reveal-delay-1" id="h-education">What I&rsquo;ve Learned, Built and Use Every Day</h2>
 
 <!-- ---------- tool logos (3x3, on the concentric-ring panel) ---------- -->
         <div class="skills-logos reveal">
@@ -645,9 +675,9 @@
          The project cards are rendered by script.js from the
          `projects` array at the top of that file — edit the data there.
          ================================================================ -->
-    <section class="section" id="projects">
+    <section class="section" id="projects" aria-labelledby="h-projects" title="Projects built by Neelam Dhiman: Tagore Global School website, Tic Tac Toe, Calc Notebook, Socratic Math Mentor, Rasoi Mitra recipe site, Telegram automation bot and the CalcNotebook Blog Agent.">
       <div class="container">
-        <h2 class="section-heading reveal">My <span class="section-heading-accent">Projects</span></h2>
+        <h2 class="section-heading reveal" id="h-projects">My <span class="section-heading-accent">Projects</span></h2>
         <p class="section-subheading reveal reveal-delay-1">Things I've built while learning.</p>
 
         <!-- Each project block is built here by renderProjects() -->
@@ -679,7 +709,7 @@
          The concentric rings are generated in script.js (buildVisionRings)
          so index.html stays clean and the shapes are easy to tweak.
          ================================================================ -->
-    <section class="section" id="vision">
+    <section class="section" id="vision" aria-labelledby="h-vision" title="Career vision of Neelam Dhiman: becoming a full stack developer who builds both frontend and backend, and creating digital experiences that matter.">
 
       <!-- Decorative background: teal glow + organic rings -->
       <div class="vision-bg" aria-hidden="true">
@@ -691,7 +721,7 @@
 
       <div class="container">
         <span class="vision-heading reveal">Where I&rsquo;m Headed</span>
-        <h2 class="vision-title reveal reveal-delay-1">My Vision</h2>
+        <h2 class="vision-title reveal reveal-delay-1" id="h-vision">My Vision</h2>
 
         <div class="vision-lines">
           <p class="vision-line reveal">Turning Ideas Into Impact</p>
@@ -708,11 +738,11 @@
          plus/minus icon and the height animation are pure CSS. .faq-item is
          also a .reveal, so the questions fade in one after another.
          ================================================================ -->
-    <section class="section" id="faq">
+    <section class="section" id="faq" aria-labelledby="h-faq" title="Frequently asked questions about Neelam Dhiman: who she is, services offered, technologies used, projects built, areas served across Haryana, YouTube SEO and how to contact her.">
       <div class="container">
 
         <span class="journey-eyebrow reveal">FAQ</span>
-        <h2 class="journey-heading reveal reveal-delay-1">Frequently Asked Questions</h2>
+        <h2 class="journey-heading reveal reveal-delay-1" id="h-faq">Frequently Asked Questions</h2>
 
         <div class="faq-list">
 
@@ -889,9 +919,9 @@
     <!-- ================================================================
          CONTACT SECTION
          ================================================================ -->
-    <section class="section" id="contact">
+    <section class="section" id="contact" aria-labelledby="h-contact" title="Contact Neelam Dhiman for web development, YouTube SEO, digital marketing and video editing work across Kaithal and Haryana.">
       <div class="container">
-        <h2 class="section-heading reveal">Let's Build <span class="section-heading-accent">Something Together</span></h2>
+        <h2 class="section-heading reveal" id="h-contact">Let's Build <span class="section-heading-accent">Something Together</span></h2>
         <p class="section-subheading reveal reveal-delay-1">
           Have an idea, an opportunity, or just want to connect? I'd love to hear from you.
         </p>
