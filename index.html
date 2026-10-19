@@ -282,10 +282,29 @@
 }
 </script>
 
-  <!-- Favicon: a warm brown circle with a cream "N" (inline SVG, no extra file).
-       %23 is the URL-encoded "#" so the colour hex survives inside the data URI. -->
+  <!-- ---------- Favicon ----------
+       A warm brown circle with a cream "N", matching --accent / --bg in style.css.
+
+       /favicon.ico is the REAL file, and it is the one that matters most: it
+       is a plain fetchable URL, so Google can actually crawl it and use it as
+       the favicon next to the site in search results. Google does NOT reliably
+       pick up a data-URI favicon for search results, which is why the inline
+       SVG alone was not enough — that is why the .ico has to exist on disk.
+
+       The .ico is a multi-size (16 / 32 / 48) container. 16 and 32 are listed
+       explicitly so a browser picks the right one instead of defaulting to
+       32 everywhere.
+
+       The inline SVG is kept last as a high-DPI fallback: modern browsers use
+       it and draw a perfectly crisp icon at any zoom, while the .ico keeps
+       older browsers and Google's crawler covered. %23 is the URL-encoded "#"
+       so the colour hex survives inside the data URI. -->
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="icon" href="/favicon.ico" sizes="16x16" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
   <link
     rel="icon"
+    type="image/svg+xml"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23a8510e'/><text x='50' y='50' text-anchor='middle' dominant-baseline='central' font-family='Segoe UI,Verdana,sans-serif' font-size='62' font-weight='bold' fill='%23FAF5EA'>N</text></svg>"
   />
 
