@@ -1597,6 +1597,112 @@ initContactForm();
 
 
 /* ==========================================================================
+   FAQ — Dynamic "People Also Ask" (Google-style)
+   When a question is opened, a new related question is appended.
+   ========================================================================== */
+
+const FAQ_EXTRA_QUESTIONS = [
+  {
+    question: "What is Neelam's educational background?",
+    answer: "Neelam completed 10th (81.2%) and 12th (88.2%) from HBSE Board. She is currently pursuing a Bachelor of Arts at Kurukshetra University (2024-2027). She also completed O Level from NIELIT (B grade) and is pursuing Digital Marketing with AI course at NIELIT."
+  },
+  {
+    question: "Can Neelam build custom web applications?",
+    answer: "Yes. Neelam builds custom websites, web apps, and automation tools using HTML, CSS, JavaScript, and Python. She has built projects like a Telegram automation bot, a recipe app (Rasoi Mitra), a math learning tool (Socratic Math Mentor), and a blog automation agent."
+  },
+  {
+    question: "Does Neelam provide YouTube SEO services?",
+    answer: "Yes. Neelam specializes in YouTube SEO using tools like vidIQ for keyword research, title optimization, description writing, and thumbnail strategy. She helps creators and businesses grow their channels organically."
+  },
+  {
+    question: "What is Neelam's approach to digital marketing?",
+    answer: "Neelam combines content creation, social media management, and SEO fundamentals. She focuses on building real audiences through valuable content rather than just chasing metrics. AI tools assist in content ideation and optimization."
+  },
+  {
+    question: "Can Neelam help with video editing and content creation?",
+    answer: "Yes. Neelam edits short-form videos and reels using CapCut, creates visual content, and uses AI tools for ideation and editing assistance. She helps brands create engaging content for social media platforms."
+  },
+  {
+    question: "What Python automation projects has Neelam built?",
+    answer: "Neelam has built a Telegram bot with auto-replies and scheduled messages, a blog automation agent (CalcNotebook Blog Agent) that generates content, and various task automation scripts for repetitive workflows."
+  },
+  {
+    question: "Is Neelam available for freelance work?",
+    answer: "Yes. Neelam takes on freelance projects for website development, digital marketing, social media management, and automation. She works with small businesses in Kaithal, Haryana, and nearby areas. Contact via the form on this page."
+  },
+  {
+    question: "What makes Neelam different from other developers?",
+    answer: "Neelam combines technical skills (coding, automation) with creative skills (video editing, content creation, digital marketing). She uses AI tools daily to accelerate development and content creation, delivering complete digital solutions."
+  },
+  {
+    question: "How long does a typical website project take?",
+    answer: "Project timelines vary based on scope. A simple business website takes 1-2 weeks, while custom web apps with automation can take 3-6 weeks. Neelam provides clear timelines during the initial consultation."
+  },
+  {
+    question: "Does Neelam offer ongoing maintenance and support?",
+    answer: "Yes. Neelam offers website maintenance, content updates, SEO monitoring, and social media management on a retainer basis. This ensures your digital presence stays current and effective."
+  }
+];
+
+let faqAddedCount = 0;
+const MAX_FAQ_EXTRA = FAQ_EXTRA_QUESTIONS.length;
+
+function createFaqItem(question, answer, index) {
+  const details = document.createElement('details');
+  details.className = 'faq-item reveal';
+  details.dataset.faqId = `extra-${index}`;
+  details.innerHTML = `
+    <summary class="faq-item__summary">
+      <span class="faq-item__question">${question}</span>
+      <span class="faq-item__icon" aria-hidden="true"></span>
+    </summary>
+    <div class="faq-item__wrap">
+      <div class="faq-item__body">
+        <p>${answer}</p>
+      </div>
+    </div>
+  `;
+  return details;
+}
+
+function initFaqDynamic() {
+  const faqList = document.getElementById('faq-list');
+  if (!faqList) return;
+
+  const faqItems = faqList.querySelectorAll('.faq-item[data-faq-id]');
+
+  faqItems.forEach((item) => {
+    item.addEventListener('toggle', function () {
+      if (this.open && faqAddedCount < MAX_FAQ_EXTRA) {
+        // Add a small delay for smooth animation
+        setTimeout(() => {
+          const extraQuestion = FAQ_EXTRA_QUESTIONS[faqAddedCount];
+          const newItem = createFaqItem(extraQuestion.question, extraQuestion.answer, faqAddedCount);
+          faqList.appendChild(newItem);
+
+          // Trigger reveal animation for the new item
+          requestAnimationFrame(() => {
+            newItem.classList.add('in-view');
+          });
+
+          // Re-initialize Lucide icons for the new item
+          if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons({
+              attrs: { 'aria-hidden': 'true', 'focusable': 'false' },
+            });
+          }
+
+          faqAddedCount++;
+        }, 300);
+      }
+    });
+  });
+}
+
+initFaqDynamic();
+
+
+/* ==========================================================================
    17. BACK TO TOP BUTTON
    Fades in once the page is scrolled past 400px.
    ========================================================================== */
