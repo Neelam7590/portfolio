@@ -6,7 +6,7 @@
  * it is never shipped to the browser.
  *
  * Setup (once):
- *   1. resend.com → sign up free → verify neelamdhiman7590@gmail.com
+ *   1. resend.com → sign up free → verify neelxm08@gmail.com
  *   2. resend.com → API Keys → Create API Key → copy it
  *   3. In this Vercel project: Settings → Environment Variables
  *        RESEND_API_KEY  =  re_xxxxxxxxxxxx
@@ -20,7 +20,7 @@
 
 const RESEND_ENDPOINT = "https://api.resend.com/emails";
 
-const MAIL_TO = process.env.MAIL_TO || "neelamdhiman7590@gmail.com";
+const MAIL_TO = process.env.MAIL_TO || "neelxm08@gmail.com";
 const MAIL_FROM = process.env.MAIL_FROM || "Portfolio <onboarding@resend.dev>";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -106,7 +106,7 @@ export default async function handler(req, res) {
         to: [MAIL_TO],
         // Replying goes straight back to the visitor, not to you.
         reply_to: email,
-        subject: `Portfolio enquiry from ${name}`,
+        subject: `New message from portfolio: ${name}`,
         text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
         html: `
           <div style="font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.6;color:#2A2520">

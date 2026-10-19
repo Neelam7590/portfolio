@@ -697,7 +697,7 @@ initAboutPhoto();
    ========================================================================== */
 function initIcons() {
   if (!window.lucide || typeof window.lucide.createIcons !== "function") {
-    return;                       // CDN blocked or offline — names still show
+    return;
   }
   window.lucide.createIcons({
     attrs: { "aria-hidden": "true", "focusable": "false" },
@@ -705,6 +705,9 @@ function initIcons() {
 }
 
 initIcons();
+
+// Re-run on DOMContentLoaded in case CDN loads after script execution
+document.addEventListener("DOMContentLoaded", initIcons);
 
 
 /* ==========================================================================
@@ -1450,7 +1453,7 @@ initVisionParallax();
    when it finishes. If sending fails, the visitor is shown CONTACT_EMAIL so
    they can still reach you directly.
    ========================================================================== */
-const CONTACT_EMAIL = "neelamdhiman7590@gmail.com";
+const CONTACT_EMAIL = "neelxm08@gmail.com";
 
 /* Simple but practical email check: something@something.tld */
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -1535,8 +1538,12 @@ function initContactForm() {
     }
 
     const submit = form.querySelector(".form-submit");
+    const originalBtnText = submit ? submit.textContent : "";
 
-    if (submit) submit.disabled = true;
+    if (submit) {
+      submit.disabled = true;
+      submit.textContent = "Sending…";
+    }
     setStatus("Sending…");
 
     fetch("/api/contact", {
@@ -1557,7 +1564,7 @@ function initContactForm() {
       )
       .then(({ ok, data }) => {
         if (ok) {
-          setStatus("Thanks! Your message is on its way.", "ok");
+          setStatus("Thank you! Your message has been sent.", "ok");
           form.reset();
           [nameField, emailField, messageField].forEach((field) =>
             field.classList.remove("has-error")
@@ -1578,7 +1585,10 @@ function initContactForm() {
         );
       })
       .finally(() => {
-        if (submit) submit.disabled = false;
+        if (submit) {
+          submit.disabled = false;
+          submit.textContent = originalBtnText || "Send";
+        }
       });
   });
 }

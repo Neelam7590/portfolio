@@ -676,12 +676,217 @@ body.has-custom-cursor * {
    10. FOOTER
    ========================================================================== */
 .footer {
-  padding: 34px 0;
+  padding: 64px 0 32px;
   border-top: 1px solid var(--border);
   background-color: var(--bg-alt);
   color: var(--muted);
   font-size: 0.88rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1.2fr 1.5fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-brand {
+  max-width: 320px;
+}
+
+.footer-logo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  line-height: 1;
+  color: var(--text);
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+
+.footer-logo .logo-name {
+  font-family: var(--font-heading);
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+}
+
+.footer-logo .logo-sub {
+  font-family: var(--font-body);
+  font-size: 0.56rem;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding-left: 1px;
+}
+
+.footer-tagline {
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+
+.footer-social {
+  display: flex;
+  gap: 12px;
+}
+
+.footer-social .social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--muted);
+  background: var(--bg);
+  transition: all 0.25s var(--ease-out);
+}
+
+.footer-social .social-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.footer-social .social-link svg,
+.footer-social .social-link i {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+}
+
+.footer-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-heading {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+
+.footer-link-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-link-list .footer-link {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.25s var(--ease-out);
+  position: relative;
+}
+
+.footer-link-list .footer-link::before {
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  transform: translateY(-50%) scale(0);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.footer-link-list .footer-link:hover {
+  color: var(--accent);
+  padding-left: 14px;
+}
+
+.footer-link-list .footer-link:hover::before {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+
+.footer-contact {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-address {
+  font-style: normal;
+  line-height: 2.2;
+  color: var(--muted);
+}
+
+.footer-address p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+
+.footer-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2;
+  color: var(--accent);
+}
+
+.footer-address .footer-link {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.25s var(--ease-out);
+}
+
+.footer-address .footer-link:hover {
+  color: var(--accent);
+}
+
+.footer-bottom {
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
   text-align: center;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+/* Responsive footer */
+@media (max-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+  .footer-brand {
+    grid-column: span 2;
+    max-width: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+  .footer-brand {
+    grid-column: auto;
+  }
+  .footer-social {
+    justify-content: flex-start;
+  }
 }
 
 
@@ -2515,29 +2720,8 @@ body.lightbox-open {
 
 
 /* ==========================================================================
-   17. FOOTER LINKS + BACK TO TOP
+   17. BACK TO TOP
    ========================================================================== */
-.footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px 26px;
-  margin-top: 16px;
-}
-
-.footer-link {
-  position: relative;
-  font-family: var(--font-heading);
-  font-size: 0.84rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--text);
-  transition: color 0.25s var(--ease-out);
-}
-
-.footer-link:hover {
-  color: var(--accent);
-}
 
 /* Floating "back to top" button — shown by JS after 400px of scrolling */
 .to-top {

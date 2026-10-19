@@ -4,7 +4,7 @@ Personal portfolio website. Static HTML, CSS and JavaScript, with one small
 serverless function for the contact form. No framework, no build step, no
 `npm install` to view it.
 
-**Live site:** deployed on Vercel · **Contact:** neelamdhiman7590@gmail.com
+**Live site:** deployed on Vercel · **Contact:** neelxm08@gmail.com
 
 ---
 
