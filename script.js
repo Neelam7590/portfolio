@@ -396,10 +396,17 @@ function initScrollProgress() {
   if (!bar) return;
 
   let ticking = false;
+  // Cache the page height instead of reading scrollHeight inside the rAF
+  // callback — that read would force a synchronous layout right after the
+  // previous frame's transform write, once per scroll frame. A ResizeObserver
+  // keeps the cached value correct when images load or sections expand.
+  let scrollable = document.documentElement.scrollHeight - window.innerHeight;
+
+  function measure() {
+    scrollable = document.documentElement.scrollHeight - window.innerHeight;
+  }
 
   function update() {
-    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-
     // Guard against a zero/negative height (short pages, zoomed-out views).
     const progress = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
 
@@ -414,7 +421,11 @@ function initScrollProgress() {
   }
 
   window.addEventListener("scroll", handleScroll, { passive: true });
-  window.addEventListener("resize", handleScroll);
+  window.addEventListener("resize", measure);
+  window.addEventListener("load", measure);
+  if ("ResizeObserver" in window) {
+    new ResizeObserver(measure).observe(document.documentElement);
+  }
   update();
 }
 
@@ -795,28 +806,89 @@ initAboutPhoto();
 
 
 /* ==========================================================================
-   11. LUCIDE ICONS
-   Replaces every <i data-lucide="..."> with an inline SVG line icon.
-   Lucide is loaded from a CDN just above this file in index.html.
+   11. INLINE SVG ICONS
+   Every icon the page uses ships as ~3 KB of path data below and is drawn
+   from one hidden <svg> sprite in the document, instead of loading the full
+   Lucide library (~100 KB) from a CDN. <i data-lucide="..."> placeholders are
+   replaced with an inline <svg class="lucide lucide-<name>">, so all existing
+   CSS selectors and accessibility attributes keep working unchanged.
    ========================================================================== */
-function initIcons() {
-  if (!window.lucide || typeof window.lucide.createIcons !== "function") {
-    return;
-  }
-  try {
-    window.lucide.createIcons({
-      attrs: { "aria-hidden": "true", "focusable": "false" },
-    });
-  } catch (e) {
-    // A missing icon name must never break layout or throw an error
-    console.warn('Lucide icon creation failed:', e.message);
-  }
+const ICONS = {
+  "mail": '<rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />',
+  "arrow-up": '<path d="m5 12 7-7 7 7" /><path d="M12 19V5" />',
+  "x": '<path d="M18 6 6 18" /><path d="m6 6 12 12" />',
+  "chevron-right": '<path d="m9 18 6-6-6-6" />',
+  "chevron-left": '<path d="m15 18-6-6 6-6" />',
+  "map-pin": '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" />',
+  "chevron-down": '<path d="m6 9 6 6 6-6" />',
+  "share-2": '<circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" x2="15.42" y1="13.51" y2="17.49" /><line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />',
+  "megaphone": '<path d="m3 11 18-5v12L3 14v-3z" /><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />',
+  "message-square": '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />',
+  "rss": '<path d="M4 11a9 9 0 0 1 9 9" /><path d="M4 4a16 16 0 0 1 16 16" /><circle cx="5" cy="19" r="1" />',
+  "copy": '<rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />',
+  "target": '<circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" />',
+  "pen-line": '<path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />',
+  "search": '<circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" />',
+  "arrow-right": '<path d="M5 12h14" /><path d="m12 5 7 7-7 7" />',
+  "check": '<path d="M20 6 9 17l-5-5" />',
+  "alert-circle": '<circle cx="12" cy="12" r="10" /><line x1="12" x2="12" y1="8" y2="12" /><line x1="12" x2="12.01" y1="16" y2="16" />',
+  "image": '<rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />',
+  "maximize-2": '<polyline points="15 3 21 3 21 9" /><polyline points="9 21 3 21 3 15" /><line x1="21" x2="14" y1="3" y2="10" /><line x1="3" x2="10" y1="21" y2="14" />',
+};
+
+let iconSpriteReady = false;
+
+function ensureIconSprite() {
+  if (iconSpriteReady) return;
+  iconSpriteReady = true;
+  if (document.getElementById("lucide-sprite")) return;
+  const sprite = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  sprite.id = "lucide-sprite";
+  sprite.setAttribute("aria-hidden", "true");
+  sprite.setAttribute("focusable", "false");
+  sprite.style.position = "absolute";
+  sprite.style.width = "0";
+  sprite.style.height = "0";
+  sprite.style.overflow = "hidden";
+  sprite.innerHTML = Object.entries(ICONS)
+    .map(([name, inner]) => `<symbol id="lucide-${name}" viewBox="0 0 24 24">${inner}</symbol>`)
+    .join("");
+  document.body.prepend(sprite);
 }
 
-initIcons();
+function renderIcons(root = document) {
+  ensureIconSprite();
+  root.querySelectorAll("i[data-lucide]").forEach((placeholder) => {
+    const name = placeholder.getAttribute("data-lucide");
+    if (!ICONS[name]) return;
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("width", "24");
+    svg.setAttribute("height", "24");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("stroke", "currentColor");
+    svg.setAttribute("stroke-width", "2");
+    svg.setAttribute("stroke-linecap", "round");
+    svg.setAttribute("stroke-linejoin", "round");
+    svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("focusable", "false");
+    // Carry over the classes from the <i> so component CSS keeps sizing it.
+    const classes = ["lucide", `lucide-${name}`];
+    placeholder.classList.forEach((c) => classes.push(c));
+    svg.setAttribute("class", classes.join(" "));
+    const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    use.setAttribute("href", `#lucide-${name}`);
+    svg.appendChild(use);
+    placeholder.replaceWith(svg);
+  });
+}
 
-// Re-run on DOMContentLoaded in case CDN loads after script execution
-document.addEventListener("DOMContentLoaded", initIcons);
+window.renderIcons = renderIcons;
+
+renderIcons();
+
+// Re-run in case this file ever executes before the markup is parsed.
+document.addEventListener("DOMContentLoaded", () => renderIcons());
 
 
 /* ==========================================================================
@@ -1015,11 +1087,16 @@ function mediaMarkup(project, images) {
 }
 
 /* --- Buttons: primary is filled with the accent, secondary is outlined --- */
-function buttonMarkup(button) {
+function buttonMarkup(button, projectTitle) {
   // Anything that is not explicitly "secondary" renders as primary, so a
   // typo can never silently produce an invisible button.
   const style = button.style === "secondary" ? "btn-secondary" : "btn-primary";
-  return `<a class="btn ${style} project-link" href="${escapeHtml(button.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(button.label)}</a>`;
+  // "View Code" repeats on every card, so the project name in the accessible
+  // name is what tells screen-reader users which link goes where.
+  const label = projectTitle
+    ? `${escapeHtml(button.label)}: ${escapeHtml(projectTitle)}`
+    : escapeHtml(button.label);
+  return `<a class="btn ${style} project-link" href="${escapeHtml(button.url)}" target="_blank" rel="noopener noreferrer" aria-label="${label}">${escapeHtml(button.label)}</a>`;
 }
 
 /* --- DETAILS SIDE: title, badge, features, stack, buttons --- */
@@ -1032,7 +1109,9 @@ function detailsMarkup(project) {
     .map((tech) => `<span class="project-chip">${escapeHtml(tech)}</span>`)
     .join("");
 
-  const buttons = (project.buttons || []).map(buttonMarkup).join("");
+  const buttons = (project.buttons || [])
+    .map((button) => buttonMarkup(button, project.title))
+    .join("");
 
   return `
     <div class="project-info slide-in slide-in--right">
@@ -1376,12 +1455,8 @@ async function renderProjects() {
   // them now — otherwise they would stay invisible.
   observeRevealElements(list);
 
-  // Lucide needs re-running for the arrows and placeholder icons.
-  if (window.lucide && typeof window.lucide.createIcons === "function") {
-    window.lucide.createIcons({
-      attrs: { "aria-hidden": "true", "focusable": "false" },
-    });
-  }
+  // Draw the arrows and placeholder icons that were just added.
+  renderIcons(list);
 }
 
 /* Deferred render.
@@ -1802,12 +1877,8 @@ function initFaqDynamic() {
             newItem.classList.add('in-view');
           });
 
-          // Re-initialize Lucide icons for the new item
-          if (window.lucide && typeof window.lucide.createIcons === 'function') {
-            window.lucide.createIcons({
-              attrs: { 'aria-hidden': 'true', 'focusable': 'false' },
-            });
-          }
+          // Draw the icons inside the new FAQ item
+          renderIcons(newItem);
 
           faqAddedCount++;
         }, 300);

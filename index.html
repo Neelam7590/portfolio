@@ -282,19 +282,45 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://fonts.cdnfonts.com" />
+  <!-- The hero portrait is the LCP element on mobile, so start its download
+       as early as possible. The candidate set and sizes match the <picture>
+       in the hero exactly, so the browser reuses this response instead of
+       downloading the image twice. -->
   <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Poppins:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
+    rel="preload"
+    as="image"
+    type="image/webp"
+    href="/assets/neelam-800.webp"
+    imagesrcset="/assets/neelam-400.webp 400w, /assets/neelam-800.webp 800w"
+    imagesizes="(max-width: 760px) 200px, 300px"
+    fetchpriority="high"
   />
+  <link
+    rel="preload"
+    as="style"
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Poppins:wght@400;500;600;700;800&display=swap"
+    onload="this.onload=null;this.rel='stylesheet'"
+  />
+  <noscript>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Poppins:wght@400;500;600;700;800&display=swap"
+    />
+  </noscript>
   <!-- Elephant by the designer at cdnfonts.com — free for PERSONAL USE only.
        Remove this line (and the --font-display fallback) if you ever want to
        use the site commercially.
 
-       Loaded async (media="print" swap) so this third-party stylesheet can
-       never block first paint on a slow mobile connection. The hero title
+       Loaded async (preload + stylesheet swap) so this third-party stylesheet
+       can never block first paint on a slow mobile connection. The hero title
        briefly renders in the Poppins fallback, then swaps to Elephant —
        the final design is unchanged. -->
-  <link href="https://fonts.cdnfonts.com/css/elephant" rel="stylesheet" media="print" onload="this.media='all'" />
+  <link
+    rel="preload"
+    as="style"
+    href="https://fonts.cdnfonts.com/css/elephant"
+    onload="this.onload=null;this.rel='stylesheet'"
+  />
   <noscript>
     <link href="https://fonts.cdnfonts.com/css/elephant" rel="stylesheet" />
   </noscript>
@@ -421,7 +447,14 @@
         <div class="hero-avatar">
           <!-- Letter "N" shows behind the photo, visible only if the photo is missing -->
           <span class="hero-initial" aria-hidden="true">N</span>
-          <img src="/assets/neelam.jpg" alt="Neelam Dhiman, web developer from Kaithal, Haryana" width="900" height="1200" fetchpriority="high" onerror="this.style.display='none'" />
+          <picture>
+            <source
+              type="image/webp"
+              srcset="/assets/neelam-400.webp 400w, /assets/neelam-800.webp 800w"
+              sizes="(max-width: 760px) 200px, 300px"
+            />
+            <img src="/assets/neelam-400.jpg" srcset="/assets/neelam-400.jpg 400w, /assets/neelam-800.jpg 800w" sizes="(max-width: 760px) 200px, 300px" alt="Neelam Dhiman, web developer from Kaithal, Haryana" width="900" height="1200" fetchpriority="high" onerror="this.style.display='none'" />
+          </picture>
         </div>
       </div>
     </div>
@@ -478,7 +511,14 @@
                    carries the descriptive alt; repeating that text here would
                    announce the same photo twice, so this one is decorative
                    (alt=""). -->
-              <img src="/assets/neelam.jpg" alt="" width="900" height="1200" loading="lazy" />
+              <picture>
+                <source
+                  type="image/webp"
+                  srcset="/assets/neelam-400.webp 400w, /assets/neelam-800.webp 800w"
+                  sizes="(max-width: 420px) 90vw, 320px"
+                />
+                <img src="/assets/neelam-400.jpg" srcset="/assets/neelam-400.jpg 400w, /assets/neelam-800.jpg 800w" sizes="(max-width: 420px) 90vw, 320px" alt="" width="900" height="1200" loading="lazy" decoding="async" />
+              </picture>
               <!-- Shown by JS only if assets/neelam.jpg is missing -->
               <span class="about-photo__initials" aria-hidden="true">ND</span>
             </div>
@@ -873,7 +913,7 @@
                 <div class="carousel-stage">
                   <div class="carousel-slides">
                     <div class="carousel-slide is-active">
-                      <img src="/assets/projects/tagore-global-school/1.webp" alt="Tagore Global School screenshot 1" decoding="async" width="1349" height="643" />
+                      <img src="/assets/projects/tagore-global-school/1.webp" alt="Tagore Global School screenshot 1" loading="lazy" decoding="async" width="1349" height="643" />
                     </div>
                   </div>
                 </div>
@@ -900,8 +940,8 @@
                 <span class="project-chip">JavaScript</span>
               </div>
               <div class="project-links">
-                <a class="btn btn-primary project-link" href="https://tagore-global-school.vercel.app/" target="_blank" rel="noopener noreferrer">Visit Website</a>
-                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Tagore-Global-School" target="_blank" rel="noopener noreferrer">View Code</a>
+                <a class="btn btn-primary project-link" href="https://tagore-global-school.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="Visit the Tagore Global School website">Visit Website</a>
+                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Tagore-Global-School" target="_blank" rel="noopener noreferrer" aria-label="View Tagore Global School code on GitHub">View Code</a>
               </div>
             </div>
           </article>
@@ -912,7 +952,7 @@
                 <div class="carousel-stage">
                   <div class="carousel-slides">
                     <div class="carousel-slide is-active">
-                      <img src="/assets/projects/tic-tac-toe/1.webp" alt="Tic Tac Toe screenshot 1" decoding="async" width="1350" height="643" />
+                      <img src="/assets/projects/tic-tac-toe/1.webp" alt="Tic Tac Toe screenshot 1" loading="lazy" decoding="async" width="1350" height="643" />
                     </div>
                   </div>
                 </div>
@@ -939,8 +979,8 @@
                 <span class="project-chip">JavaScript</span>
               </div>
               <div class="project-links">
-                <a class="btn btn-primary project-link" href="https://tic-tac-toe-game-pearl-chi.vercel.app" target="_blank" rel="noopener noreferrer">Try Now</a>
-                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Tic-Tac-Toe-Game" target="_blank" rel="noopener noreferrer">View Code</a>
+                <a class="btn btn-primary project-link" href="https://tic-tac-toe-game-pearl-chi.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Play Tic Tac Toe">Try Now</a>
+                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Tic-Tac-Toe-Game" target="_blank" rel="noopener noreferrer" aria-label="View Tic Tac Toe code on GitHub">View Code</a>
               </div>
             </div>
           </article>
@@ -951,7 +991,7 @@
                 <div class="carousel-stage">
                   <div class="carousel-slides">
                     <div class="carousel-slide is-active">
-                      <img src="/assets/projects/calc-notebook/1.webp" alt="Calc Notebook screenshot 1" decoding="async" width="1339" height="647" />
+                      <img src="/assets/projects/calc-notebook/1.webp" alt="Calc Notebook screenshot 1" loading="lazy" decoding="async" width="1339" height="647" />
                     </div>
                   </div>
                 </div>
@@ -978,8 +1018,8 @@
                 <span class="project-chip">JavaScript</span>
               </div>
               <div class="project-links">
-                <a class="btn btn-primary project-link" href="https://calcnotebook.vercel.app" target="_blank" rel="noopener noreferrer">Try Now</a>
-                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Calc-Notebook" target="_blank" rel="noopener noreferrer">View Code</a>
+                <a class="btn btn-primary project-link" href="https://calcnotebook.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Try Calc Notebook">Try Now</a>
+                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Calc-Notebook" target="_blank" rel="noopener noreferrer" aria-label="View Calc Notebook code on GitHub">View Code</a>
               </div>
             </div>
           </article>
@@ -990,7 +1030,7 @@
                 <div class="carousel-stage">
                   <div class="carousel-slides">
                     <div class="carousel-slide is-active">
-                      <img src="/assets/projects/socratic-math-mentor/1.webp" alt="Socratic Math Mentor screenshot 1" decoding="async" width="1358" height="646" />
+                      <img src="/assets/projects/socratic-math-mentor/1.webp" alt="Socratic Math Mentor screenshot 1" loading="lazy" decoding="async" width="1358" height="646" />
                     </div>
                   </div>
                 </div>
@@ -1017,8 +1057,8 @@
                 <span class="project-chip">Vercel</span>
               </div>
               <div class="project-links">
-                <a class="btn btn-primary project-link" href="https://socratic-math-mentor.vercel.app" target="_blank" rel="noopener noreferrer">Try Now</a>
-                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Socratic-Math-Mentor" target="_blank" rel="noopener noreferrer">View Code</a>
+                <a class="btn btn-primary project-link" href="https://socratic-math-mentor.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Try Socratic Math Mentor">Try Now</a>
+                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Socratic-Math-Mentor" target="_blank" rel="noopener noreferrer" aria-label="View Socratic Math Mentor code on GitHub">View Code</a>
               </div>
             </div>
           </article>
@@ -1029,7 +1069,7 @@
                 <div class="carousel-stage">
                   <div class="carousel-slides">
                     <div class="carousel-slide is-active">
-                      <img src="/assets/projects/rasoi-mitra/1.webp" alt="Rasoi Mitra screenshot 1" decoding="async" width="1338" height="637" />
+                      <img src="/assets/projects/rasoi-mitra/1.webp" alt="Rasoi Mitra screenshot 1" loading="lazy" decoding="async" width="1338" height="637" />
                     </div>
                   </div>
                 </div>
@@ -1055,8 +1095,8 @@
                 <span class="project-chip">Render</span>
               </div>
               <div class="project-links">
-                <a class="btn btn-primary project-link" href="https://rasoi-mitra-recipe.onrender.com/" target="_blank" rel="noopener noreferrer">Try Now</a>
-                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Rasoi-Mitra-Recipe" target="_blank" rel="noopener noreferrer">View Code</a>
+                <a class="btn btn-primary project-link" href="https://rasoi-mitra-recipe.onrender.com/" target="_blank" rel="noopener noreferrer" aria-label="Try Rasoi Mitra">Try Now</a>
+                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Rasoi-Mitra-Recipe" target="_blank" rel="noopener noreferrer" aria-label="View Rasoi Mitra code on GitHub">View Code</a>
               </div>
             </div>
           </article>
@@ -1067,7 +1107,7 @@
                 <div class="carousel-stage">
                   <div class="carousel-slides">
                     <div class="carousel-slide is-active">
-                      <img src="/assets/projects/telegram-bot/1.webp" alt="Telegram Bot screenshot 1" decoding="async" width="1248" height="606" />
+                      <img src="/assets/projects/telegram-bot/1.webp" alt="Telegram Bot screenshot 1" loading="lazy" decoding="async" width="1248" height="606" />
                     </div>
                   </div>
                 </div>
@@ -1095,7 +1135,7 @@
                 <span class="project-chip">Supabase</span>
               </div>
               <div class="project-links">
-                <a class="btn btn-primary project-link" href="https://github.com/Neelam7590/Telegram-Bot" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+                <a class="btn btn-primary project-link" href="https://github.com/Neelam7590/Telegram-Bot" target="_blank" rel="noopener noreferrer" aria-label="View the Telegram Bot code on GitHub">View on GitHub</a>
               </div>
             </div>
           </article>
@@ -1106,7 +1146,7 @@
                 <div class="carousel-stage">
                   <div class="carousel-slides">
                     <div class="carousel-slide is-active">
-                      <img src="/assets/projects/blog-agent/1.webp" alt="CalcNotebook Blog Agent screenshot 1" decoding="async" width="1350" height="631" />
+                      <img src="/assets/projects/blog-agent/1.webp" alt="CalcNotebook Blog Agent screenshot 1" loading="lazy" decoding="async" width="1350" height="631" />
                     </div>
                   </div>
                 </div>
@@ -1134,7 +1174,7 @@
                 <span class="project-chip">GitHub Actions</span>
               </div>
               <div class="project-links">
-                <a class="btn btn-primary project-link" href="https://github.com/Neelam7590/Calcnotebook-Blog-Agent" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+                <a class="btn btn-primary project-link" href="https://github.com/Neelam7590/Calcnotebook-Blog-Agent" target="_blank" rel="noopener noreferrer" aria-label="View the CalcNotebook Blog Agent code on GitHub">View on GitHub</a>
               </div>
             </div>
           </article>
@@ -1254,14 +1294,14 @@
         <!-- ---------- Social links ---------- -->
         <div class="contact-social reveal reveal-delay-3">
           <!-- GitHub -->
-          <a class="social-link" href="https://github.com/Neelam7590" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <a class="social-link" href="https://github.com/Neelam7590" target="_blank" rel="noopener noreferrer" aria-label="Neelam Dhiman on GitHub">
             <svg viewBox="-0.3 -0.3 24.6 24.6" aria-hidden="true" focusable="false">
               <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
             </svg>
           </a>
 
           <!-- LinkedIn -->
-          <a class="social-link" href="https://www.linkedin.com/in/neelam-dhiman-b5a8b4422/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <a class="social-link" href="https://www.linkedin.com/in/neelam-dhiman-b5a8b4422/" target="_blank" rel="noopener noreferrer" aria-label="Neelam Dhiman on LinkedIn">
             <svg viewBox="-0.3 -0.3 24.6 24.6" aria-hidden="true" focusable="false">
               <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
             </svg>
@@ -1270,7 +1310,7 @@
           <!-- Email (Lucide icon). No address or email link lives in the
                HTML — script.js builds the email href at runtime from split
                parts. Without JS the link scrolls to the contact form. -->
-          <a class="social-link js-email-link" href="#contact" aria-label="Email">
+          <a class="social-link js-email-link" href="#contact" aria-label="Email Neelam Dhiman">
             <i data-lucide="mail"></i>
           </a>
         </div>
@@ -1289,13 +1329,13 @@
           </a>
           <p class="footer-tagline">Web developer from Kaithal, Haryana. Building websites, games, automation tools & helping small businesses grow online.</p>
 <div class="footer-social">
-            <a class="social-link" href="https://github.com/Neelam7590" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <a class="social-link" href="https://github.com/Neelam7590" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.645 1.653.24 2.873.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"></path></svg>
             </a>
-            <a class="social-link" href="https://www.linkedin.com/in/neelam-dhiman-b5a8b4422/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <a class="social-link" href="https://www.linkedin.com/in/neelam-dhiman-b5a8b4422/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
             </a>
-            <a class="social-link js-email-link" href="#contact" aria-label="Email">
+            <a class="social-link js-email-link" href="#contact" aria-label="Send Neelam an email">
               <i data-lucide="mail"></i>
             </a>
           </div>
@@ -1303,7 +1343,7 @@
 
         <!-- Quick Links -->
         <nav class="footer-nav" aria-label="Quick links">
-          <h4 class="footer-heading">Quick Links</h4>
+          <h2 class="footer-heading">Quick Links</h2>
           <ul class="footer-link-list">
             <li><a href="#about" class="footer-link">About</a></li>
             <li><a href="#journey" class="footer-link">Journey</a></li>
@@ -1318,7 +1358,7 @@
 
         <!-- Contact Info -->
         <div class="footer-contact">
-          <h4 class="footer-heading">Get In Touch</h4>
+          <h2 class="footer-heading">Get In Touch</h2>
           <address class="footer-address">
             <p><i data-lucide="map-pin" class="footer-icon"></i> Kaithal, Haryana, India</p>
             <p><i data-lucide="mail" class="footer-icon"></i> <span id="footer-email"><noscript>Please use the contact form.</noscript></span></p>
@@ -1365,10 +1405,8 @@
     <i data-lucide="arrow-up"></i>
   </button>
 
-  <!-- Lucide icons (line icons). defer keeps this CDN download from blocking
-       HTML parsing; deferred scripts run in document order, so Lucide is
-       always ready before script.js executes. -->
-  <script src="https://unpkg.com/lucide@0.294.0" defer></script>
+  <!-- Lucide icons are drawn from an inline SVG sprite in script.js, so no
+       third-party icon library is downloaded at runtime. -->
 
   <!-- Script -->
   <script src="/script.js" defer></script>

@@ -144,13 +144,13 @@
     safeCreateIcons();
   }
 
-  // Safe Lucide icon creation - never breaks layout
+  // Draw any <i data-lucide> placeholders with the shared inline sprite.
   function safeCreateIcons() {
-    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+    if (typeof window.renderIcons === 'function') {
       try {
-        window.lucide.createIcons({ attrs: { 'aria-hidden': 'true', 'focusable': 'false' } });
+        window.renderIcons();
       } catch (e) {
-        console.warn('Lucide icon creation failed:', e.message);
+        console.warn('Icon rendering failed:', e.message);
       }
     }
   }
