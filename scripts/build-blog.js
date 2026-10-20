@@ -8,6 +8,7 @@ const SITE_URL = 'https://neelamdhiman.vercel.app';
 const BLOG_SRC = path.join(__dirname, '../blog/src');
 const BLOG_OUT = path.join(__dirname, '../blog');
 const TEMPLATE_DIR = path.join(__dirname, '../blog');
+const LISTING_TEMPLATE = path.join(__dirname, 'templates/blog-index.html');
 const SITEMAP_PATH = path.join(__dirname, '../sitemap.xml');
 const INDEX_HTML = path.join(__dirname, '../index.html');
 
@@ -177,7 +178,7 @@ function generateListing(posts) {
   const latest = posts.slice(0, 3);
   const allTags = [...new Set(posts.flatMap(p => p.tags))].sort();
 
-  let tpl = fs.readFileSync(path.join(TEMPLATE_DIR, 'index.html'), 'utf8');
+  let tpl = fs.readFileSync(LISTING_TEMPLATE, 'utf8');
 
   let featuredHtml = '';
   if (featured) {
@@ -227,6 +228,30 @@ function generateListing(posts) {
       '<div class="blog-tags" role="group" aria-label="Filter by tag">' + tagChipsHtml + '</div>' +
     '</div>';
 
+  // Robots meta: noindex only while there are zero published posts.
+  // Replaced from the template placeholder, so it flips automatically
+  // to index, follow as soon as a post is published.
+  tpl = tpl.replace('{{ROBOTS}}', posts.length === 0 ? 'noindex, follow' : 'index, follow');
+
+  if (posts.length === 0) {
+    // Friendly empty state in place of the featured slot
+    featuredHtml = '' +
+      '<section class="section blog-empty" aria-label="Blog posts">' +
+        '<div class="container blog-empty__inner">' +
+          '<p class="blog-empty__message">First posts are on the way</p>' +
+          '<a href="/#projects" class="btn">See my projects</a>' +
+        '</div>' +
+      '</section>';
+    // Drop the (empty) listing section entirely while there are no posts
+    const listStart = '<!-- BLOG:LISTING:START -->';
+    const listEnd = '<!-- BLOG:LISTING:END -->';
+    const ls = tpl.indexOf(listStart);
+    const le = tpl.indexOf(listEnd);
+    if (ls !== -1 && le !== -1 && le > ls) {
+      tpl = tpl.slice(0, ls) + tpl.slice(le + listEnd.length);
+    }
+  }
+
   tpl = tpl.replace('{{FEATURED}}', featuredHtml)
     .replace('{{CARDS}}', cardsHtml)
     .replace('{{TOOLBAR}}', toolbarHtml)
@@ -236,10 +261,6 @@ function generateListing(posts) {
         '<h4><a href="/blog/' + p.slug + '/">' + escapeHtml(p.title) + '</a></h4>' +
         '<time datetime="' + formatDateTime(p.date) + '">' + formatDate(p.date) + '</time>' +
       '</article>').join(''));
-
-  if (posts.length === 0) {
-    tpl = tpl.replace('<meta name="robots" content="index, follow">', '<meta name="robots" content="noindex">');
-  }
 
   fs.writeFileSync(path.join(BLOG_OUT, 'index.html'), tpl);
   console.log('  ✓ blog/index.html');

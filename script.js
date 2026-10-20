@@ -426,11 +426,37 @@ $$('a[href^="#"]').forEach((link) => {
 
     // Math.max(0, ...) stops a negative target for #home, which the browser
     // would clamp anyway.
-    const top = Math.max(
-      0,
-      target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET
+    const desiredTop = () =>
+      Math.max(0, target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET);
+
+    window.scrollTo({ top: desiredTop(), behavior: prefersReducedMotion ? "auto" : "smooth" });
+
+    /* Late layout — the deferred project cards, lazy images, web fonts —
+       can move the target WHILE the smooth scroll is animating, so the
+       first scroll lands in the wrong place (CONTACT stopping at the
+       projects section). Keep the target pinned for a short window and
+       re-issue the scroll if it drifts. Real user input cancels it. */
+    let lastDocTop = target.getBoundingClientRect().top + window.scrollY;
+    let cancelled = false;
+    const pinUntil = performance.now() + 1600;
+    const cancel = () => { cancelled = true; };
+    ["wheel", "touchstart", "keydown", "pointerdown"].forEach((type) =>
+      window.addEventListener(type, cancel, { once: true, passive: true })
     );
-    window.scrollTo({ top, behavior: prefersReducedMotion ? "auto" : "smooth" });
+
+    const pin = () => {
+      if (cancelled || performance.now() > pinUntil) return;
+      const docTop = target.getBoundingClientRect().top + window.scrollY;
+      if (Math.abs(docTop - lastDocTop) > 40) {   // layout shifted under us
+        lastDocTop = docTop;
+        window.scrollTo({
+          top: Math.max(0, docTop - NAV_OFFSET),
+          behavior: prefersReducedMotion ? "auto" : "smooth",
+        });
+      }
+      requestAnimationFrame(pin);
+    };
+    requestAnimationFrame(pin);
 
     // Keep the URL clean without the browser's instant jump.
     // Wrapped in try/catch because some browsers block it on file:// pages.

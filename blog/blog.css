@@ -277,3 +277,18 @@ details[open] .blog-toc summary::before { transform: rotate(180deg); }
   .blog-nav { flex-direction: column; }
   .blog-share { justify-content: center; }
 }
+/* --- Empty State (zero published posts) --- */
+.blog-empty__inner {
+  text-align: center;
+  padding: 8px 0 40px;
+}
+.blog-empty__message {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 24px;
+}
+.blog-empty__inner .btn {
+  display: inline-block;
+}
