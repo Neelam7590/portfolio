@@ -1878,7 +1878,7 @@ function initResumeModal() {
             </button>
           </div>
         </div>
-        <iframe class="resume-modal__frame" src="${PDF_URL}#toolbar=0" title="Neelam Dhiman resume"></iframe>
+        <iframe class="resume-modal__frame" title="Neelam Dhiman resume"></iframe>
       </div>`;
     document.body.appendChild(box);
 
@@ -1886,9 +1886,9 @@ function initResumeModal() {
 
     function close() {
       box.hidden = true;
-      // Stop the browser keep decoding the PDF while the dialog is shut.
+      // Drop the PDF from the iframe so the browser stops rendering it.
       const frame = $(".resume-modal__frame", box);
-      if (frame) frame.src = frame.src;
+      if (frame) frame.src = "about:blank";
       document.body.classList.remove("lightbox-open");
       if (lastFocused && lastFocused.focus) lastFocused.focus();
     }
@@ -1909,10 +1909,27 @@ function initResumeModal() {
   fab.addEventListener("click", (event) => {
     // Let modified clicks (new tab etc.) fall through to the real link.
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+    // Phones and tablets cannot display a PDF inside an iframe — Chrome on
+    // Android replaces it with an "Open" button that leaves the site and
+    // opens a new tab. On small or touch screens we skip the dialog and hand
+    // the PDF to the browser's own viewer in the SAME tab instead; that
+    // viewer already has a Download button and a Back button to close it.
+    if (window.matchMedia("(max-width: 820px), (pointer: coarse)").matches) {
+      event.preventDefault();
+      window.location.href = PDF_URL;
+      return;
+    }
+
     event.preventDefault();
 
     if (!modal) modal = buildModal();
     lastFocused = document.activeElement;
+
+    // Load the PDF only when the dialog actually opens (kept blank while
+    // closed so the browser never spins up a PDF viewer in the background).
+    const frame = $(".resume-modal__frame", modal);
+    if (frame) frame.src = PDF_URL + "#toolbar=0";
 
     modal.hidden = false;
     document.body.classList.add("lightbox-open");

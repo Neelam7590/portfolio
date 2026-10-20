@@ -2949,6 +2949,13 @@ body.lightbox-open {
   animation: lightbox-in 0.25s var(--ease-out);
 }
 
+/* The class sets display:flex, which beats the browser's default
+   [hidden] { display:none } rule — without this line the dialog would stay
+   visible even after script.js sets hidden=true, so Close appeared broken. */
+.resume-modal[hidden] {
+  display: none;
+}
+
 .resume-modal__panel {
   display: flex;
   flex-direction: column;
