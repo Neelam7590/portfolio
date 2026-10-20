@@ -64,9 +64,12 @@ export default async function handler(req, res) {
   }
 
   // Bot trap: a hidden field that only automated form-fillers will fill in.
-  // Answer with success so the bot has no reason to try again.
+  // The input is visually hidden via CSS but present in the DOM; humans never
+  // see or tab to it (tabindex="-1"). Any non-empty value — string, array,
+  // object — means a bot filled the form. Answer with success so the bot
+  // has no reason to try again.
   const body = req.body || {};
-  if (typeof body.website === "string" && body.website.trim() !== "") {
+  if (body.website && String(body.website).trim() !== "") {
     return res.status(200).json({ ok: true });
   }
 

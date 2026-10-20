@@ -93,11 +93,11 @@ const projects = [
     ],
     stack: ["HTML", "CSS", "JavaScript"],
     images: [
-      "assets/projects/tagore-global-school/1.jpg",
-      "assets/projects/tagore-global-school/2.jpg",
-      "assets/projects/tagore-global-school/3.jpg",
-      "assets/projects/tagore-global-school/4.jpg",
-      "assets/projects/tagore-global-school/5.jpg",
+      "assets/projects/tagore-global-school/1.webp",
+      "assets/projects/tagore-global-school/2.webp",
+      "assets/projects/tagore-global-school/3.webp",
+      "assets/projects/tagore-global-school/4.webp",
+      "assets/projects/tagore-global-school/5.webp",
     ],
     aspect: "16 / 9",
     fit: "contain",
@@ -115,10 +115,10 @@ const projects = [
     features: ["Two-player gameplay", "Win and draw detection", "Restart option"],
     stack: ["HTML", "CSS", "JavaScript"],
     images: [
-      "assets/projects/tic-tac-toe/1.jpg",
-      "assets/projects/tic-tac-toe/2.jpg",
-      "assets/projects/tic-tac-toe/3.jpg",
-      "assets/projects/tic-tac-toe/4.jpg",
+      "assets/projects/tic-tac-toe/1.webp",
+      "assets/projects/tic-tac-toe/2.webp",
+      "assets/projects/tic-tac-toe/3.webp",
+      "assets/projects/tic-tac-toe/4.webp",
     ],
     aspect: "16 / 9",
     fit: "contain",
@@ -140,9 +140,9 @@ const projects = [
     ],
     stack: ["HTML", "CSS", "JavaScript"],
     images: [
-      "assets/projects/calc-notebook/1.jpg",
-      "assets/projects/calc-notebook/2.jpg",
-      "assets/projects/calc-notebook/3.jpg",
+      "assets/projects/calc-notebook/1.webp",
+      "assets/projects/calc-notebook/2.webp",
+      "assets/projects/calc-notebook/3.webp",
     ],
     aspect: "16 / 9",
     fit: "contain",
@@ -164,9 +164,9 @@ const projects = [
     ],
     stack: ["Google AI Studio", "GitHub", "Vercel"],
     images: [
-      "assets/projects/socratic-math-mentor/1.jpg",
-      "assets/projects/socratic-math-mentor/2.jpg",
-      "assets/projects/socratic-math-mentor/3.jpg",
+      "assets/projects/socratic-math-mentor/1.webp",
+      "assets/projects/socratic-math-mentor/2.webp",
+      "assets/projects/socratic-math-mentor/3.webp",
     ],
     aspect: "16 / 9",
     fit: "contain",
@@ -188,9 +188,9 @@ const projects = [
     ],
     stack: ["Replit", "Render"],
     images: [
-      "assets/projects/rasoi-mitra/1.jpg",
-      "assets/projects/rasoi-mitra/2.jpg",
-      "assets/projects/rasoi-mitra/3.jpg",
+      "assets/projects/rasoi-mitra/1.webp",
+      "assets/projects/rasoi-mitra/2.webp",
+      "assets/projects/rasoi-mitra/3.webp",
     ],
     aspect: "16 / 9",
     fit: "contain",
@@ -212,8 +212,8 @@ const projects = [
     ],
     stack: ["Python", "python-telegram-bot", "Groq", "Supabase"],
     images: [
-      "assets/projects/telegram-bot/1.jpg",
-      "assets/projects/telegram-bot/2.jpg",
+      "assets/projects/telegram-bot/1.webp",
+      "assets/projects/telegram-bot/2.webp",
     ],
     aspect: "16 / 9",
     fit: "contain",
@@ -235,8 +235,8 @@ const projects = [
     ],
     stack: ["Python", "Groq", "SerpApi", "GitHub Actions"],
     images: [
-      "assets/projects/blog-agent/1.jpg",
-      "assets/projects/blog-agent/2.jpg",
+      "assets/projects/blog-agent/1.webp",
+      "assets/projects/blog-agent/2.webp",
     ],
     aspect: "16 / 9",
     fit: "contain",
@@ -246,6 +246,34 @@ const projects = [
     ],
   },
 ];
+
+/* Real pixel dimensions of every project screenshot (read from the JPEG
+   headers). Emitted as width/height on each <img> so the browser can hold
+   the correct layout box before the file downloads — no layout shift. */
+const SCREENSHOT_DIMS = {
+  "assets/projects/tagore-global-school/1.webp": [1349, 643],
+  "assets/projects/tagore-global-school/2.webp": [1353, 768],
+  "assets/projects/tagore-global-school/3.webp": [1366, 768],
+  "assets/projects/tagore-global-school/4.webp": [1366, 768],
+  "assets/projects/tagore-global-school/5.webp": [1366, 768],
+  "assets/projects/tic-tac-toe/1.webp": [1350, 643],
+  "assets/projects/tic-tac-toe/2.webp": [1354, 637],
+  "assets/projects/tic-tac-toe/3.webp": [1364, 643],
+  "assets/projects/tic-tac-toe/4.webp": [1366, 641],
+  "assets/projects/calc-notebook/1.webp": [1339, 647],
+  "assets/projects/calc-notebook/2.webp": [1354, 768],
+  "assets/projects/calc-notebook/3.webp": [1181, 639],
+  "assets/projects/socratic-math-mentor/1.webp": [1358, 646],
+  "assets/projects/socratic-math-mentor/2.webp": [1366, 765],
+  "assets/projects/socratic-math-mentor/3.webp": [1366, 751],
+  "assets/projects/rasoi-mitra/1.webp": [1338, 637],
+  "assets/projects/rasoi-mitra/2.webp": [1342, 633],
+  "assets/projects/rasoi-mitra/3.webp": [1111, 625],
+  "assets/projects/telegram-bot/1.webp": [1248, 606],
+  "assets/projects/telegram-bot/2.webp": [1203, 641],
+  "assets/projects/blog-agent/1.webp": [1350, 631],
+  "assets/projects/blog-agent/2.webp": [1345, 634],
+};
 
 
    /* ==========================================================================
@@ -814,12 +842,13 @@ initSkillsStagger();
    ========================================================================== */
 /* Keep the "Projects Built" counter in step with the projects array, so adding
    or removing a project never leaves the number lying on the page. The
-   element opts in with data-from-projects in index.html. */
+   element opts in with data-from-projects in index.html. The visible text is
+   left alone — it already holds the final value for no-JS visitors, and the
+   count-up animation overwrites it with 0 → target when it scrolls in. */
 (function syncProjectsStat() {
   const el = $("[data-from-projects]");
   if (!el) return;
   el.dataset.target = String(projects.length);
-  el.textContent = "0" + (el.dataset.suffix || "");
 })();
 
 function initStatCounters() {
@@ -926,20 +955,20 @@ function mediaMarkup(project, images) {
 
   const total = images.length;
 
-  /* Alt text describes the image and names the local context once, rather than
-     repeating a keyword list. Screen readers announce this verbatim, so a pile
-     of city names here would be read out loud before every screenshot. Kept to
-     one accurate mention of Kaithal, Haryana. */
-  const slideAlt = (project, n) =>
-    `${project.title} screenshot ${n} by Neelam Dhiman, web developer in Kaithal, Haryana`;
+  /* Short, descriptive alt: project name + which screen. */
+  const slideAlt = (project, n) => `${project.title} screenshot ${n}`;
 
   const slides = images
-    .map(
-      (src, i) => `
+    .map((src, i) => {
+      const dims = SCREENSHOT_DIMS[src] || [1600, 900];
+      // First slide of each carousel loads eagerly (it is the visible one);
+      // every later slide is lazy so offscreen screenshots never block paint.
+      const lazy = i === 0 ? "" : ' loading="lazy"';
+      return `
         <div class="carousel-slide${i === 0 ? " is-active" : ""}">
-          <img src="${escapeHtml(src)}" alt="${escapeHtml(slideAlt(project, i + 1))}" loading="lazy" />
-        </div>`
-    )
+          <img src="${escapeHtml(src)}" alt="${escapeHtml(slideAlt(project, i + 1))}" width="${dims[0]}" height="${dims[1]}" decoding="async"${lazy} />
+        </div>`;
+    })
     .join("");
 
   const dots = images
@@ -953,7 +982,7 @@ function mediaMarkup(project, images) {
     .map(
       (src, i) => `
         <button type="button" class="carousel-thumb${i === 0 ? " is-active" : ""}" data-index="${i}" aria-label="Show screenshot ${i + 1}" aria-pressed="${i === 0}">
-          <img src="${escapeHtml(src)}" alt="" loading="lazy" />
+          <img src="${escapeHtml(src)}" alt="" loading="lazy" decoding="async" />
         </button>`
     )
     .join("");
@@ -1534,7 +1563,14 @@ initVisionParallax();
    when it finishes. If sending fails, the visitor is shown CONTACT_EMAIL so
    they can still reach you directly.
    ========================================================================== */
-const CONTACT_EMAIL = "neelxm08@gmail.com";
+// The address is never present in any HTML file. It is assembled at runtime
+// from split parts so a scraper reading the raw source (HTML or JS) does not
+// see a complete address. It is only ever shown to a visitor in the browser,
+// never fetched or sent anywhere.
+const EMAIL_PARTS = ["neel", "xm0", "8", "gmail", "com"];
+const CONTACT_EMAIL =
+  EMAIL_PARTS[0] + EMAIL_PARTS[1] + EMAIL_PARTS[2] +
+  "@" + EMAIL_PARTS[3] + "." + EMAIL_PARTS[4];
 
 /* Simple but practical email check: something@something.tld */
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -1685,43 +1721,43 @@ initContactForm();
 const FAQ_EXTRA_QUESTIONS = [
   {
     question: "What is Neelam's educational background?",
-    answer: "Neelam completed 10th (81.2%) and 12th (88.2%) from HBSE Board. She is currently pursuing a Bachelor of Arts at Kurukshetra University (2024-2027). She also completed O Level from NIELIT (B grade) and is pursuing Digital Marketing with AI course at NIELIT."
+    answer: "I completed 10th (81.2%) and 12th (88.2%) from HBSE Board. I'm currently pursuing a Bachelor of Arts at Kurukshetra University (2024-2027). I also completed O Level from NIELIT (B grade) and I'm pursuing a Digital Marketing with AI course at NIELIT."
   },
   {
     question: "Can Neelam build custom web applications?",
-    answer: "Yes. Neelam builds custom websites, web apps, and automation tools using HTML, CSS, JavaScript, and Python. She has built projects like a Telegram automation bot, a recipe app (Rasoi Mitra), a math learning tool (Socratic Math Mentor), and a blog automation agent."
+    answer: "Yes. I build custom websites, web apps, and automation tools using HTML, CSS, JavaScript, and Python. I've built projects like a Telegram automation bot, a recipe app (Rasoi Mitra), a math learning tool (Socratic Math Mentor), and a blog automation agent."
   },
   {
     question: "Does Neelam provide YouTube SEO services?",
-    answer: "Yes. Neelam specializes in YouTube SEO using tools like vidIQ for keyword research, title optimization, description writing, and thumbnail strategy. She helps creators and businesses grow their channels organically."
+    answer: "Yes. I specialize in YouTube SEO using tools like vidIQ for keyword research, title optimization, description writing, and thumbnail strategy. I help creators and businesses grow their channels organically."
   },
   {
     question: "What is Neelam's approach to digital marketing?",
-    answer: "Neelam combines content creation, social media management, and SEO fundamentals. She focuses on building real audiences through valuable content rather than just chasing metrics. AI tools assist in content ideation and optimization."
+    answer: "I combine content creation, social media management, and SEO fundamentals. I focus on building real audiences through valuable content rather than just chasing metrics. AI tools assist me in content ideation and optimization."
   },
   {
     question: "Can Neelam help with video editing and content creation?",
-    answer: "Yes. Neelam edits short-form videos and reels using CapCut, creates visual content, and uses AI tools for ideation and editing assistance. She helps brands create engaging content for social media platforms."
+    answer: "Yes. I edit short-form videos and reels using CapCut, create visual content, and use AI tools for ideation and editing assistance. I help brands create engaging content for social media platforms."
   },
   {
     question: "What Python automation projects has Neelam built?",
-    answer: "Neelam has built a Telegram bot with auto-replies and scheduled messages, a blog automation agent (CalcNotebook Blog Agent) that generates content, and various task automation scripts for repetitive workflows."
+    answer: "I've built a Telegram bot with auto-replies and scheduled messages, a blog automation agent (CalcNotebook Blog Agent) that generates content, and various task automation scripts for repetitive workflows."
   },
   {
     question: "Is Neelam available for freelance work?",
-    answer: "Yes. Neelam takes on freelance projects for website development, digital marketing, social media management, and automation. She works with small businesses in Kaithal, Haryana, and nearby areas. Contact via the form on this page."
+    answer: "Yes. I take on freelance projects for website development, digital marketing, social media management, and automation. I work with small businesses in Kaithal, Haryana, and nearby areas. The quickest way to reach me is the contact form on the home page."
   },
   {
     question: "What makes Neelam different from other developers?",
-    answer: "Neelam combines technical skills (coding, automation) with creative skills (video editing, content creation, digital marketing). She uses AI tools daily to accelerate development and content creation, delivering complete digital solutions."
+    answer: "I combine technical skills (coding, automation) with creative skills (video editing, content creation, digital marketing). I use AI tools daily to accelerate development and content creation, delivering complete digital solutions."
   },
   {
     question: "How long does a typical website project take?",
-    answer: "Project timelines vary based on scope. A simple business website takes 1-2 weeks, while custom web apps with automation can take 3-6 weeks. Neelam provides clear timelines during the initial consultation."
+    answer: "Project timelines vary based on scope. A simple business website takes 1-2 weeks, while custom web apps with automation can take 3-6 weeks. I provide clear timelines during the initial consultation."
   },
   {
     question: "Does Neelam offer ongoing maintenance and support?",
-    answer: "Yes. Neelam offers website maintenance, content updates, SEO monitoring, and social media management on a retainer basis. This ensures your digital presence stays current and effective."
+    answer: "Yes. I offer website maintenance, content updates, SEO monitoring, and social media management on a retainer basis. This ensures your digital presence stays current and effective."
   }
 ];
 
@@ -1806,6 +1842,114 @@ function initBackToTop() {
 }
 
 initBackToTop();
+
+
+/* ==========================================================================
+   17b. FLOATING RESUME BUTTON + MODAL
+   The .resume-fab link in each page's HTML already points at the PDF, so it
+   works with JavaScript off. Here we upgrade it: clicking opens an in-page
+   preview dialog (iframe + download button) instead of navigating away.
+   ========================================================================== */
+function initResumeModal() {
+  const fab = $(".resume-fab");
+  if (!fab) return;
+
+  const PDF_URL = fab.getAttribute("href");
+  if (!PDF_URL) return;
+
+  let modal = null;
+  let lastFocused = null;
+
+  function buildModal() {
+    const box = document.createElement("div");
+    box.className = "resume-modal";
+    box.hidden = true;
+    box.setAttribute("role", "dialog");
+    box.setAttribute("aria-modal", "true");
+    box.setAttribute("aria-label", "Resume preview");
+    box.innerHTML = `
+      <div class="resume-modal__panel">
+        <div class="resume-modal__bar">
+          <h2 class="resume-modal__title">Neelam Dhiman — Resume</h2>
+          <div class="resume-modal__actions">
+            <a class="resume-modal__download" href="${PDF_URL}" download>Download PDF</a>
+            <button type="button" class="resume-modal__close" aria-label="Close resume preview">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+        </div>
+        <iframe class="resume-modal__frame" src="${PDF_URL}#toolbar=0" title="Neelam Dhiman resume"></iframe>
+      </div>`;
+    document.body.appendChild(box);
+
+    const closeBtn = $(".resume-modal__close", box);
+
+    function close() {
+      box.hidden = true;
+      // Stop the browser keep decoding the PDF while the dialog is shut.
+      const frame = $(".resume-modal__frame", box);
+      if (frame) frame.src = frame.src;
+      document.body.classList.remove("lightbox-open");
+      if (lastFocused && lastFocused.focus) lastFocused.focus();
+    }
+
+    closeBtn.addEventListener("click", close);
+    // A click on the dark backdrop (not the panel) also closes.
+    box.addEventListener("click", (event) => {
+      if (event.target === box) close();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (box.hidden) return;
+      if (event.key === "Escape") { event.preventDefault(); close(); }
+    });
+
+    return box;
+  }
+
+  fab.addEventListener("click", (event) => {
+    // Let modified clicks (new tab etc.) fall through to the real link.
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+
+    if (!modal) modal = buildModal();
+    lastFocused = document.activeElement;
+
+    modal.hidden = false;
+    document.body.classList.add("lightbox-open");
+    $(".resume-modal__close", modal)?.focus();
+  });
+}
+
+initResumeModal();
+
+/* ==========================================================================
+   EMAIL LINKS — built at runtime, never written in the HTML
+   --------------------------------------------------------------------------
+   No page contains the address or a mailto: link. At runtime we assemble it
+   from EMAIL_PARTS (defined in the contact-form block above) and:
+   1) give every .js-email-link anchor (the mail icon in the social rows) a
+      real mailto: href,
+   2) inject an "Email me" link into each #footer-email slot.
+   Without JavaScript both fall back harmlessly: the icon scrolls to the
+   contact form, and the <noscript> line says "Please use the contact form".
+   ========================================================================== */
+function initEmailLinks() {
+  const mailto = "mailto:" + CONTACT_EMAIL;
+
+  document.querySelectorAll(".js-email-link").forEach(function (link) {
+    link.href = mailto;
+  });
+
+  document.querySelectorAll("#footer-email").forEach(function (slot) {
+    const a = document.createElement("a");
+    a.className = "footer-link";
+    a.href = mailto;
+    a.textContent = "Email me";
+    slot.appendChild(a);
+  });
+}
+
+initEmailLinks();
 /* ==========================================================================
    JOURNEY — alternating centre timeline
    --------------------------------------------------------------------------

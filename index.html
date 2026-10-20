@@ -82,7 +82,6 @@
       "image": "https://neelamdhiman.vercel.app/assets/neelam.jpg",
       "jobTitle": "Web Developer",
       "description": "Neelam Dhiman is a web developer in Kaithal, Haryana. I build websites, games and automation tools, and help small businesses with SEO and social media.",
-      "email": "mailto:neelxm08@gmail.com",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Kaithal",
@@ -103,7 +102,7 @@
       ],
       "sameAs": [
         "https://github.com/Neelam7590",
-        "https://linkedin.com/in/neelam-dhiman-b5a8b4422"
+        "https://www.linkedin.com/in/neelam-dhiman-b5a8b4422/"
       ],
       "worksFor": {
         "@id": "https://neelamdhiman.vercel.app/#service"
@@ -273,23 +272,44 @@
   <link rel="canonical" href="https://neelamdhiman.vercel.app/" />
 
   <!-- Google Fonts:
-       Poppins   → whole site
-       Elephant  → hero name
-       Playfair Display (italic) → the rotating line under the name -->
+       Poppins   → whole site (weights 400-800, all used in style.css)
+       Playfair Display → ONLY two variants are actually used:
+                          italic 500 (.hero-meta) and normal 600
+                          (blog empty state). Requesting just these two
+                          instead of seven cuts ~5 render-blocking woff2
+                          downloads, which is a measurable FCP/LCP win on
+                          mobile. -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://fonts.cdnfonts.com" />
   <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600;1,700&family=Poppins:wght@400;500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Poppins:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   />
   <!-- Elephant by the designer at cdnfonts.com — free for PERSONAL USE only.
        Remove this line (and the --font-display fallback) if you ever want to
-       use the site commercially. -->
-  <link href="https://fonts.cdnfonts.com/css/elephant" rel="stylesheet" />
+       use the site commercially.
+
+       Loaded async (media="print" swap) so this third-party stylesheet can
+       never block first paint on a slow mobile connection. The hero title
+       briefly renders in the Poppins fallback, then swaps to Elephant —
+       the final design is unchanged. -->
+  <link href="https://fonts.cdnfonts.com/css/elephant" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript>
+    <link href="https://fonts.cdnfonts.com/css/elephant" rel="stylesheet" />
+  </noscript>
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="/style.css" />
+  <!-- Without JavaScript the .reveal / .slide-in elements never get .in-view,
+       so they would stay at opacity:0 forever. This single override makes all
+       of them (including the static project cards) fully visible when scripting
+       is disabled. Browsers ignore <noscript> styles when JS is on. -->
+  <noscript>
+    <style>
+      .reveal, .reveal-scale, .slide-in { opacity: 1 !important; transform: none !important; transition: none !important; }
+    </style>
+  </noscript>
 </head>
 
 <body>
@@ -314,9 +334,10 @@
         <a href="#skills" class="nav-link">SKILLS</a>
         <a href="#projects" class="nav-link">PROJECTS</a>
         <a href="#vision" class="nav-link">VISION</a>
-        <a href="faq.html" class="nav-link">FAQ</a>
+        <a href="/faq.html" class="nav-link">FAQ</a>
         <a href="/blog/" class="nav-link">BLOG</a>
         <a href="#contact" class="btn btn-nav">CONTACT</a>
+        <a href="#contact" class="btn btn-nav btn-nav-hire">HIRE ME</a>
       </nav>
 
       <!-- Mobile hamburger -->
@@ -339,9 +360,10 @@
     <a href="#skills" class="mobile-link">SKILLS</a>
     <a href="#projects" class="mobile-link">PROJECTS</a>
     <a href="#vision" class="mobile-link">VISION</a>
-    <a href="faq.html" class="mobile-link">FAQ</a>
+    <a href="/faq.html" class="mobile-link">FAQ</a>
     <a href="/blog/" class="mobile-link">BLOG</a>
     <a href="#contact" class="mobile-link btn btn-nav">CONTACT</a>
+    <a href="#contact" class="mobile-link btn btn-nav btn-nav-hire">HIRE ME</a>
   </div>
 
   <!-- ============ PAGE CONTENT ============ -->
@@ -375,15 +397,18 @@
 
         <!-- Short intro paragraph -->
         <p class="hero-about hero-fade" style="--d:0.85s">
-          I create practical websites and small digital products with the help of
-          AI-powered development tools. Right now I'm strengthening my digital
-          marketing skills, covering SEO fundamentals, content creation, and
-          social media strategy. I'm Neelam Dhiman, a web developer and designer
-          from Kaithal, Haryana, helping small businesses in Kaithal and nearby
-          areas get online and manage their social media.
+          I build clean, responsive websites and small digital tools, and I help
+          small businesses in Kaithal and nearby areas get online and grow on
+          social media.
+        </p>
+
+        <!-- Compact skills line under the intro -->
+        <p class="hero-skills hero-fade" style="--d:0.95s">
+          Website building · YouTube SEO · Social media · AI-assisted development
         </p>
 
       <div class="hero-buttons hero-fade" style="--d:1.05s">
+        <a href="#contact" class="btn btn-primary">Hire Me</a>
         <a href="#journey" class="btn">Explore My Journey</a>
         <a href="#projects" class="btn">View Projects</a>
       </div>
@@ -399,7 +424,7 @@
         <div class="hero-avatar">
           <!-- Letter "N" shows behind the photo, visible only if the photo is missing -->
           <span class="hero-initial" aria-hidden="true">N</span>
-          <img src="assets/neelam.jpg" alt="Neelam Dhiman, web developer from Kaithal, Haryana" width="900" height="1200" fetchpriority="high" onerror="this.style.display='none'" />
+          <img src="/assets/neelam.jpg" alt="Neelam Dhiman, web developer from Kaithal, Haryana" width="900" height="1200" fetchpriority="high" onerror="this.style.display='none'" />
         </div>
       </div>
     </div>
@@ -422,7 +447,7 @@
           <div class="about-intro__text">
             <h2 class="section-heading" id="h-about">Who is <span class="section-heading-accent">Neelam?</span></h2>
 
-            <h3 class="about-subtitle">Student, Learner &amp; Builder from Kaithal, Haryana</h3>
+            <h3 class="about-subtitle">Web Developer &amp; Learner from Kaithal, Haryana</h3>
 
             <p class="about-paragraph">
               Growing up in Kaithal, Haryana, I was always curious about how things work behind a screen.
@@ -431,9 +456,10 @@
             </p>
 
             <p class="about-paragraph">
-              Today I'm a Bachelor of Arts student at Kurukshetra University, and alongside my studies I'm
-              building real skills. I completed my O Level course from NIELIT, and I'm
-              now doing a Digital Marketing with AI course at NIELIT.
+              Today I build websites, games and automation tools for small businesses, schools and creators
+              — and I help them grow online with SEO, social media and video content. Alongside that work
+              I'm a Bachelor of Arts student at Kurukshetra University, I completed my O Level from NIELIT,
+              and I'm now doing a Digital Marketing with AI course at NIELIT.
             </p>
 
             <p class="about-paragraph">
@@ -451,7 +477,11 @@
 
           <div class="about-intro__photo">
             <div class="about-photo">
-              <img src="assets/neelam.jpg" alt="Neelam Dhiman, web developer from Kaithal, Haryana" width="900" height="1200" loading="lazy" />
+              <!-- Same portrait file as the hero. The hero image already
+                   carries the descriptive alt; repeating that text here would
+                   announce the same photo twice, so this one is decorative
+                   (alt=""). -->
+              <img src="/assets/neelam.jpg" alt="" width="900" height="1200" loading="lazy" />
               <!-- Shown by JS only if assets/neelam.jpg is missing -->
               <span class="about-photo__initials" aria-hidden="true">ND</span>
             </div>
@@ -584,6 +614,7 @@
         <h2 class="skills-heading reveal reveal-delay-1" id="h-skills">Skills That Turn Ideas Into Real Work</h2>
 
 
+        <h3 class="skills-group-heading reveal">What I do best</h3>
         <ul class="skills-cards">
           <li class="skill-card reveal reveal-scale">
             <span class="skill-card__num">01</span>
@@ -617,7 +648,10 @@
               audience, not just likes.
             </p>
           </li>
+        </ul>
 
+        <h3 class="skills-group-heading reveal">Also</h3>
+        <ul class="skills-cards">
           <li class="skill-card reveal reveal-scale">
             <span class="skill-card__num">04</span>
             <h3 class="skill-card__title">Video Editing &amp; Content Creation</h3>
@@ -717,7 +751,7 @@
             <li class="skill-item reveal reveal-scale" style="--brand:#F26207">
               <span class="skill-item__icon">
                 <!-- Official Replit logo (simpleicons.org), official orange #F26207 -->
-                <img class="brand" src="assets/logos/replit.svg" alt="" loading="lazy" width="44" height="44" />
+                <img class="brand" src="/assets/logos/replit.svg" alt="" loading="lazy" width="44" height="44" />
               </span>
               <span class="skill-item__name">Replit</span>
             </li>
@@ -745,14 +779,14 @@
                  chips above (see .skill-item__icon img.brand in style.css). -->
             <li class="skill-item reveal reveal-scale" style="--brand:#111111">
               <span class="skill-item__icon">
-                <img class="brand" src="assets/logos/capcut.png" alt="" loading="lazy" width="44" height="44" />
+                <img class="brand" src="/assets/logos/capcut.png" alt="" loading="lazy" width="44" height="44" />
               </span>
               <span class="skill-item__name">CapCut</span>
             </li>
 
             <li class="skill-item reveal reveal-scale" style="--brand:#2563EB">
               <span class="skill-item__icon">
-                <img class="brand" src="assets/logos/vidiq.png" alt="" loading="lazy" width="44" height="44" />
+                <img class="brand" src="/assets/logos/vidiq.png" alt="" loading="lazy" width="44" height="44" />
               </span>
               <span class="skill-item__name">vidIQ</span>
             </li>
@@ -767,19 +801,35 @@
         <div class="skills-stats">
           <!-- data-target = number to count up to, data-suffix = trailing text.
                data-from-projects makes script.js set data-target from
-               projects.length, so this number can never drift. -->
+               projects.length, so this number can never drift.
+               The visible text already holds the final value, so the numbers
+               are correct even when JavaScript never runs. The count-up
+               animation overwrites them with 0 → target on scroll.
+
+               Sourcing (do not change without a real data source):
+               - "500+" Development Hours: pre-existing personal estimate that
+                 came with the original site build. Nothing on the site counts
+                 or documents hours, so it is unverified — confirm with the
+                 owner before trusting it.
+               - "7" Projects Built: counted from the number of project cards
+                 in #projects-list (data-from-projects keeps it in sync).
+               - "4" Languages Known: HTML, CSS, JavaScript and Python — the
+                 four programming languages named in the about section
+                 ("I work with HTML, CSS, and JavaScript, and I'm learning
+                 Python"). Python is still being learned; drop to 3 if only
+                 fluent languages should count. -->
           <div class="skill-stat reveal reveal-delay-1">
-            <span class="skill-stat__number" data-target="500" data-suffix="+">0+</span>
+            <span class="skill-stat__number" data-target="500" data-suffix="+">500+</span>
             <span class="skill-stat__label">Development Hours</span>
           </div>
 
           <div class="skill-stat reveal reveal-delay-2">
-            <span class="skill-stat__number" data-target="7" data-suffix="" data-from-projects>0</span>
+            <span class="skill-stat__number" data-target="7" data-suffix="" data-from-projects>7</span>
             <span class="skill-stat__label">Projects Built</span>
           </div>
 
           <div class="skill-stat reveal reveal-delay-3">
-            <span class="skill-stat__number" data-target="4" data-suffix="">0</span>
+            <span class="skill-stat__number" data-target="4" data-suffix="">4</span>
             <span class="skill-stat__label">Languages Known</span>
           </div>
         </div>
@@ -805,44 +855,294 @@
 
     <!-- ================================================================
          PROJECTS SECTION
-         The project cards are rendered by script.js from the
-         `projects` array at the top of that file — edit the data there.
+         Static cards live in the HTML so the section works (and reads well
+         to search engines) even with JavaScript off. script.js REPLACES
+         the whole list with interactive carousel versions once the
+         section nears the viewport — edit the `projects` array there for
+         the interactive cards, and mirror any change into the static
+         markup below (title, description, first screenshot, links).
          ================================================================ -->
     <section class="section" id="projects" aria-labelledby="h-projects">
       <div class="container">
         <h2 class="section-heading reveal" id="h-projects">My <span class="section-heading-accent">Projects</span></h2>
         <p class="section-subheading reveal reveal-delay-1">Things I've built while learning.</p>
 
-        <!-- Each project block is built here by renderProjects() -->
-        <div class="projects-list" id="projects-list"></div>
+        <!-- Static fallback cards — replaced in-place by renderProjects() -->
+        <div class="projects-list" id="projects-list">
 
-        <!-- ---------- No-JavaScript fallback ----------
-             A browser with JS off never gets renderProjects(), so the cards
-             above stay empty and the Projects section would look broken with
-             nothing for a crawler or a reader to find.
+          <article class="project">
+            <div class="project-media reveal">
+              <div class="carousel is-single" style="--stage-aspect:16 / 9;--stage-fit:contain">
+                <div class="carousel-stage">
+                  <div class="carousel-slides">
+                    <div class="carousel-slide is-active">
+                      <img src="/assets/projects/tagore-global-school/1.webp" alt="Tagore Global School screenshot 1" decoding="async" width="1349" height="643" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="project-info slide-in slide-in--right">
+              <span class="project-corner project-corner--tl" aria-hidden="true"></span>
+              <span class="project-corner project-corner--br" aria-hidden="true"></span>
+              <div class="project-head">
+                <h3 class="project-title">Tagore Global School</h3>
+                <span class="project-tag">Website</span>
+              </div>
+              <p class="project-desc">A complete school website with a clean, easy-to-use layout, built for Tagore Global School.</p>
+              <h4 class="project-subtitle">Key Features</h4>
+              <ul class="project-features">
+                <li class="project-feature">Clean, easy-to-use layout</li>
+                <li class="project-feature">Responsive on phone, tablet and desktop</li>
+                <li class="project-feature">Multiple sections for school information</li>
+              </ul>
+              <h4 class="project-subtitle">Technology Stack</h4>
+              <div class="project-chips">
+                <span class="project-chip">HTML</span>
+                <span class="project-chip">CSS</span>
+                <span class="project-chip">JavaScript</span>
+              </div>
+              <div class="project-links">
+                <a class="btn btn-primary project-link" href="https://tagore-global-school.vercel.app/" target="_blank" rel="noopener noreferrer">Visit Website</a>
+                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Tagore-Global-School" target="_blank" rel="noopener noreferrer">View Code</a>
+              </div>
+            </div>
+          </article>
 
-             <noscript> renders only when scripting is disabled, so this needs
-             no CSS trick and no display:none — there is nothing to hide when
-             JS is on, because the element itself does not exist in the DOM.
+          <article class="project">
+            <div class="project-media reveal">
+              <div class="carousel is-single" style="--stage-aspect:16 / 9;--stage-fit:contain">
+                <div class="carousel-stage">
+                  <div class="carousel-slides">
+                    <div class="carousel-slide is-active">
+                      <img src="/assets/projects/tic-tac-toe/1.webp" alt="Tic Tac Toe screenshot 1" decoding="async" width="1350" height="643" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="project-info slide-in slide-in--left">
+              <span class="project-corner project-corner--tl" aria-hidden="true"></span>
+              <span class="project-corner project-corner--br" aria-hidden="true"></span>
+              <div class="project-head">
+                <h3 class="project-title">Tic Tac Toe</h3>
+                <span class="project-tag">Game</span>
+              </div>
+              <p class="project-desc">The classic Tic Tac Toe game with a simple, interactive board you can play right in your browser.</p>
+              <h4 class="project-subtitle">Key Features</h4>
+              <ul class="project-features">
+                <li class="project-feature">Two-player gameplay</li>
+                <li class="project-feature">Win and draw detection</li>
+                <li class="project-feature">Restart option</li>
+              </ul>
+              <h4 class="project-subtitle">Technology Stack</h4>
+              <div class="project-chips">
+                <span class="project-chip">HTML</span>
+                <span class="project-chip">CSS</span>
+                <span class="project-chip">JavaScript</span>
+              </div>
+              <div class="project-links">
+                <a class="btn btn-primary project-link" href="https://tic-tac-toe-game-pearl-chi.vercel.app" target="_blank" rel="noopener noreferrer">Try Now</a>
+                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Tic-Tac-Toe-Game" target="_blank" rel="noopener noreferrer">View Code</a>
+              </div>
+            </div>
+          </article>
 
-             The links mirror the `projects` array in script.js: the live URL
-             where there is one, otherwise the GitHub URL. Telegram Bot and
-             CalcNotebook Blog Agent have no live site, so they use GitHub.
-             Keep this list in step when the projects array changes. -->
-        <noscript>
-          <div class="noscript-projects">
-            <h3>Project links</h3>
-            <ul>
-              <li><a href="https://tagore-global-school.vercel.app/" target="_blank" rel="noopener noreferrer">Tagore Global School</a> &mdash; <a href="https://github.com/Neelam7590/Tagore-Global-School" target="_blank" rel="noopener noreferrer">source code</a></li>
-              <li><a href="https://tic-tac-toe-game-pearl-chi.vercel.app" target="_blank" rel="noopener noreferrer">Tic Tac Toe</a> &mdash; <a href="https://github.com/Neelam7590/Tic-Tac-Toe-Game" target="_blank" rel="noopener noreferrer">source code</a></li>
-              <li><a href="https://calcnotebook.vercel.app" target="_blank" rel="noopener noreferrer">Calc Notebook</a> &mdash; <a href="https://github.com/Neelam7590/Calc-Notebook" target="_blank" rel="noopener noreferrer">source code</a></li>
-              <li><a href="https://socratic-math-mentor.vercel.app" target="_blank" rel="noopener noreferrer">Socratic Math Mentor</a> &mdash; <a href="https://github.com/Neelam7590/Socratic-Math-Mentor" target="_blank" rel="noopener noreferrer">source code</a></li>
-              <li><a href="https://rasoi-mitra-recipe.onrender.com/" target="_blank" rel="noopener noreferrer">Rasoi Mitra</a> &mdash; <a href="https://github.com/Neelam7590/Rasoi-Mitra-Recipe" target="_blank" rel="noopener noreferrer">source code</a></li>
-              <li><a href="https://github.com/Neelam7590/Telegram-Bot" target="_blank" rel="noopener noreferrer">Telegram Bot (source code on GitHub)</a></li>
-              <li><a href="https://github.com/Neelam7590/Calcnotebook-Blog-Agent" target="_blank" rel="noopener noreferrer">CalcNotebook Blog Agent (source code on GitHub)</a></li>
-            </ul>
-          </div>
-        </noscript>
+          <article class="project">
+            <div class="project-media reveal">
+              <div class="carousel is-single" style="--stage-aspect:16 / 9;--stage-fit:contain">
+                <div class="carousel-stage">
+                  <div class="carousel-slides">
+                    <div class="carousel-slide is-active">
+                      <img src="/assets/projects/calc-notebook/1.webp" alt="Calc Notebook screenshot 1" decoding="async" width="1339" height="647" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="project-info slide-in slide-in--right">
+              <span class="project-corner project-corner--tl" aria-hidden="true"></span>
+              <span class="project-corner project-corner--br" aria-hidden="true"></span>
+              <div class="project-head">
+                <h3 class="project-title">Calc Notebook</h3>
+                <span class="project-tag">Web Tool</span>
+              </div>
+              <p class="project-desc">An all-in-one calculator website for EMI, Age, Percentage, BMI and GST, in a notebook-style design.</p>
+              <h4 class="project-subtitle">Key Features</h4>
+              <ul class="project-features">
+                <li class="project-feature">Five calculators in one place</li>
+                <li class="project-feature">Notebook-style design</li>
+                <li class="project-feature">Works on phone and desktop</li>
+              </ul>
+              <h4 class="project-subtitle">Technology Stack</h4>
+              <div class="project-chips">
+                <span class="project-chip">HTML</span>
+                <span class="project-chip">CSS</span>
+                <span class="project-chip">JavaScript</span>
+              </div>
+              <div class="project-links">
+                <a class="btn btn-primary project-link" href="https://calcnotebook.vercel.app" target="_blank" rel="noopener noreferrer">Try Now</a>
+                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Calc-Notebook" target="_blank" rel="noopener noreferrer">View Code</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project">
+            <div class="project-media reveal">
+              <div class="carousel is-single" style="--stage-aspect:16 / 9;--stage-fit:contain">
+                <div class="carousel-stage">
+                  <div class="carousel-slides">
+                    <div class="carousel-slide is-active">
+                      <img src="/assets/projects/socratic-math-mentor/1.webp" alt="Socratic Math Mentor screenshot 1" decoding="async" width="1358" height="646" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="project-info slide-in slide-in--left">
+              <span class="project-corner project-corner--tl" aria-hidden="true"></span>
+              <span class="project-corner project-corner--br" aria-hidden="true"></span>
+              <div class="project-head">
+                <h3 class="project-title">Socratic Math Mentor</h3>
+                <span class="project-tag">AI App</span>
+              </div>
+              <p class="project-desc">An AI math mentor that helps you learn by guiding you with questions instead of just giving answers.</p>
+              <h4 class="project-subtitle">Key Features</h4>
+              <ul class="project-features">
+                <li class="project-feature">Guides step by step with questions</li>
+                <li class="project-feature">Built in Google AI Studio</li>
+                <li class="project-feature">Deployed on Vercel through GitHub</li>
+              </ul>
+              <h4 class="project-subtitle">Technology Stack</h4>
+              <div class="project-chips">
+                <span class="project-chip">Google AI Studio</span>
+                <span class="project-chip">GitHub</span>
+                <span class="project-chip">Vercel</span>
+              </div>
+              <div class="project-links">
+                <a class="btn btn-primary project-link" href="https://socratic-math-mentor.vercel.app" target="_blank" rel="noopener noreferrer">Try Now</a>
+                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Socratic-Math-Mentor" target="_blank" rel="noopener noreferrer">View Code</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project">
+            <div class="project-media reveal">
+              <div class="carousel is-single" style="--stage-aspect:16 / 9;--stage-fit:contain">
+                <div class="carousel-stage">
+                  <div class="carousel-slides">
+                    <div class="carousel-slide is-active">
+                      <img src="/assets/projects/rasoi-mitra/1.webp" alt="Rasoi Mitra screenshot 1" decoding="async" width="1338" height="637" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="project-info slide-in slide-in--right">
+              <span class="project-corner project-corner--tl" aria-hidden="true"></span>
+              <span class="project-corner project-corner--br" aria-hidden="true"></span>
+              <div class="project-head">
+                <h3 class="project-title">Rasoi Mitra</h3>
+                <span class="project-tag">AI App</span>
+              </div>
+              <p class="project-desc">A recipe assistant app that helps you decide what to cook and how to make it.</p>
+              <h4 class="project-subtitle">Key Features</h4>
+              <ul class="project-features">
+                <li class="project-feature">Recipe suggestions and cooking help</li>
+                <li class="project-feature">Built on Replit</li>
+                <li class="project-feature">Live on Render</li>
+              </ul>
+              <h4 class="project-subtitle">Technology Stack</h4>
+              <div class="project-chips">
+                <span class="project-chip">Replit</span>
+                <span class="project-chip">Render</span>
+              </div>
+              <div class="project-links">
+                <a class="btn btn-primary project-link" href="https://rasoi-mitra-recipe.onrender.com/" target="_blank" rel="noopener noreferrer">Try Now</a>
+                <a class="btn btn-secondary project-link" href="https://github.com/Neelam7590/Rasoi-Mitra-Recipe" target="_blank" rel="noopener noreferrer">View Code</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project">
+            <div class="project-media reveal">
+              <div class="carousel is-single" style="--stage-aspect:16 / 9;--stage-fit:contain">
+                <div class="carousel-stage">
+                  <div class="carousel-slides">
+                    <div class="carousel-slide is-active">
+                      <img src="/assets/projects/telegram-bot/1.webp" alt="Telegram Bot screenshot 1" decoding="async" width="1248" height="606" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="project-info slide-in slide-in--left">
+              <span class="project-corner project-corner--tl" aria-hidden="true"></span>
+              <span class="project-corner project-corner--br" aria-hidden="true"></span>
+              <div class="project-head">
+                <h3 class="project-title">Telegram Bot</h3>
+                <span class="project-tag">Automation</span>
+              </div>
+              <p class="project-desc">A Python Telegram bot with AI replies, scheduled messages and news updates.</p>
+              <h4 class="project-subtitle">Key Features</h4>
+              <ul class="project-features">
+                <li class="project-feature">Automatic and AI-powered replies</li>
+                <li class="project-feature">Memory using Supabase</li>
+                <li class="project-feature">Scheduled messages and news updates</li>
+              </ul>
+              <h4 class="project-subtitle">Technology Stack</h4>
+              <div class="project-chips">
+                <span class="project-chip">Python</span>
+                <span class="project-chip">python-telegram-bot</span>
+                <span class="project-chip">Groq</span>
+                <span class="project-chip">Supabase</span>
+              </div>
+              <div class="project-links">
+                <a class="btn btn-primary project-link" href="https://github.com/Neelam7590/Telegram-Bot" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project">
+            <div class="project-media reveal">
+              <div class="carousel is-single" style="--stage-aspect:16 / 9;--stage-fit:contain">
+                <div class="carousel-stage">
+                  <div class="carousel-slides">
+                    <div class="carousel-slide is-active">
+                      <img src="/assets/projects/blog-agent/1.webp" alt="CalcNotebook Blog Agent screenshot 1" decoding="async" width="1350" height="631" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="project-info slide-in slide-in--right">
+              <span class="project-corner project-corner--tl" aria-hidden="true"></span>
+              <span class="project-corner project-corner--br" aria-hidden="true"></span>
+              <div class="project-head">
+                <h3 class="project-title">CalcNotebook Blog Agent</h3>
+                <span class="project-tag">Automation</span>
+              </div>
+              <p class="project-desc">An auto-blogging agent that writes and publishes posts to the CalcNotebook blog by itself.</p>
+              <h4 class="project-subtitle">Key Features</h4>
+              <ul class="project-features">
+                <li class="project-feature">Writes and publishes blog posts automatically</li>
+                <li class="project-feature">Runs on a schedule with GitHub Actions</li>
+                <li class="project-feature">Uses Groq AI and SerpApi for research</li>
+              </ul>
+              <h4 class="project-subtitle">Technology Stack</h4>
+              <div class="project-chips">
+                <span class="project-chip">Python</span>
+                <span class="project-chip">Groq</span>
+                <span class="project-chip">SerpApi</span>
+                <span class="project-chip">GitHub Actions</span>
+              </div>
+              <div class="project-links">
+                <a class="btn btn-primary project-link" href="https://github.com/Neelam7590/Calcnotebook-Blog-Agent" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+              </div>
+            </div>
+          </article>
+
+        </div>
 
         <!-- Show More / Show Less.
              The first PROJECTS_PREVIEW projects are visible straight away;
@@ -884,12 +1184,14 @@
         <span class="vision-heading reveal">Where I&rsquo;m Headed</span>
         <h2 class="vision-title reveal reveal-delay-1" id="h-vision">My Vision</h2>
 
-        <div class="vision-lines">
-          <p class="vision-line reveal">Turning Ideas Into Impact</p>
-          <p class="vision-line reveal">Building a Creative Digital Future</p>
-          <p class="vision-line reveal">Beyond Code, Beyond Creativity</p>
-          <p class="vision-line vision-line--accent reveal">Creating Digital Experiences That Matter</p>
-        </div>
+        <p class="vision-text reveal">
+          I want to grow from a front-end builder into a full stack developer who
+          can design a page and also build the backend behind it. Over the next
+          year I'm focusing on stronger JavaScript, Node.js with a database, and
+          shipping one real full stack project. Along the way I want to keep
+          helping small local businesses get online with simple, honest, practical
+          websites.
+        </p>
       </div>
     </section>
 
@@ -962,14 +1264,16 @@
           </a>
 
           <!-- LinkedIn -->
-          <a class="social-link" href="https://linkedin.com/in/neelam-dhiman-b5a8b4422" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <a class="social-link" href="https://www.linkedin.com/in/neelam-dhiman-b5a8b4422/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
             <svg viewBox="-0.3 -0.3 24.6 24.6" aria-hidden="true" focusable="false">
               <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
             </svg>
           </a>
 
-          <!-- Email (Lucide icon) -->
-          <a class="social-link" href="mailto:neelxm08@gmail.com" aria-label="Email">
+          <!-- Email (Lucide icon). No address or email link lives in the
+               HTML — script.js builds the email href at runtime from split
+               parts. Without JS the link scrolls to the contact form. -->
+          <a class="social-link js-email-link" href="#contact" aria-label="Email">
             <i data-lucide="mail"></i>
           </a>
         </div>
@@ -994,7 +1298,7 @@
             <a class="social-link" href="https://www.linkedin.com/in/neelam-dhiman-b5a8b4422/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
             </a>
-            <a class="social-link" href="mailto:neelxm08@gmail.com" aria-label="Email">
+            <a class="social-link js-email-link" href="#contact" aria-label="Email">
               <i data-lucide="mail"></i>
             </a>
           </div>
@@ -1010,7 +1314,7 @@
             <li><a href="#projects" class="footer-link">Projects</a></li>
             <li><a href="#vision" class="footer-link">Vision</a></li>
             <li><a href="#contact" class="footer-link">Contact</a></li>
-            <li><a href="faq.html" class="footer-link">FAQ</a></li>
+            <li><a href="/faq.html" class="footer-link">FAQ</a></li>
             <li><a href="/blog/" class="footer-link">Blog</a></li>
           </ul>
         </nav>
@@ -1020,7 +1324,7 @@
           <h4 class="footer-heading">Get In Touch</h4>
           <address class="footer-address">
             <p><i data-lucide="map-pin" class="footer-icon"></i> Kaithal, Haryana, India</p>
-            <p><i data-lucide="mail" class="footer-icon"></i> <a href="mailto:neelxm08@gmail.com" class="footer-link">neelxm08@gmail.com</a></p>
+            <p><i data-lucide="mail" class="footer-icon"></i> <span id="footer-email"><noscript>Please use the contact form.</noscript></span></p>
           </address>
         </div>
       </div>
@@ -1043,7 +1347,7 @@
       <i data-lucide="chevron-left"></i>
     </button>
 
-    <img class="lightbox__img" id="lightbox-img" src="" alt="" />
+    <img class="lightbox__img" id="lightbox-img" alt="" />
 
     <button type="button" class="lightbox__btn lightbox__next" id="lightbox-next" aria-label="Next screenshot">
       <i data-lucide="chevron-right"></i>
@@ -1052,15 +1356,24 @@
     <p class="lightbox__counter" id="lightbox-counter" aria-live="polite"></p>
   </div>
 
+  <!-- Floating resume button. Without JS this link opens the PDF directly;
+       script.js upgrades it to an in-page preview modal. -->
+  <a class="resume-fab" href="/assets/Neelam-Dhiman-Resume.pdf" target="_blank" rel="noopener noreferrer">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+    Resume
+  </a>
+
   <!-- Floating "back to top" button (JS shows it after 400px of scrolling) -->
   <button class="to-top" id="to-top" aria-label="Back to top">
     <i data-lucide="arrow-up"></i>
   </button>
 
-  <!-- Lucide icons (line icons) -->
-  <script src="https://unpkg.com/lucide@0.294.0"></script>
+  <!-- Lucide icons (line icons). defer keeps this CDN download from blocking
+       HTML parsing; deferred scripts run in document order, so Lucide is
+       always ready before script.js executes. -->
+  <script src="https://unpkg.com/lucide@0.294.0" defer></script>
 
   <!-- Script -->
-  <script src="script.js"></script>
+  <script src="/script.js" defer></script>
 </body>
 </html>

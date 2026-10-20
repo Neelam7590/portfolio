@@ -541,6 +541,21 @@ html {
   content: none;
 }
 
+/* Navbar "Hire Me" pill — filled accent so it stands out from CONTACT */
+.btn-nav-hire {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+  border-radius: 999px;
+}
+
+.btn-nav-hire:hover {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+  box-shadow: 0 6px 20px var(--glow);
+}
+
 /* --- Hamburger --- */
 .hamburger {
   display: none;
@@ -1244,6 +1259,21 @@ body.has-custom-cursor * {
   height: 3px;
   border-radius: 3px;
   background: linear-gradient(90deg, var(--accent), rgba(var(--accent-rgb), 0.15));
+}
+
+/* Group headings that split the skill cards into two labelled rows */
+.skills-group-heading {
+  margin: 42px 0 0;
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* The second cards grid sits right under its group heading, so it needs
+   less top margin than the first one (which follows the big section heading). */
+.skills-group-heading + .skills-cards {
+  margin-top: 22px;
 }
 
 /* --- 3x3 tool logo grid on a concentric-ring panel ---
@@ -2382,6 +2412,18 @@ body.lightbox-open {
   -webkit-text-fill-color: transparent;
 }
 
+/* Vision paragraph that replaced the four big taglines */
+.vision-text {
+  position: relative;
+  z-index: 1;
+  max-width: 68ch;
+  margin: 42px auto 0;
+  text-align: center;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: var(--text);
+}
+
 
 /* ==========================================================================
    15. FAQ SECTION
@@ -2845,6 +2887,154 @@ body.lightbox-open {
   border-color: var(--accent);
   color: #FFFFFF;
   box-shadow: 0 10px 26px var(--glow);
+}
+
+
+/* ==========================================================================
+   17b. FLOATING RESUME BUTTON + MODAL
+   A pill above the back-to-top button on every page. Without JavaScript the
+   link opens the PDF directly; script.js upgrades it to open an in-page
+   preview modal instead (with a download link inside).
+   ========================================================================== */
+.resume-fab {
+  position: fixed;
+  right: 26px;
+  bottom: 84px;                     /* clears the 46px to-top button + gap */
+  z-index: 80;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background-color: var(--accent);
+  color: #FFFFFF;
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 0 10px 26px var(--glow);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out),
+              background-color 0.3s var(--ease-out);
+}
+
+.resume-fab svg {
+  width: 16px;
+  height: 16px;
+}
+
+.resume-fab:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px var(--glow);
+}
+
+.resume-fab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Full-screen preview dialog (opened by script.js). */
+.resume-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: rgba(26, 21, 16, 0.9);
+  backdrop-filter: blur(8px);
+  animation: lightbox-in 0.25s var(--ease-out);
+}
+
+.resume-modal__panel {
+  display: flex;
+  flex-direction: column;
+  width: min(860px, 100%);
+  height: min(90vh, 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background-color: var(--surface);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.resume-modal__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.resume-modal__title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.resume-modal__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.resume-modal__download {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background-color: var(--accent);
+  color: #FFFFFF;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.resume-modal__close {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 0.25s var(--ease-out), color 0.25s var(--ease-out);
+}
+
+.resume-modal__close:hover {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+}
+
+.resume-modal__frame {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background-color: var(--bg-alt);
+}
+
+@media (max-width: 600px) {
+  .resume-fab {
+    right: 16px;
+    bottom: 78px;
+    padding: 9px 14px;
+    font-size: 0.75rem;
+  }
+
+  .resume-modal {
+    padding: 12px;
+  }
 }
 
 
@@ -3655,6 +3845,16 @@ body.lightbox-open {
   color: var(--muted);
   font-size: 0.98rem;
   line-height: 1.75;
+}
+
+/* Compact skills line under the hero intro */
+.hero-skills {
+  max-width: 54ch;
+  margin: 0 0 30px;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 /* The blinking block that sits after the typed word */
