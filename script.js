@@ -511,22 +511,69 @@ document.addEventListener("keydown", (event) => {
 /* ==========================================================================
    06. ACTIVE NAV LINK BASED ON SECTION IN VIEW
    Highlights the nav link of the section currently in the middle of the screen.
+   Only in-page anchors (#id) are observed; page links (/blog/, faq.html, etc.)
+   get their active state from location.pathname.
    ========================================================================== */
 const navLinks = $$(".nav-link");
-const sectionsForNav = navLinks
-  .map((link) => document.querySelector(link.getAttribute("href")))
-  .filter(Boolean);
+
+/* Extract the section id from an in-page anchor href.
+   Returns the id string (without #) or null if the href is not an in-page anchor. */
+function getSectionIdFromHref(href) {
+  if (!href) return null;
+  // In-page anchor on current page: "#about", "/#about", "index.html#about", "../index.html#about"
+  const hashIndex = href.indexOf("#");
+  if (hashIndex === -1) return null;
+  const id = href.slice(hashIndex + 1);
+  return id || null;
+}
+
+/* Determine if a nav link is a page link (not an in-page anchor). */
+function isPageLink(href) {
+  if (!href) return false;
+  return !href.startsWith("#") && href.indexOf("#") === -1;
+}
+
+/* Get the current page's path for active-state matching. */
+function getCurrentPath() {
+  const path = location.pathname;
+  // Normalize: /blog/ -> /blog/, /blog/slug/ -> /blog/, /faq.html -> /faq.html
+  if (path.startsWith("/blog/")) return "/blog/";
+  return path;
+}
 
 function setActiveLink(id) {
+  const currentPath = getCurrentPath();
   navLinks.forEach((link) => {
-    link.classList.toggle("active", link.getAttribute("href") === `#${id}`);
+    const href = link.getAttribute("href");
+    const linkIsPageLink = isPageLink(href);
+    let isActive = false;
+
+    if (id) {
+      // Scroll-spy active: match in-page anchor
+      isActive = link.getAttribute("href") === `#${id}` || link.getAttribute("href")?.includes(`#${id}`);
+    } else if (linkIsPageLink) {
+      // Page-link active: match pathname
+      if (href === "/blog/" && currentPath === "/blog/") isActive = true;
+      if (href === "faq.html" && currentPath === "/faq.html") isActive = true;
+      if (href === "/faq.html" && currentPath === "/faq.html") isActive = true;
+      if (href === "index.html" && (currentPath === "/" || currentPath === "/index.html")) isActive = true;
+    }
+
+    link.classList.toggle("active", isActive);
   });
 }
+
+/* Collect only sections that correspond to in-page anchor nav links on THIS page. */
+const sectionIds = navLinks
+  .map((link) => getSectionIdFromHref(link.getAttribute("href")))
+  .filter(Boolean);
+const sectionsForNav = sectionIds
+  .map((id) => document.getElementById(id))
+  .filter(Boolean);
 
 if (sectionsForNav.length) {
   const navObserver = new IntersectionObserver(
     (entries) => {
-      // Pick the entry closest to the top of the viewport (i.e. the visible one).
       const visible = entries
         .filter((entry) => entry.isIntersecting)
         .sort((a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top));
@@ -536,13 +583,16 @@ if (sectionsForNav.length) {
       }
     },
     {
-      rootMargin: "-40% 0px -50% 0px",   // thin band in the middle of the screen
+      rootMargin: "-40% 0px -50% 0px",
       threshold: 0,
     }
   );
 
   sectionsForNav.forEach((section) => navObserver.observe(section));
 }
+
+/* Set initial active state for page links (BLOG, FAQ) on load. */
+setActiveLink(null);
 
 
 /* ==========================================================================
@@ -699,9 +749,14 @@ function initIcons() {
   if (!window.lucide || typeof window.lucide.createIcons !== "function") {
     return;
   }
-  window.lucide.createIcons({
-    attrs: { "aria-hidden": "true", "focusable": "false" },
-  });
+  try {
+    window.lucide.createIcons({
+      attrs: { "aria-hidden": "true", "focusable": "false" },
+    });
+  } catch (e) {
+    // A missing icon name must never break layout or throw an error
+    console.warn('Lucide icon creation failed:', e.message);
+  }
 }
 
 initIcons();

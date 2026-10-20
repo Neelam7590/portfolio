@@ -46,6 +46,11 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
+# Disallow build/source directories
+Disallow: /blog/src/
+Disallow: /scripts/
+Disallow: /partials/
+
 # Nothing on this site is private, so there is no Disallow.
 # If a staging or preview deployment is ever created, block that origin
 # instead of this one.

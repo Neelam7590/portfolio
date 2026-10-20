@@ -1474,6 +1474,85 @@ body.has-custom-cursor * {
 
 
 /* ==========================================================================
+   12b. DIGITAL MARKETING CHIPS
+   Small accent bar + heading + wrapping row of pill chips.
+   Mirrors the tool-chip interaction language (hover lift, staggered reveal).
+   ========================================================================== */
+.digital-marketing {
+  margin-top: 56px;
+  text-align: center;
+}
+
+.digital-marketing__bar {
+  display: block;
+  width: min(60px, 18%);
+  height: 3px;
+  margin: 0 auto 16px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+.digital-marketing__heading {
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.digital-marketing__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 14px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.digital-marketing__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--bg);
+  transition:
+    transform 0.25s var(--ease-out),
+    border-color 0.25s var(--ease-out),
+    color 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out);
+}
+
+.digital-marketing__chip i {
+  width: 16px;
+  height: 16px;
+  stroke-width: 2.2;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.digital-marketing__chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(var(--accent-rgb), 0.18);
+}
+
+.digital-marketing__chip:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 99px;
+}
+
+
+/* ==========================================================================
    13. PROJECTS SECTION
    --------------------------------------------------------------------------
    #projects        → faint nested-squares background (pure CSS)
@@ -2843,6 +2922,15 @@ body.lightbox-open {
 
   .skills-divider {
     margin: 60px auto 48px;
+  }
+
+  .digital-marketing__chips {
+    gap: 8px 12px;
+  }
+
+  .digital-marketing__chip {
+    padding: 7px 14px;
+    font-size: 0.8rem;
   }
 
   /* Projects stack into one column — always image first */
