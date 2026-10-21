@@ -751,29 +751,22 @@ body.has-custom-cursor * {
 }
 
 .footer-social .social-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 60px;
+  gap: 6px;
+}
+
+.footer-social .social-link__icon {
   width: 40px;
   height: 40px;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  color: var(--muted);
-  background: var(--bg);
-  transition: all 0.25s var(--ease-out);
 }
 
-.footer-social .social-link:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  transform: translateY(-2px);
+.footer-social .social-link__glyph {
+  width: 17px;
+  height: 17px;
 }
 
-.footer-social .social-link svg,
-.footer-social .social-link i {
-  width: 18px;
-  height: 18px;
-  stroke-width: 2.2;
+.footer-social .social-link__label {
+  font-size: 0.66rem;
 }
 
 .footer-nav {
@@ -2781,16 +2774,28 @@ body.lightbox-open {
   height: 30px;
 }
 
-/* ---------- Round social buttons ---------- */
+/* ---------- Social links: icon in a circle, platform name below ---------- */
 .contact-social {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 18px;
+  gap: 16px 18px;
   margin-top: 44px;
 }
 
 .social-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 64px;
+  color: var(--text);
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.3s var(--ease-out);
+}
+
+.social-link__icon {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2799,34 +2804,108 @@ body.lightbox-open {
   border: 1px solid var(--border);
   border-radius: 50%;
   background-color: var(--surface);
-  color: var(--text);
+  color: var(--muted);
   transition:
-    transform 0.3s var(--ease-out),
     color 0.3s var(--ease-out),
     border-color 0.3s var(--ease-out),
     box-shadow 0.3s var(--ease-out);
 }
 
-/* Lucide injects an <svg>; the brand SVGs are written inline. */
-.social-link svg {
+/* The official logo SVG is used as a mask so the icon can take the
+   platform's brand colour on hover without loading a second image. */
+.social-link__glyph {
+  display: block;
+  width: 21px;
+  height: 21px;
+  background-color: currentColor;
+  -webkit-mask-image: var(--social-icon);
+  mask-image: var(--social-icon);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.social-link__label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--muted);
+  transition: color 0.3s var(--ease-out);
+}
+
+.social-link__icon i,
+.social-link__icon i svg {
   width: 21px;
   height: 21px;
 }
 
-.social-link svg path {
-  fill: currentColor;
-}
-
-.social-link i svg {
+.social-link__icon i svg {
   stroke-width: 1.8;
 }
 
-/* Hover: lift + teal glow */
+.social-link--github {
+  --social-icon: url("/assets/logos/github.svg");
+  --social-brand: #181717;
+}
+
+.social-link--linkedin {
+  --social-icon: url("/assets/logos/linkedin.svg");
+  --social-brand: #0a66c2;
+}
+
+.social-link--medium {
+  --social-icon: url("/assets/logos/medium.svg");
+  --social-brand: #000000;
+}
+
+.social-link--codepen {
+  --social-icon: url("/assets/logos/codepen.svg");
+  --social-brand: #000000;
+}
+
+.social-link--devto {
+  --social-icon: url("/assets/logos/devdotto.svg");
+  --social-brand: #0a0a0a;
+}
+
+.social-link--behance {
+  --social-icon: url("/assets/logos/behance.svg");
+  --social-brand: #1769ff;
+}
+
+.social-link--dribbble {
+  --social-icon: url("/assets/logos/dribbble.svg");
+  --social-brand: #ea4c89;
+}
+
+.social-link--email {
+  --social-brand: var(--accent);
+}
+
+/* Hover: lift the whole link and tint the icon with its brand colour */
 .social-link:hover {
-  transform: translateY(-5px);
-  color: var(--accent);
-  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+
+.social-link:hover .social-link__icon {
+  color: var(--social-brand, var(--accent));
+  border-color: var(--social-brand, var(--accent));
   box-shadow: 0 10px 26px var(--glow);
+}
+
+.social-link:hover .social-link__label {
+  color: var(--text);
+}
+
+.social-link:focus-visible {
+  border-radius: 12px;
+}
+
+.social-link:focus-visible .social-link__icon {
+  border-color: var(--accent);
 }
 
 
@@ -3181,7 +3260,7 @@ body.lightbox-open {
     margin-top: 36px;
   }
 
-  .social-link {
+  .social-link__icon {
     width: 46px;
     height: 46px;
   }
