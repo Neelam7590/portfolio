@@ -19,7 +19,6 @@
   var passwordInput = document.getElementById("login-password");
   var submitButton = document.getElementById("login-submit");
   var errorEl = document.getElementById("login-error");
-  var loginHeading = document.getElementById("login-heading");
 
   var dashboardPanel = document.getElementById("dashboard-panel");
   var dashboardHeading = document.getElementById("dashboard-heading");
@@ -64,14 +63,23 @@
     errorEl.hidden = false;
   }
 
+  function resetLoginForm() {
+    loginForm.reset();
+    emailInput.value = "";
+    passwordInput.value = "";
+    clearError();
+  }
+
   function showLogin(moveFocus) {
     dashboardPanel.hidden = true;
     loginPanel.hidden = false;
     dashboardEmail.textContent = "";
-    clearError();
+    dashboardStatus.hidden = true;
+    dashboardStatus.textContent = "";
+    resetLoginForm();
     document.title = "Admin | Neelam Dhiman";
     if (moveFocus) {
-      loginHeading.focus();
+      emailInput.focus();
     }
   }
 
@@ -79,6 +87,7 @@
     loginPanel.hidden = true;
     dashboardPanel.hidden = false;
     dashboardEmail.textContent = email || "your account";
+    passwordInput.value = "";
     clearError();
     document.title = "Dashboard | Neelam Dhiman Admin";
     if (moveFocus) {
@@ -117,6 +126,7 @@
           showError();
           return;
         }
+        passwordInput.value = "";
         showDashboard(result.data.session.user.email, true);
       })
       .catch(function () {
@@ -186,5 +196,29 @@
     } else if (event === "SIGNED_OUT") {
       showLogin(true);
     }
+  });
+
+  // Back/forward cache: never restore a stale email/password into the form,
+  // and re-sync the view in case auth changed in another tab.
+  window.addEventListener("pageshow", function (event) {
+    if (!event.persisted) return;
+    resetLoginForm();
+    if (!client) {
+      showLogin(false);
+      return;
+    }
+    client.auth
+      .getSession()
+      .then(function (result) {
+        var session = result && result.data ? result.data.session : null;
+        if (session && session.user) {
+          showDashboard(session.user.email, false);
+        } else {
+          showLogin(false);
+        }
+      })
+      .catch(function () {
+        showLogin(false);
+      });
   });
 })();
