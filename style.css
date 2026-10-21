@@ -746,6 +746,7 @@ body.has-custom-cursor * {
 
 .footer-social {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
@@ -2783,6 +2784,7 @@ body.lightbox-open {
 /* ---------- Round social buttons ---------- */
 .contact-social {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 18px;
   margin-top: 44px;
