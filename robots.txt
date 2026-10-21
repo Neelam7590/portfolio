@@ -47,7 +47,6 @@ User-agent: CCBot
 Allow: /
 
 # Disallow build/source directories
-Disallow: /blog/src/
 Disallow: /scripts/
 Disallow: /partials/
 

@@ -576,7 +576,7 @@ document.addEventListener("keydown", (event) => {
 /* ==========================================================================
    06. ACTIVE NAV LINK BASED ON SECTION IN VIEW
    Highlights the nav link of the section currently in the middle of the screen.
-   Only in-page anchors (#id) are observed; page links (/blog/, faq.html, etc.)
+   Only in-page anchors (#id) are observed; page links (faq.html, etc.)
    get their active state from location.pathname.
    ========================================================================== */
 const navLinks = $$(".nav-link");
@@ -600,10 +600,7 @@ function isPageLink(href) {
 
 /* Get the current page's path for active-state matching. */
 function getCurrentPath() {
-  const path = location.pathname;
-  // Normalize: /blog/ -> /blog/, /blog/slug/ -> /blog/, /faq.html -> /faq.html
-  if (path.startsWith("/blog/")) return "/blog/";
-  return path;
+  return location.pathname;
 }
 
 function setActiveLink(id) {
@@ -618,7 +615,6 @@ function setActiveLink(id) {
       isActive = link.getAttribute("href") === `#${id}` || link.getAttribute("href")?.includes(`#${id}`);
     } else if (linkIsPageLink) {
       // Page-link active: match pathname
-      if (href === "/blog/" && currentPath === "/blog/") isActive = true;
       if (href === "faq.html" && currentPath === "/faq.html") isActive = true;
       if (href === "/faq.html" && currentPath === "/faq.html") isActive = true;
       if (href === "index.html" && (currentPath === "/" || currentPath === "/index.html")) isActive = true;
@@ -656,7 +652,7 @@ if (sectionsForNav.length) {
   sectionsForNav.forEach((section) => navObserver.observe(section));
 }
 
-/* Set initial active state for page links (BLOG, FAQ) on load. */
+/* Set initial active state for page links (FAQ) on load. */
 setActiveLink(null);
 
 
@@ -824,7 +820,6 @@ const ICONS = {
   "share-2": '<circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" x2="15.42" y1="13.51" y2="17.49" /><line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />',
   "megaphone": '<path d="m3 11 18-5v12L3 14v-3z" /><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />',
   "message-square": '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />',
-  "rss": '<path d="M4 11a9 9 0 0 1 9 9" /><path d="M4 4a16 16 0 0 1 16 16" /><circle cx="5" cy="19" r="1" />',
   "copy": '<rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />',
   "target": '<circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" />',
   "pen-line": '<path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />',

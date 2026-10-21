@@ -273,12 +273,10 @@
 
   <!-- Google Fonts:
        Poppins   → whole site (weights 400-800, all used in style.css)
-       Playfair Display → ONLY two variants are actually used:
-                          italic 500 (.hero-meta) and normal 600
-                          (blog empty state). Requesting just these two
-                          instead of seven cuts ~5 render-blocking woff2
-                          downloads, which is a measurable FCP/LCP win on
-                          mobile. -->
+       Playfair Display → ONLY italic 500 (.hero-meta) is actually used.
+                          Requesting just this one instead of seven cuts
+                          ~5 render-blocking woff2 downloads, which is a
+                          measurable FCP/LCP win on mobile. -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://fonts.cdnfonts.com" />
@@ -298,13 +296,13 @@
   <link
     rel="preload"
     as="style"
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Poppins:wght@400;500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&family=Poppins:wght@400;500;600;700;800&display=swap"
     onload="this.onload=null;this.rel='stylesheet'"
   />
   <noscript>
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Poppins:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&family=Poppins:wght@400;500;600;700;800&display=swap"
     />
   </noscript>
   <!-- Elephant by the designer at cdnfonts.com — free for PERSONAL USE only.
@@ -361,7 +359,6 @@
         <a href="#projects" class="nav-link">PROJECTS</a>
         <a href="#vision" class="nav-link">VISION</a>
         <a href="/faq.html" class="nav-link">FAQ</a>
-        <a href="/blog/" class="nav-link">BLOG</a>
         <a href="#contact" class="btn btn-nav btn-nav-hire">HIRE ME</a>
       </nav>
 
@@ -386,7 +383,6 @@
     <a href="#projects" class="mobile-link">PROJECTS</a>
     <a href="#vision" class="mobile-link">VISION</a>
     <a href="/faq.html" class="mobile-link">FAQ</a>
-    <a href="/blog/" class="mobile-link">BLOG</a>
     <a href="#contact" class="mobile-link btn btn-nav btn-nav-hire">HIRE ME</a>
   </div>
 
@@ -1232,8 +1228,6 @@
       </div>
     </section>
 
-    <!-- BLOG:LATEST:START --><!-- BLOG:LATEST:END -->
-
     <!-- ================================================================
          CONTACT SECTION
          ================================================================ -->
@@ -1352,7 +1346,6 @@
             <li><a href="#vision" class="footer-link">Vision</a></li>
             <li><a href="#contact" class="footer-link">Contact</a></li>
             <li><a href="/faq.html" class="footer-link">FAQ</a></li>
-            <li><a href="/blog/" class="footer-link">Blog</a></li>
           </ul>
         </nav>
 
