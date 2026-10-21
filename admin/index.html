@@ -16,13 +16,13 @@
   <link rel="stylesheet" href="/admin/admin.css" />
 </head>
 <body>
-  <main class="admin-shell">
-    <header class="admin-brand">
-      <span class="admin-brand__name">Neelam Dhiman</span>
-      <span class="admin-brand__tag">Admin</span>
-    </header>
+  <section id="login-panel" class="auth" aria-labelledby="login-heading" hidden>
+    <div class="auth__brand">
+      <span class="auth__name">Neelam Dhiman</span>
+      <span class="auth__tag">Admin</span>
+    </div>
 
-    <section id="login-panel" class="panel" aria-labelledby="login-heading" hidden>
+    <div class="panel auth__panel">
       <h1 id="login-heading" tabindex="-1">Sign in</h1>
       <p class="panel__intro">This area is for the site owner only.</p>
 
@@ -56,18 +56,76 @@
       </form>
 
       <p id="login-error" class="error" role="alert" aria-live="assertive" hidden></p>
-    </section>
+    </div>
+  </section>
 
-    <section id="dashboard-panel" class="panel" aria-labelledby="dashboard-heading" hidden>
-      <h1 id="dashboard-heading" tabindex="-1">Welcome</h1>
-      <p class="panel__intro">
-        Signed in as <strong id="dashboard-email"></strong>
-      </p>
+  <div id="app-shell" class="app" hidden>
+    <aside id="sidebar" class="sidebar" aria-label="Admin navigation">
+      <div class="sidebar__brand">
+        <span class="sidebar__name">Neelam Dhiman</span>
+        <span class="sidebar__tag">Admin</span>
+      </div>
 
-      <button type="button" id="logout" class="btn btn--secondary">Logout</button>
-      <p id="dashboard-status" class="status" role="status" aria-live="polite" hidden></p>
-    </section>
-  </main>
+      <nav class="sidebar__nav" aria-label="Admin sections">
+        <a class="nav-item" href="#/dashboard" data-nav="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect></svg>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" href="#/posts" data-nav="posts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          <span>Blog posts</span>
+        </a>
+        <a class="nav-item" href="#/projects" data-nav="projects">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+          <span>Projects</span>
+        </a>
+        <a class="nav-item" href="#/images" data-nav="images">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          <span>Images</span>
+        </a>
+        <a class="nav-item" href="#/skills" data-nav="skills">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg>
+          <span>Skills</span>
+        </a>
+        <a class="nav-item" href="#/messages" data-nav="messages">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span>Messages</span>
+        </a>
+        <a class="nav-item" href="#/settings" data-nav="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar__foot">
+        <a class="side-action" href="/" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <span>View site</span>
+        </a>
+        <button type="button" id="logout" class="side-action">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          <span>Sign out</span>
+        </button>
+      </div>
+    </aside>
+
+    <div id="sidebar-overlay" class="overlay" hidden></div>
+
+    <div class="app__main">
+      <header class="topbar">
+        <button type="button" id="menu-toggle" class="icon-btn" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <span class="connected"><span class="connected__dot" aria-hidden="true"></span>Connected</span>
+        <span id="dashboard-email" class="topbar__email"></span>
+        <button type="button" id="publish-btn" class="btn btn--small">Publish changes to site</button>
+      </header>
+
+      <main id="view" class="view" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="/admin/config.js" defer></script>
   <script

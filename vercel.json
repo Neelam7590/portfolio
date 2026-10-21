@@ -1,6 +1,10 @@
 {
+  "buildCommand": "node scripts/build-blog.js",
   "functions": {
     "api/contact.js": {
+      "maxDuration": 30
+    },
+    "api/publish.js": {
       "maxDuration": 30
     }
   },

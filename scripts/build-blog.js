@@ -5,6 +5,10 @@ const fs = require('fs');
 const path = require('path');
 
 const SITE_URL = 'https://neelamdhiman.vercel.app';
+const SUPABASE_URL = (process.env.SUPABASE_URL || '').replace(/\/+$/, '');
+const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || '';
+const REMOTE_ENABLED = Boolean(SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY);
+const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 const BLOG_SRC = path.join(__dirname, '../blog/src');
 const BLOG_OUT = path.join(__dirname, '../blog');
 const TEMPLATE_DIR = path.join(__dirname, '../blog');
@@ -18,13 +22,35 @@ const TODAY = NOW.toISOString().split('T')[0];
 // Markdown to HTML (subset, safe)
 function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, c => {
-    if (c === '&') return '&';
-    if (c === '<') return '<';
-    if (c === '>') return '>';
-    if (c === '"') return '"';
-    if (c === "'") return "'";
+    if (c === '&') return '&amp;';
+    if (c === '<') return '&lt;';
+    if (c === '>') return '&gt;';
+    if (c === '"') return '&quot;';
+    if (c === "'") return '&#39;';
     return c;
   });
+}
+
+// Only allow ordinary links/images; never javascript: or data: URLs.
+function safeUrl(raw) {
+  const url = String(raw || '').trim();
+  if (!url) return '';
+  if (/^(https?:\/\/|mailto:)/i.test(url) || /^(\/(?!\/)|\.{1,2}\/|#)/.test(url)) {
+    return url;
+  }
+  return '';
+}
+
+function toDateOnly(value) {
+  if (!value) return '';
+  const match = /^(\d{4}-\d{2}-\d{2})/.exec(String(value));
+  if (match) return match[1];
+  const parsed = new Date(value);
+  return isNaN(parsed.getTime()) ? '' : parsed.toISOString().slice(0, 10);
+}
+
+function jsonForScript(value) {
+  return JSON.stringify(value).replace(/</g, '\\u003c');
 }
 
 function slugify(str) {
@@ -63,11 +89,11 @@ function mdToHtml(md) {
   html = html.replace(/^---$/gm, '<hr>');
   html = html.replace(/^##\s+(.+)$/gm, (_, text) => {
     const id = slugify(text);
-    return '<h2 id="' + id + '">' + escapeHtml(text) + '</h2>';
+    return '<h2 id="' + id + '">' + text + '</h2>';
   });
   html = html.replace(/^###\s+(.+)$/gm, (_, text) => {
     const id = slugify(text);
-    return '<h3 id="' + id + '">' + escapeHtml(text) + '</h3>';
+    return '<h3 id="' + id + '">' + text + '</h3>';
   });
   html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
     const cls = lang ? ' class="language-' + lang + '"' : '';
@@ -76,16 +102,22 @@ function mdToHtml(md) {
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
-  html = html.replace(/!\[([^\]]*)\]\(([^)]+?)(?:\s+"([^"]+)")?\)/g, (_, alt, src, caption) => {
-    const cap = caption ? '<figcaption>' + escapeHtml(caption) + '</figcaption>' : '';
-    return '<figure><img src="' + escapeHtml(src) + '" alt="' + escapeHtml(alt) + '" loading="lazy">' + cap + '</figure>';
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+?)(?:\s+&quot;([^&]*)&quot;)?\)/g, (_, alt, src, caption) => {
+    const url = safeUrl(src);
+    if (!url) return alt;
+    const cap = caption ? '<figcaption>' + caption + '</figcaption>' : '';
+    return '<figure><img src="' + url + '" alt="' + alt + '" loading="lazy">' + cap + '</figure>';
+  });
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, text, href) => {
+    const url = safeUrl(href);
+    if (!url) return text;
+    return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + text + '</a>';
   });
   html = html.replace(/^>\s+(.+)$/gm, '<blockquote>$1</blockquote>');
   html = html.replace(/^\|(.+)\|\n\|[\s\-:|]+\|\n((?:\|.+\|\n?)+)/gm, (_, headerRow, bodyRows) => {
-    const headers = headerRow.split('|').slice(1, -1).map(h => '<th>' + escapeHtml(h.trim()) + '</th>').join('');
+    const headers = headerRow.split('|').slice(1, -1).map(h => '<th>' + h.trim() + '</th>').join('');
     const rows = bodyRows.trim().split('\n').map(row => {
-      const cells = row.split('|').slice(1, -1).map(c => '<td>' + escapeHtml(c.trim()) + '</td>').join('');
+      const cells = row.split('|').slice(1, -1).map(c => '<td>' + c.trim() + '</td>').join('');
       return '<tr>' + cells + '</tr>';
     }).join('');
     return '<div class="table-wrapper"><table><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table></div>';
@@ -129,8 +161,8 @@ function formatDateTime(dateStr) {
   return new Date(dateStr + 'T00:00:00').toISOString();
 }
 
-// Load posts
-function loadPosts() {
+// Load published posts from local Markdown files.
+function loadLocalPosts() {
   if (!fs.existsSync(BLOG_SRC)) {
     fs.mkdirSync(BLOG_SRC, { recursive: true });
     return [];
@@ -138,27 +170,39 @@ function loadPosts() {
   const files = fs.readdirSync(BLOG_SRC).filter(f => f.endsWith('.md') && !f.startsWith('_'));
   const posts = [];
   for (const file of files) {
+    const slug = file.replace(/\.md$/, '');
+    if (!SLUG_PATTERN.test(slug)) {
+      console.warn(`  ⚠ Skipping local file with an invalid slug: ${file}`);
+      continue;
+    }
     const content = fs.readFileSync(path.join(BLOG_SRC, file), 'utf8');
     const { data, body } = parseFrontMatter(content);
-    const slug = file.replace(/\.md$/, '');
     if (data.draft === true) continue;
-    const postDate = data.date ? new Date(data.date + 'T00:00:00') : null;
-    if (postDate && postDate > NOW) continue;
-    const html = mdToHtml(body);
-    const updated = data.updated || data.date;
+    const date = toDateOnly(data.date);
+    if (!date) {
+      console.warn(`  ⚠ Skipping local post without a valid date: ${file}`);
+      continue;
+    }
+    const postDate = new Date(date + 'T00:00:00');
+    if (postDate > NOW) continue;
+    const updated = toDateOnly(data.updated || data.date) || date;
+    const title = String(data.title || slug);
     posts.push({
       slug: slug,
-      title: data.title || slug,
-      description: data.description || '',
-      date: data.date,
+      title: title,
+      seoTitle: String(data.seo_title || (title + ' | Neelam Dhiman')),
+      description: String(data.description || data.seo_description || ''),
+      category: String(data.category || ''),
+      date: date,
       updated: updated,
-      tags: Array.isArray(data.tags) ? data.tags : [],
+      tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
       featured: data.featured === true,
       cover: data.cover || null,
-      html: html,
+      coverAlt: String(data.cover_alt || ''),
+      html: mdToHtml(body),
       readingTime: readingTime(body),
       dateObj: postDate,
-      updatedObj: updated ? new Date(updated + 'T00:00:00') : postDate,
+      updatedObj: new Date(updated + 'T00:00:00'),
     });
     // Warn if cover file doesn't exist
     if (data.cover) {
@@ -168,8 +212,106 @@ function loadPosts() {
       }
     }
   }
-  posts.sort((a, b) => (b.dateObj || 0) - (a.dateObj || 0));
   return posts;
+}
+
+function remotePostFromRow(row) {
+  if (!row || row.status !== 'published') return null;
+  const slug = String(row.slug || '').trim();
+  if (!SLUG_PATTERN.test(slug)) {
+    console.warn('  ⚠ Skipping a Supabase post with an invalid slug.');
+    return null;
+  }
+  const date = toDateOnly(row.published_at || row.created_at);
+  if (!date) {
+    console.warn('  ⚠ Skipping a Supabase post without a valid publish date.');
+    return null;
+  }
+  const updated = toDateOnly(row.updated_at || row.published_at || row.created_at) || date;
+  const title = String(row.title || slug);
+  const body = String(row.content_md || '');
+  return {
+    slug: slug,
+    title: title,
+    seoTitle: String(row.seo_title || (title + ' | Neelam Dhiman')),
+    description: String(row.seo_description || row.excerpt || ''),
+    category: String(row.category || ''),
+    date: date,
+    updated: updated,
+    tags: Array.isArray(row.tags) ? row.tags.map(String).filter(Boolean) : [],
+    featured: false,
+    cover: row.cover_image ? String(row.cover_image) : null,
+    coverAlt: String(row.cover_alt || ''),
+    html: mdToHtml(body),
+    readingTime: readingTime(body),
+    dateObj: new Date(date + 'T00:00:00'),
+    updatedObj: new Date(updated + 'T00:00:00'),
+  };
+}
+
+// Fetch published posts from Supabase. Missing env vars or any failure fall
+// back to local Markdown only, and never crash the build.
+async function loadRemotePosts() {
+  if (!REMOTE_ENABLED) return [];
+  const endpoint = `${SUPABASE_URL}/rest/v1/posts?status=eq.published&select=*&order=published_at.desc`;
+  try {
+    const options = {
+      headers: {
+        apikey: SUPABASE_PUBLISHABLE_KEY,
+        Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      },
+    };
+    if (typeof AbortSignal.timeout === 'function') {
+      options.signal = AbortSignal.timeout(10000);
+    }
+    const response = await fetch(endpoint, options);
+    if (!response.ok) {
+      console.warn(`  ! Supabase posts unavailable (${response.status}); building from local Markdown only.`);
+      return [];
+    }
+    const rows = await response.json();
+    if (!Array.isArray(rows)) throw new Error('Unexpected Supabase response');
+    return rows.map(remotePostFromRow).filter(Boolean);
+  } catch (_) {
+    console.warn('  ! Supabase posts unavailable; building from local Markdown only.');
+    return [];
+  }
+}
+
+async function loadPosts() {
+  const local = loadLocalPosts();
+  const remote = await loadRemotePosts();
+  const bySlug = new Map();
+  local.forEach(post => bySlug.set(post.slug, post));
+  remote.forEach(post => {
+    if (bySlug.has(post.slug)) {
+      console.warn(`  ⚠ Duplicate slug "${post.slug}": keeping the local Markdown post.`);
+      return;
+    }
+    bySlug.set(post.slug, post);
+  });
+  return Array.from(bySlug.values()).sort((a, b) => {
+    return (b.dateObj - a.dateObj) || a.slug.localeCompare(b.slug);
+  });
+}
+
+// Remove generated post directories that are no longer published. Only pages
+// carrying the build marker are touched, so hand-written folders are safe.
+function cleanupStalePosts(posts) {
+  if (!fs.existsSync(BLOG_OUT)) return;
+  const keep = new Set(posts.map(post => post.slug));
+  for (const entry of fs.readdirSync(BLOG_OUT, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    if (entry.name === 'src' || entry.name === 'assets') continue;
+    if (keep.has(entry.name)) continue;
+    const indexFile = path.join(BLOG_OUT, entry.name, 'index.html');
+    if (!fs.existsSync(indexFile)) continue;
+    const content = fs.readFileSync(indexFile, 'utf8');
+    if (content.includes('name="generator" content="build-blog"')) {
+      fs.rmSync(path.join(BLOG_OUT, entry.name), { recursive: true, force: true });
+      console.log(`  ✓ removed stale blog/${entry.name}/`);
+    }
+  }
 }
 
 // Generate listing page
@@ -184,10 +326,10 @@ function generateListing(posts) {
   if (featured) {
     featuredHtml = '' +
       '<article class="blog-featured reveal">' +
-        (featured.cover ? '<div class="blog-featured__cover"><img src="' + featured.cover + '" alt="" loading="lazy"></div>' :
-          '<div class="blog-featured__cover blog-featured__cover--placeholder" style="--tag-color: var(--accent)">' + (featured.tags[0] || 'Blog') + '</div>') +
+        (featured.cover ? '<div class="blog-featured__cover"><img src="' + escapeHtml(featured.cover) + '" alt="' + escapeHtml(featured.coverAlt || '') + '" loading="lazy"></div>' :
+          '<div class="blog-featured__cover blog-featured__cover--placeholder" style="--tag-color: var(--accent)">' + escapeHtml(featured.tags[0] || 'Blog') + '</div>') +
         '<div class="blog-featured__content">' +
-          '<span class="blog-featured__tag">' + featured.tags.map(t => '<a href="/blog/?tag=' + encodeURIComponent(t) + '">' + t + '</a>').join(', ') + '</span>' +
+          '<span class="blog-featured__tag">' + featured.tags.map(t => '<a href="/blog/?tag=' + encodeURIComponent(t) + '">' + escapeHtml(t) + '</a>').join(', ') + '</span>' +
           '<h2><a href="/blog/' + featured.slug + '/">' + escapeHtml(featured.title) + '</a></h2>' +
           '<p class="blog-featured__excerpt">' + escapeHtml(featured.description) + '</p>' +
           '<div class="blog-featured__meta">' +
@@ -201,10 +343,10 @@ function generateListing(posts) {
 
   const cardsHtml = posts.map(p => '' +
     '<article class="blog-card reveal reveal-scale">' +
-      (p.cover ? '<div class="blog-card__cover"><img src="' + p.cover + '" alt="" loading="lazy"></div>' :
-        '<div class="blog-card__cover blog-card__cover--placeholder" style="--tag-color: var(--accent)">' + (p.tags[0] || 'Blog') + '</div>') +
+      (p.cover ? '<div class="blog-card__cover"><img src="' + escapeHtml(p.cover) + '" alt="' + escapeHtml(p.coverAlt || '') + '" loading="lazy"></div>' :
+        '<div class="blog-card__cover blog-card__cover--placeholder" style="--tag-color: var(--accent)">' + escapeHtml(p.tags[0] || 'Blog') + '</div>') +
       '<div class="blog-card__content">' +
-        '<span class="blog-card__tag">' + p.tags.map(t => '<a href="/blog/?tag=' + encodeURIComponent(t) + '">' + t + '</a>').join(', ') + '</span>' +
+        '<span class="blog-card__tag">' + p.tags.map(t => '<a href="/blog/?tag=' + encodeURIComponent(t) + '">' + escapeHtml(t) + '</a>').join(', ') + '</span>' +
         '<h3><a href="/blog/' + p.slug + '/">' + escapeHtml(p.title) + '</a></h3>' +
         '<p class="blog-card__excerpt">' + escapeHtml(p.description) + '</p>' +
         '<div class="blog-card__meta">' +
@@ -326,9 +468,10 @@ function generatePosts(posts) {
 
     let html = postTpl
       .replace('{{TITLE}}', escapeHtml(post.title))
+      .replace('{{SEO_TITLE}}', escapeHtml(post.seoTitle || post.title))
       .replace('{{DESCRIPTION}}', escapeHtml(post.description))
       .replace('{{CANONICAL}}', SITE_URL + '/blog/' + post.slug + '/')
-      .replace('{{OG_IMAGE}}', post.cover || SITE_URL + '/assets/og-image.png')
+      .replace('{{OG_IMAGE}}', escapeHtml(post.cover || SITE_URL + '/assets/og-image.png'))
       .replace('{{OG_URL}}', SITE_URL + '/blog/' + post.slug + '/')
       .replace('{{DATE}}', formatDate(post.date))
       .replace('{{DATE_ISO}}', formatDateTime(post.date))
@@ -336,7 +479,7 @@ function generatePosts(posts) {
       .replace('{{UPDATED_ISO}}', formatDateTime(post.updated))
       .replace('{{READING_TIME}}', post.readingTime)
       .replace('{{TAGS}}', post.tags.map(t => '<a href="/blog/?tag=' + encodeURIComponent(t) + '">' + escapeHtml(t) + '</a>').join(''))
-      .replace('{{COVER}}', post.cover ? '<img src="' + post.cover + '" alt="" class="blog-cover" loading="lazy">' : '')
+      .replace('{{COVER}}', post.cover ? '<img src="' + escapeHtml(post.cover) + '" alt="' + escapeHtml(post.coverAlt || '') + '" class="blog-cover" loading="lazy">' : '')
       .replace('{{TOC}}', tocHtml)
       .replace('{{CONTENT}}', post.html)
       .replace('{{RELATED}}', related.map(r => '' +
@@ -346,8 +489,8 @@ function generatePosts(posts) {
         '</article>').join(''))
       .replace('{{PREV}}', prev ? '<a href="/blog/' + prev.slug + '/" class="blog-nav__link"><i data-lucide="chevron-left"></i> ' + escapeHtml(prev.title) + '</a>' : '')
       .replace('{{NEXT}}', next ? '<a href="/blog/' + next.slug + '/" class="blog-nav__link">' + escapeHtml(next.title) + ' <i data-lucide="chevron-right"></i></a>' : '')
-      .replace('{{JSON_LD}}', JSON.stringify(jsonLd))
-      .replace('{{BREADCRUMB_LD}}', JSON.stringify(breadcrumbLd))
+      .replace('{{JSON_LD}}', jsonForScript(jsonLd))
+      .replace('{{BREADCRUMB_LD}}', jsonForScript(breadcrumbLd))
       .replace('{{SITE_URL}}', SITE_URL);
 
     fs.writeFileSync(path.join(outDir, 'index.html'), html);
@@ -408,10 +551,11 @@ function updateSitemap(posts) {
   // Build blog URLs only when posts exist
   const blogUrls = [];
   if (posts.length > 0) {
+    const latest = posts.reduce((max, p) => (p.updated > max ? p.updated : max), '') || TODAY;
     // Add /blog/ listing page
     blogUrls.push({
       loc: SITE_URL + '/blog/',
-      lastmod: TODAY,
+      lastmod: latest,
       changefreq: 'weekly',
       priority: '0.8'
     });
@@ -498,8 +642,9 @@ function updateHomepageLatest(posts) {
 // Main
 async function main() {
   console.log('Building blog...');
-  const posts = loadPosts();
+  const posts = await loadPosts();
   console.log('  Found ' + posts.length + ' published post(s)');
+  cleanupStalePosts(posts);
 
   generateListing(posts);
   generatePosts(posts);
