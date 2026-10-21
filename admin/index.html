@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#FAF5EA" />
+  <title>Admin | Neelam Dhiman</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/admin/admin.css" />
+</head>
+<body>
+  <main class="admin-shell">
+    <header class="admin-brand">
+      <span class="admin-brand__name">Neelam Dhiman</span>
+      <span class="admin-brand__tag">Admin</span>
+    </header>
+
+    <section id="login-panel" class="panel" aria-labelledby="login-heading" hidden>
+      <h1 id="login-heading" tabindex="-1">Sign in</h1>
+      <p class="panel__intro">This area is for the site owner only.</p>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="login-email">Email</label>
+          <input
+            id="login-email"
+            name="email"
+            type="email"
+            autocomplete="username"
+            inputmode="email"
+            autocapitalize="none"
+            spellcheck="false"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input
+            id="login-password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        <button type="submit" id="login-submit" class="btn">Sign in</button>
+      </form>
+
+      <p id="login-error" class="error" role="alert" aria-live="assertive" hidden></p>
+    </section>
+
+    <section id="dashboard-panel" class="panel" aria-labelledby="dashboard-heading" hidden>
+      <h1 id="dashboard-heading" tabindex="-1">Welcome</h1>
+      <p class="panel__intro">
+        Signed in as <strong id="dashboard-email"></strong>
+      </p>
+
+      <button type="button" id="logout" class="btn btn--secondary">Logout</button>
+      <p id="dashboard-status" class="status" role="status" aria-live="polite" hidden></p>
+    </section>
+  </main>
+
+  <script src="/admin/config.js" defer></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"
+    defer
+  ></script>
+  <script src="/admin/admin.js" defer></script>
+</body>
+</html>

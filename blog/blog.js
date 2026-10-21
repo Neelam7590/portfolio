@@ -110,7 +110,10 @@
 
   // --- Post page: Copy code button ---
   function initCodeCopy() {
-    $$('pre', '#blog-content').forEach(pre => {
+    const content = $('#blog-content');
+    if (!content) return;
+
+    $$('pre', content).forEach(pre => {
       if (pre.querySelector('.code-copy-btn')) return;
       const btn = document.createElement('button');
       btn.type = 'button';
