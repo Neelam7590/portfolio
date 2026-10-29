@@ -11,6 +11,10 @@
  *   3. In this Vercel project: Settings → Environment Variables
  *        RESEND_API_KEY  =  re_xxxxxxxxxxxx
  *      (mark it for Production AND Preview, then redeploy)
+ *   4. Optional dashboard inbox: run tools/schema.sql in Supabase, then add
+ *        SUPABASE_URL               =  https://your-project.supabase.co
+ *        SUPABASE_SERVICE_ROLE_KEY  =  service_role key (server only)
+ *      to Vercel for Production AND Preview. Without these, email still works.
  *
  * Sending address: until a domain is verified on Resend, use
  * "onboarding@resend.dev". That only delivers to the account owner's own
@@ -22,6 +26,9 @@ const RESEND_ENDPOINT = "https://api.resend.com/emails";
 
 const MAIL_TO = process.env.MAIL_TO || "neelxm08@gmail.com";
 const MAIL_FROM = process.env.MAIL_FROM || "Portfolio <onboarding@resend.dev>";
+
+const SUPABASE_URL = String(process.env.SUPABASE_URL || "").replace(/\/+$/, "");
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MAX_NAME = 80;
@@ -49,18 +56,39 @@ function escapeHtml(value) {
   })[ch]);
 }
 
+async function saveMessageToSupabase({ name, email, message }) {
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) return false;
+  try {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/messages`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        message,
+        source: "contact",
+      }),
+    });
+    if (!response.ok) {
+      console.error("Supabase message save failed", response.status, await response.text());
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error("Supabase message save failed", error);
+    return false;
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ ok: false, error: "Method not allowed." });
-  }
-
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({
-      ok: false,
-      error: "Email is not set up yet. Please email directly instead.",
-    });
   }
 
   // Bot trap: a hidden field that only automated form-fillers will fill in.
@@ -90,6 +118,16 @@ export default async function handler(req, res) {
     return res.status(429).json({
       ok: false,
       error: "That is a lot of messages at once. Please try again in a few minutes.",
+    });
+  }
+
+  const saved = await saveMessageToSupabase({ name, email, message });
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    if (saved) return res.status(200).json({ ok: true, saved: true, emailed: false });
+    return res.status(500).json({
+      ok: false,
+      error: "Email is not set up yet. Please email directly instead.",
     });
   }
 
@@ -130,15 +168,17 @@ export default async function handler(req, res) {
     if (!resendResponse.ok) {
       const detail = await resendResponse.text();
       console.error("Resend error", resendResponse.status, detail);
+      if (saved) return res.status(200).json({ ok: true, saved: true, emailed: false });
       return res.status(502).json({
         ok: false,
         error: "Could not send that just now. Please email directly instead.",
       });
     }
 
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true, saved, emailed: true });
   } catch (error) {
     console.error("Contact form failure", error);
+    if (saved) return res.status(200).json({ ok: true, saved: true, emailed: false });
     return res.status(502).json({
       ok: false,
       error: "Could not send that just now. Please email directly instead.",
