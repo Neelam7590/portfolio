@@ -1076,6 +1076,32 @@
             : el("ul", { className: "message-preview-list" }, messages.map(messagePreview))
       ]);
 
+      var recentProjectsCard = el("section", { className: "card", "aria-labelledby": "h-recent-projects" }, [
+        el("div", { className: "card__head" }, [
+          el("h2", { id: "h-recent-projects", text: "Recent projects" }),
+          el("a", { className: "card-link", href: "#/projects", text: "View all →" })
+        ]),
+        projects.length === 0
+          ? el("p", { className: "empty-message", text: "No projects yet. Add your first project." })
+          : el("ul", { className: "project-mini-list" }, projects.slice(0, 3).map(function (project) {
+            var isVisible = project.is_visible !== false;
+            var meta = [project.category, project.year].filter(Boolean).join(" · ");
+            return el("li", { className: "project-mini" }, [
+              el("a", {
+                className: "project-mini__main",
+                href: project.id ? "#/projects/" + encodeURIComponent(project.id) : "#/projects"
+              }, [
+                el("strong", { className: "project-mini__title", text: project.title || "Untitled project" }),
+                el("span", { className: "project-mini__meta", text: meta || "Project" })
+              ]),
+              el("span", {
+                className: "project-mini__status" + (isVisible ? "" : " is-hidden"),
+                text: isVisible ? "Live" : "Hidden"
+              })
+            ]);
+          }))
+      ]);
+
       var quickCard = el("section", { className: "card", "aria-labelledby": "h-quick" }, [
         el("div", { className: "card__head" }, [el("h2", { id: "h-quick", text: "Quick actions" })]),
         el("div", { className: "quick" }, [
@@ -1087,9 +1113,7 @@
         ])
       ]);
 
-      view.appendChild(el("div", { className: "dash-grid" }, [messagesCard, quickCard]));
-
-      view.appendChild(el("section", { className: "card" }, [
+      var lastUpdatedCard = el("section", { className: "card" }, [
         el("div", { className: "card__head" }, [el("h2", { text: "Last updated" })]),
         el("ul", { className: "meta-list" }, [
           el("li", null, [el("strong", { text: "Projects" }), el("span", { className: "muted", text: formatDate(projectDate) })]),
@@ -1097,7 +1121,11 @@
           el("li", null, [el("strong", { text: "Stats" }), el("span", { className: "muted", text: "Not tracked" })]),
           el("li", null, [el("strong", { text: "Settings" }), el("span", { className: "muted", text: formatDate(settingsDate) })])
         ])
-      ]));
+      ]);
+
+      var leftColumn = el("div", { className: "dash-stack" }, [messagesCard, recentProjectsCard]);
+      var rightColumn = el("div", { className: "dash-stack" }, [quickCard, lastUpdatedCard]);
+      view.appendChild(el("div", { className: "dash-grid" }, [leftColumn, rightColumn]));
     } catch (error) {
       if (token !== viewToken) return;
       loading.remove();
