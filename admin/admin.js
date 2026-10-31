@@ -3660,7 +3660,46 @@
       sectionsStatus
     ]);
 
-    view.appendChild(el("div", { className: "settings-grid" }, [heroCard, socialCard, visionCard, sectionsCard]));
+    var passwordCurrentInput = el("input", { type: "password", autocomplete: "current-password", "aria-label": "Current password" });
+    var passwordNewInput = el("input", { type: "password", autocomplete: "new-password", "aria-label": "New password" });
+    var passwordConfirmInput = el("input", { type: "password", autocomplete: "new-password", "aria-label": "Confirm new password" });
+    var passwordStatus = el("p", { className: "inline-status", role: "status", "aria-live": "polite", hidden: true });
+    var savePasswordButton = el("button", { type: "button", className: "btn btn--primary", text: "Save" });
+    savePasswordButton.addEventListener("click", async function () {
+      var current = passwordCurrentInput.value;
+      var newPassword = passwordNewInput.value;
+      var confirm = passwordConfirmInput.value;
+      if (!current || !newPassword || !confirm) { showToast("All fields are required", true); return; }
+      if (newPassword.length < 8) { showToast("New password must be at least 8 characters", true); return; }
+      if (newPassword !== confirm) { showToast("New passwords do not match", true); return; }
+      if (newPassword === current) { showToast("New password must differ from current", true); return; }
+      savePasswordButton.disabled = true;
+      try {
+        var email = currentSession && currentSession.user ? currentSession.user.email : "";
+        var verify = await client.auth.signInWithPassword({ email: email, password: current });
+        if (verify.error) { showToast("Current password is wrong", true); return; }
+        var upd = await client.auth.updateUser({ password: newPassword });
+        if (upd.error) { showToast(upd.error.message || "Could not change password", true); return; }
+        showToast("Password changed", false);
+        passwordCurrentInput.value = "";
+        passwordNewInput.value = "";
+        passwordConfirmInput.value = "";
+      } catch (e) {
+        showToast((e && e.message) ? e.message : "Could not change password", true);
+      } finally {
+        savePasswordButton.disabled = false;
+      }
+    });
+    var passwordCard = el("section", { className: "card settings-card" }, [
+      el("div", { className: "card__head" }, [el("h2", { text: "Change Password" })]),
+      el("div", { className: "field" }, [el("label", { text: "Current password" }), passwordCurrentInput]),
+      el("div", { className: "field" }, [el("label", { text: "New password" }), passwordNewInput]),
+      el("div", { className: "field" }, [el("label", { text: "Confirm new password" }), passwordConfirmInput]),
+      el("div", { className: "form-actions" }, [savePasswordButton]),
+      passwordStatus
+    ]);
+
+    view.appendChild(el("div", { className: "settings-grid" }, [heroCard, socialCard, visionCard, sectionsCard, passwordCard]));
     drawChips();
     drawSocialLinks();
     drawSections();
