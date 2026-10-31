@@ -23,6 +23,25 @@
   var topbarEmail = document.getElementById("dashboard-email");
   var logoutButton = document.getElementById("logout");
   var publishButton = document.getElementById("publish-btn");
+  if (publishButton) {
+    publishButton.addEventListener("click", async function () {
+      publishButton.disabled = true;
+      var originalText = publishButton.textContent;
+      publishButton.textContent = "Publishing...";
+      try {
+        var token = currentSession && currentSession.access_token ? currentSession.access_token : "";
+        var res = await fetch("/api/publish", { method: "POST", headers: { Authorization: "Bearer " + token } });
+        if (res.status === 401) { sessionExpired(); return; }
+        if (!res.ok) throw new Error("publish failed");
+        showToast("Publishing started. The site updates in about 1-2 minutes.", false);
+      } catch (e) {
+        showToast("Publish failed. Please try again.", true);
+      } finally {
+        publishButton.disabled = false;
+        publishButton.textContent = originalText;
+      }
+    });
+  }
   var menuToggle = document.getElementById("menu-toggle");
   var sidebarOverlay = document.getElementById("sidebar-overlay");
   var toastEl = document.getElementById("toast");
