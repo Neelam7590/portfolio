@@ -118,7 +118,31 @@ function region(html,name){
     // STATS: skip auto
     const st=region(html,'STATS');
     if(st==='dup'||!st){results.push('STATS: SKIPPED ('+(st==='dup'?'duplicate':'no markers')+')');}
-    else{results.push('STATS: SKIPPED (template detection not implemented)');}
+    else{
+      const stInner=html.slice(st.i+st.s.length,st.j);
+      const statMatch=stInner.match(/<div class="skill-stat[^>]*>[\s\S]*?<\/div>/);
+      if(!statMatch){results.push('STATS: SKIPPED (no template)');}
+      else if(!Array.isArray(stats)||!stats.length){results.push('STATS: SKIPPED (no data)');}
+      else{
+        const tpl=statMatch[0];
+        const out=stats.map(row=>{
+          const val=String(row.value||'');
+          const num=val.replace(/[^0-9]/g,'');
+          const suffix=val.replace(/[0-9]/g,'');
+          let t=tpl;
+          t=t.replace(/data-target="[^"]*"/,'data-target="'+num+'"');
+          t=t.replace(/data-suffix="[^"]*"/,'data-suffix="'+esc(suffix)+'"');
+          if(String(row.label||'').trim().toLowerCase()==='projects built'){
+            if(!/data-from-projects/.test(t))t=t.replace(/data-suffix="[^"]*"/,'$& data-from-projects');
+          }else{t=t.replace(/\s*data-from-projects/g,'');}
+          t=t.replace(/(<span class="skill-stat__number"[^>]*>)[^<]*(<\/span>)/,'$1'+esc(val)+'$2');
+          t=t.replace(/(<span class="skill-stat__label">)[^<]*(<\/span>)/,'$1'+esc(row.label)+'$2');
+          return t;
+        }).join('\n\n          ');
+        html=html.slice(0,st.i+st.s.length)+'\n          '+out+'\n        '+html.slice(st.j);
+        results.push('STATS: FILLED ('+stats.length+')');
+      }
+    }
 
     // ABOUT
     const about=setMap.about||{};
