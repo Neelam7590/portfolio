@@ -16,3 +16,4 @@ Thumbs.db
 
 # Unused leftovers from an earlier experiment — not part of the site.
 replit-logo/
+.build-preview/

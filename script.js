@@ -247,6 +247,18 @@ const projects = [
   },
 ];
 
+// CMS override: use build-time projects JSON when present
+try {
+  const __cmsProjectsEl = document.getElementById('cms-projects');
+  if (__cmsProjectsEl) {
+    const __cmsProjects = JSON.parse(__cmsProjectsEl.textContent);
+    if (Array.isArray(__cmsProjects) && __cmsProjects.length) {
+      projects.length = 0;
+      projects.push.apply(projects, __cmsProjects);
+    }
+  }
+} catch (e) {}
+
 /* Real pixel dimensions of every project screenshot (read from the JPEG
    headers). Emitted as width/height on each <img> so the browser can hold
    the correct layout box before the file downloads — no layout shift. */
@@ -2095,7 +2107,15 @@ initEmailLinks();
     // starts there on every page load, so the location line is what a visitor
     // (and a crawler reading the rendered text) meets first. The remaining
     // phrases are unchanged and still cycle as before.
-    const words = [
+    const words = (function () {
+      try {
+        const __r = document.getElementById('cms-roles');
+        if (__r) {
+          const __d = JSON.parse(__r.textContent);
+          if (Array.isArray(__d) && __d.length) return __d;
+        }
+      } catch (e) {}
+      return [
       'Web Developer in Kaithal, Haryana',
       'Web Developer',
       'Aspiring Full Stack Developer',
@@ -2104,6 +2124,7 @@ initEmailLinks();
       'Social Media Management',
       'AI Content Creation'
     ];
+    })();
 
   // Less-motion users: no animation, just list them all at once.
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

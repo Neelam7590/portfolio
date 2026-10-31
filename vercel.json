@@ -1,7 +1,11 @@
 {
   "outputDirectory": ".",
+  "buildCommand": "node scripts/build-site.js",
   "functions": {
     "api/contact.js": {
+      "maxDuration": 30
+    },
+    "api/publish.js": {
       "maxDuration": 30
     }
   },
