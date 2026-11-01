@@ -50,6 +50,7 @@
 
   var client = null;
   var currentSession = null;
+  var currentShownUserId = null;
   var currentHash = "";
   var currentRouteName = "dashboard";
   var viewToken = 0;
@@ -459,6 +460,7 @@
 
   function showApp(session, moveFocus) {
     currentSession = session;
+    currentShownUserId = session && session.user ? session.user.id : null;
     hideToast();
     if (loginPanel) loginPanel.hidden = true;
     if (appShell) appShell.hidden = false;
@@ -561,8 +563,14 @@
       });
 
     client.auth.onAuthStateChange(function (event, session) {
-      if (event === "SIGNED_IN" && session && session.user) showApp(session, true);
-      else if (event === "SIGNED_OUT") showLogin(true);
+      if (event === "SIGNED_OUT") { currentShownUserId = null; showLogin(true); return; }
+      if (session && session.user && (event === "SIGNED_IN" || event === "TOKEN_REFRESHED")) {
+        if (currentShownUserId === session.user.id && appShell && !appShell.hidden) {
+          currentSession = session;
+          return;
+        }
+        showApp(session, true);
+      }
     });
   }
 
