@@ -155,19 +155,19 @@ function region(html,name){
     const ah=region(html,'ABOUT_HEADING');
     if(ah==='dup'||!ah){results.push('ABOUT_HEADING: SKIPPED ('+(ah==='dup'?'duplicate':'no markers')+')');}
     else{
-      const inner=html.slice(ah.i+ah.s.length,ah.j);
-      if(/<[a-z]/i.test(inner.replace(/<!--.*?-->/g,''))){/* check raw inner for tags excluding markers */
-        // allow only if it matches expected span? We still replace with highlight.
+      if(!about.heading){results.push('ABOUT_HEADING: SKIPPED (no data)');}
+      else{
+        html=html.slice(0,ah.i+ah.s.length)+highlight(about.heading)+html.slice(ah.j);
+        results.push('ABOUT_HEADING: FILLED');
       }
-      html=html.slice(0,ah.i+ah.s.length)+highlight(about.heading||'')+html.slice(ah.j);
-      results.push('ABOUT_HEADING: FILLED');
     }
     const asu=region(html,'ABOUT_SUBTITLE');
     if(asu==='dup'||!asu){results.push('ABOUT_SUBTITLE: SKIPPED ('+(asu==='dup'?'duplicate':'no markers')+')');}
     else{
       const inner=html.slice(asu.i+asu.s.length,asu.j);
       if(/<[a-z]/i.test(inner)){results.push('ABOUT_SUBTITLE: SKIPPED (inline tags)');}
-      else{html=html.slice(0,asu.i+asu.s.length)+esc(about.subtitle||'')+html.slice(asu.j);results.push('ABOUT_SUBTITLE: FILLED');}
+      else if(!about.subtitle){results.push('ABOUT_SUBTITLE: SKIPPED (no data)');}
+      else{html=html.slice(0,asu.i+asu.s.length)+esc(about.subtitle)+html.slice(asu.j);results.push('ABOUT_SUBTITLE: FILLED');}
     }
     const ast=region(html,'ABOUT_STORY');
     if(ast==='dup'||!ast){results.push('ABOUT_STORY: SKIPPED ('+(ast==='dup'?'duplicate':'no markers')+')');}
@@ -190,6 +190,32 @@ function region(html,name){
         results.push('ABOUT_STORY: FILLED ('+about.story.length+')');
       }
     }
+    // ABOUT_STORY_TITLE
+    try {
+      const astt=region(html,'ABOUT_STORY_TITLE');
+      if(astt==='dup'||!astt){results.push('ABOUT_STORY_TITLE: SKIPPED ('+(astt==='dup'?'duplicate':'no markers')+')');}
+      else if(!about.storyTitle){results.push('ABOUT_STORY_TITLE: SKIPPED (no data)');}
+      else{html=html.slice(0,astt.i+astt.s.length)+esc(about.storyTitle)+html.slice(astt.j);results.push('ABOUT_STORY_TITLE: FILLED');}
+    } catch(e){results.push('ABOUT_STORY_TITLE: SKIPPED (error: '+e.message+')');}
+    // ABOUT_INTRO
+    try {
+      const ai=region(html,'ABOUT_INTRO');
+      if(ai==='dup'||!ai){results.push('ABOUT_INTRO: SKIPPED ('+(ai==='dup'?'duplicate':'no markers')+')');}
+      else if(!Array.isArray(about.intro)||!about.intro.filter(Boolean).length){results.push('ABOUT_INTRO: SKIPPED (no data)');}
+      else{
+        const inner=html.slice(ai.i+ai.s.length,ai.j);
+        const pOpen=inner.match(/<p\s+class="about-paragraph"[^>]*>/);
+        if(!pOpen){results.push('ABOUT_INTRO: SKIPPED (no p template)');}
+        else{
+          const tpl=pOpen[0];
+          const escBold=function(s){return esc(s).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');};
+          const items=about.intro.filter(function(x){return String(x||'').trim()!=='';});
+          const out=items.map(function(p){return tpl+escBold(p)+'</p>';}).join('\n\n            ');
+          html=html.slice(0,ai.i+ai.s.length)+'\n            '+out+'\n          '+html.slice(ai.j);
+          results.push('ABOUT_INTRO: FILLED ('+items.length+')');
+        }
+      }
+    } catch(e){results.push('ABOUT_INTRO: SKIPPED (error: '+e.message+')');}
     const pr=region(html,'PROJECTS');
     if(pr==='dup'||!pr){results.push('PROJECTS: SKIPPED ('+(pr==='dup'?'duplicate':'no markers')+')');}
     else{results.push('PROJECTS: FILLED (cms-projects embedded)');}
