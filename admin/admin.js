@@ -3808,7 +3808,92 @@
       aboutStatus
     ]);
 
-    view.appendChild(el("div", { className: "settings-grid" }, [heroCard, socialCard, visionCard, sectionsCard, passwordCard, aboutCard]));
+    var skills = settings.skills || {};
+    var skillsStatus = el("p", { className: "inline-status", role: "status", "aria-live": "polite", hidden: true });
+    var skillsEyebrowInput = el("input", { type: "text", value: skills.eyebrow || "", autocomplete: "off", "aria-label": "Small label" });
+    skillsEyebrowInput.placeholder = "empty = keep current website text";
+    var skillsTitleInput = el("input", { type: "text", value: skills.title || "", autocomplete: "off", "aria-label": "Section heading" });
+    skillsTitleInput.placeholder = "empty = keep current website text";
+    var skillsGroup1Input = el("input", { type: "text", value: skills.group1Title || "", autocomplete: "off", "aria-label": "First group heading" });
+    skillsGroup1Input.placeholder = "empty = keep current website text";
+    var skillsGroup2Input = el("input", { type: "text", value: skills.group2Title || "", autocomplete: "off", "aria-label": "Second group heading" });
+    skillsGroup2Input.placeholder = "empty = keep current website text";
+    var skillCards = Array.isArray(skills.cards) ? skills.cards.map(function (c) { return { title: String((c && c.title) || ""), text: String((c && c.text) || "") }; }) : [];
+    var skillCardsList = el("div", { className: "social-list" });
+    var addSkillCardBtn = el("button", { type: "button", className: "btn btn--secondary btn--small", text: "Add card" });
+    var saveSkillsBtn = el("button", { type: "button", className: "btn", text: "Save what I do" });
+    function drawSkillCards() {
+      clearNode(skillCardsList);
+      if (skillCards.length === 0) {
+        skillCardsList.appendChild(el("p", { className: "field-hint", text: "No cards. Add one; empty = keep current website text." }));
+        return;
+      }
+      skillCards.forEach(function (card, index) {
+        var titleInput = el("input", { type: "text", value: card.title, autocomplete: "off", "aria-label": "Card title " + (index + 1) });
+        titleInput.placeholder = "empty = keep current website text";
+        var textInput = el("textarea", { rows: "3", "aria-label": "Card description " + (index + 1) });
+        textInput.value = card.text;
+        textInput.placeholder = "empty = keep current website text";
+        titleInput.addEventListener("input", function () { card.title = titleInput.value; });
+        textInput.addEventListener("input", function () { card.text = textInput.value; });
+        var up = iconButton("up", "Move up");
+        var down = iconButton("down", "Move down");
+        up.disabled = index === 0;
+        down.disabled = index === skillCards.length - 1;
+        up.addEventListener("click", function () { var m = skillCards[index]; skillCards[index] = skillCards[index - 1]; skillCards[index - 1] = m; drawSkillCards(); });
+        down.addEventListener("click", function () { var m = skillCards[index]; skillCards[index] = skillCards[index + 1]; skillCards[index + 1] = m; drawSkillCards(); });
+        var remove = iconButton("trash", "Delete", "is-danger");
+        remove.addEventListener("click", function () { skillCards.splice(index, 1); drawSkillCards(); });
+        skillCardsList.appendChild(el("div", { className: "social-row" }, [
+          el("div", { className: "social-row__order" }, [up, down]),
+          el("div", { className: "field field--wide" }, [el("label", { text: "Title" }), titleInput]),
+          el("div", { className: "field field--wide" }, [el("label", { text: "Description" }), textInput]),
+          remove
+        ]));
+      });
+    }
+    drawSkillCards();
+    addSkillCardBtn.addEventListener("click", function () { skillCards.push({ title: "", text: "" }); drawSkillCards(); });
+    saveSkillsBtn.addEventListener("click", async function () {
+      saveSkillsBtn.disabled = true;
+      setStatus(skillsStatus, "Saving what I do…", false);
+      try {
+        var payload = {};
+        try { if (skills && typeof skills === "object") { for (var k in skills) { if (Object.prototype.hasOwnProperty.call(skills, k)) payload[k] = skills[k]; } } } catch (e) {}
+        var ey = skillsEyebrowInput.value;
+        var ti = skillsTitleInput.value;
+        var g1 = skillsGroup1Input.value;
+        var g2 = skillsGroup2Input.value;
+        var cleaned = skillCards.map(function (c) { return { title: String(c.title || ""), text: String(c.text || "") }; }).filter(function (c) { return c.title.trim() !== "" || c.text.trim() !== ""; });
+        if (ey.trim() !== "") payload.eyebrow = ey; else delete payload.eyebrow;
+        if (ti.trim() !== "") payload.title = ti; else delete payload.title;
+        if (g1.trim() !== "") payload.group1Title = g1; else delete payload.group1Title;
+        if (g2.trim() !== "") payload.group2Title = g2; else delete payload.group2Title;
+        if (cleaned.length) payload.cards = cleaned; else delete payload.cards;
+        await saveSettingValue("skills", payload);
+        setStatus(skillsStatus, "What I do saved.", false);
+        showToast("What I do saved.", false);
+      } catch (error) {
+        if (error.message !== SESSION_MESSAGE) { setStatus(skillsStatus, error.message, true); showToast(error.message, true); }
+      } finally {
+        saveSkillsBtn.disabled = false;
+      }
+    });
+    var skillsCard = el("section", { className: "card settings-card settings-card--wide" }, [
+      el("div", { className: "card__head" }, [el("h2", { text: "What I Do" })]),
+      el("p", { className: "field-hint", text: "The first 3 cards appear under the first heading, the rest under the second heading." }),
+      el("div", { className: "form-grid" }, [
+        el("div", { className: "field field--wide" }, [el("label", { text: "Small label" }), skillsEyebrowInput]),
+        el("div", { className: "field field--wide" }, [el("label", { text: "Section heading" }), skillsTitleInput]),
+        el("div", { className: "field field--wide" }, [el("label", { text: "First group heading" }), skillsGroup1Input]),
+        el("div", { className: "field field--wide" }, [el("label", { text: "Second group heading" }), skillsGroup2Input]),
+        el("div", { className: "field field--wide" }, [el("span", { className: "field-label", text: "Cards" }), skillCardsList, el("div", { className: "form-actions" }, [addSkillCardBtn])])
+      ]),
+      el("div", { className: "form-actions" }, [saveSkillsBtn]),
+      skillsStatus
+    ]);
+
+    view.appendChild(el("div", { className: "settings-grid" }, [heroCard, socialCard, visionCard, sectionsCard, passwordCard, aboutCard, skillsCard]));
     drawChips();
     drawSocialLinks();
     drawSections();
