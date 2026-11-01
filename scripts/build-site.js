@@ -216,6 +216,71 @@ function region(html,name){
         }
       }
     } catch(e){results.push('ABOUT_INTRO: SKIPPED (error: '+e.message+')');}
+    // SKILLS
+    const skills=setMap.skills||{};
+    try {
+      const se=region(html,'SKILLS_EYEBROW');
+      if(se==='dup'||!se){results.push('SKILLS_EYEBROW: SKIPPED ('+(se==='dup'?'duplicate':'no markers')+')');}
+      else if(!skills.eyebrow){results.push('SKILLS_EYEBROW: SKIPPED (no data)');}
+      else{html=html.slice(0,se.i+se.s.length)+esc(skills.eyebrow)+html.slice(se.j);results.push('SKILLS_EYEBROW: FILLED');}
+    } catch(e){results.push('SKILLS_EYEBROW: SKIPPED (error: '+e.message+')');}
+    try {
+      const st=region(html,'SKILLS_TITLE');
+      if(st==='dup'||!st){results.push('SKILLS_TITLE: SKIPPED ('+(st==='dup'?'duplicate':'no markers')+')');}
+      else if(!skills.title){results.push('SKILLS_TITLE: SKIPPED (no data)');}
+      else{html=html.slice(0,st.i+st.s.length)+esc(skills.title)+html.slice(st.j);results.push('SKILLS_TITLE: FILLED');}
+    } catch(e){results.push('SKILLS_TITLE: SKIPPED (error: '+e.message+')');}
+    try {
+      const sg1=region(html,'SKILLS_GROUP1');
+      if(sg1==='dup'||!sg1){results.push('SKILLS_GROUP1: SKIPPED ('+(sg1==='dup'?'duplicate':'no markers')+')');}
+      else if(!skills.group1Title){results.push('SKILLS_GROUP1: SKIPPED (no data)');}
+      else{html=html.slice(0,sg1.i+sg1.s.length)+esc(skills.group1Title)+html.slice(sg1.j);results.push('SKILLS_GROUP1: FILLED');}
+    } catch(e){results.push('SKILLS_GROUP1: SKIPPED (error: '+e.message+')');}
+    try {
+      const sg2=region(html,'SKILLS_GROUP2');
+      if(sg2==='dup'||!sg2){results.push('SKILLS_GROUP2: SKIPPED ('+(sg2==='dup'?'duplicate':'no markers')+')');}
+      else if(!skills.group2Title){results.push('SKILLS_GROUP2: SKIPPED (no data)');}
+      else{html=html.slice(0,sg2.i+sg2.s.length)+esc(skills.group2Title)+html.slice(sg2.j);results.push('SKILLS_GROUP2: FILLED');}
+    } catch(e){results.push('SKILLS_GROUP2: SKIPPED (error: '+e.message+')');}
+
+    // SKILLS_CARDS
+    try {
+      const cards = Array.isArray(skills.cards) ? skills.cards : [];
+      if (!cards.length) { results.push('SKILLS_CARDS: SKIPPED (no data)'); }
+      else {
+        const r1 = region(html,'SKILLS_CARDS_1');
+        const r2 = region(html,'SKILLS_CARDS_2');
+        if (r1==='dup'||!r1||r2==='dup'||!r2) { results.push('SKILLS_CARDS: SKIPPED (no markers)'); }
+        else {
+          const inner1 = html.slice(r1.i+r1.s.length, r1.j);
+          const liMatch = inner1.match(/<li class="skill-card[^"]*">[\s\S]*?<\/li>/);
+          if (!liMatch) { results.push('SKILLS_CARDS: SKIPPED (no template)'); }
+          else {
+            const tpl = liMatch[0];
+            // separator between items in original
+            const sep = '\n\n          ';
+            function buildLi(card, num) {
+              let s = tpl;
+              s = s.replace(/<span class="skill-card__num">[\s\S]*?<\/span>/, '<span class="skill-card__num">'+String(num).padStart(2,'0')+'</span>');
+              s = s.replace(/<h3 class="skill-card__title">[\s\S]*?<\/h3>/, '<h3 class="skill-card__title">'+esc(card.title||'')+'</h3>');
+              s = s.replace(/<p class="skill-card__text">[\s\S]*?<\/p>/, '<p class="skill-card__text">'+esc(card.text||'')+'</p>');
+              return s;
+            }
+            const first = cards.slice(0,3);
+            const rest = cards.slice(3);
+            const out1 = first.map((c,i)=>buildLi(c,i+1)).join(sep);
+            const out2 = rest.map((c,i)=>buildLi(c,i+4)).join(sep);
+            // replace region 2 first
+            html = html.slice(0,r2.i+r2.s.length) + '\n          ' + out2 + (out2?'\n          ':'') + html.slice(r2.j);
+            // re-run region 1
+            const r1b = region(html,'SKILLS_CARDS_1');
+            html = html.slice(0,r1b.i+r1b.s.length) + '\n          ' + out1 + (out1?'\n          ':'') + html.slice(r1b.j);
+            results.push('SKILLS_CARDS: FILLED ('+cards.length+' cards)');
+          }
+        }
+      }
+    } catch(e){results.push('SKILLS_CARDS: SKIPPED (error: '+e.message+')');}
+
     const pr=region(html,'PROJECTS');
     if(pr==='dup'||!pr){results.push('PROJECTS: SKIPPED ('+(pr==='dup'?'duplicate':'no markers')+')');}
     else{results.push('PROJECTS: FILLED (cms-projects embedded)');}
