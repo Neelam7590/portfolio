@@ -3773,11 +3773,11 @@
         var st = aboutStoryTitleInput.value;
         var storyClean = storyItems.map(function (t) { return String(t || ""); }).filter(function (t) { return t.trim() !== ""; });
         var introClean = introItems.map(function (t) { return String(t || ""); }).filter(function (t) { return t.trim() !== ""; });
-        if (h.trim() !== "") payload.heading = h;
-        if (su.trim() !== "") payload.subtitle = su;
-        if (st.trim() !== "") payload.storyTitle = st;
-        if (storyClean.length) payload.story = storyClean;
-        if (introClean.length) payload.intro = introClean;
+        if (h.trim() !== "") payload.heading = h; else delete payload.heading;
+        if (su.trim() !== "") payload.subtitle = su; else delete payload.subtitle;
+        if (st.trim() !== "") payload.storyTitle = st; else delete payload.storyTitle;
+        if (storyClean.length) payload.story = storyClean; else delete payload.story;
+        if (introClean.length) payload.intro = introClean; else delete payload.intro;
         await saveSettingValue("about", payload);
         setStatus(aboutStatus, "About saved.", false);
         showToast("About saved.", false);
