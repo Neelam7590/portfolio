@@ -3699,7 +3699,108 @@
       passwordStatus
     ]);
 
-    view.appendChild(el("div", { className: "settings-grid" }, [heroCard, socialCard, visionCard, sectionsCard, passwordCard]));
+    var about = settings.about || {};
+    var aboutStatus = el("p", { className: "inline-status", role: "status", "aria-live": "polite", hidden: true });
+    var aboutHeadingInput = el("input", { type: "text", value: about.heading || "", autocomplete: "off", "aria-label": "About heading" });
+    aboutHeadingInput.placeholder = "empty = keep current website text";
+    var aboutSubtitleInput = el("input", { type: "text", value: about.subtitle || "", autocomplete: "off", "aria-label": "About subtitle" });
+    aboutSubtitleInput.placeholder = "empty = keep current website text";
+    var aboutStoryTitleInput = el("input", { type: "text", value: about.storyTitle || "", autocomplete: "off", "aria-label": "My Story title" });
+    aboutStoryTitleInput.placeholder = "empty = keep current website text";
+    var storyItems = Array.isArray(about.story) ? about.story.slice() : (about.story ? [String(about.story)] : []);
+    var storyList = el("div", { className: "social-list" });
+    var addStoryBtn = el("button", { type: "button", className: "btn btn--secondary btn--small", text: "Add paragraph" });
+    var drawStory = function () {
+      clearNode(storyList);
+      if (storyItems.length === 0) {
+        storyList.appendChild(el("p", { className: "field-hint", text: "No story paragraphs. Add one; empty = keep current website text." }));
+        return;
+      }
+      storyItems.forEach(function (text, index) {
+        var ta = el("textarea", { rows: "3", "aria-label": "Story paragraph " + (index + 1) });
+        ta.value = text || "";
+        ta.placeholder = "empty = keep current website text";
+        ta.addEventListener("input", function () { storyItems[index] = ta.value; });
+        var up = iconButton("up", "Move up");
+        var down = iconButton("down", "Move down");
+        up.disabled = index === 0;
+        down.disabled = index === storyItems.length - 1;
+        up.addEventListener("click", function () { var m = storyItems[index]; storyItems[index] = storyItems[index - 1]; storyItems[index - 1] = m; drawStory(); });
+        down.addEventListener("click", function () { var m = storyItems[index]; storyItems[index] = storyItems[index + 1]; storyItems[index + 1] = m; drawStory(); });
+        var remove = iconButton("trash", "Delete", "is-danger");
+        remove.addEventListener("click", function () { storyItems.splice(index, 1); drawStory(); });
+        storyList.appendChild(el("div", { className: "social-row" }, [el("div", { className: "social-row__order" }, [up, down]), ta, remove]));
+      });
+    };
+    drawStory();
+    addStoryBtn.addEventListener("click", function () { storyItems.push(""); drawStory(); });
+    var introItems = Array.isArray(about.intro) ? about.intro.slice() : [];
+    var introList = el("div", { className: "social-list" });
+    var addIntroBtn = el("button", { type: "button", className: "btn btn--secondary btn--small", text: "Add paragraph" });
+    var saveAboutBtn = el("button", { type: "button", className: "btn", text: "Save about" });
+    function drawIntro() {
+      clearNode(introList);
+      if (introItems.length === 0) {
+        introList.appendChild(el("p", { className: "field-hint", text: "No intro paragraphs. Add one; empty = keep current website text." }));
+        return;
+      }
+      introItems.forEach(function (text, index) {
+        var ta = el("textarea", { rows: "3", "aria-label": "Intro paragraph " + (index + 1) });
+        ta.value = text || "";
+        ta.placeholder = "empty = keep current website text";
+        ta.addEventListener("input", function () { introItems[index] = ta.value; });
+        var up = iconButton("up", "Move up");
+        var down = iconButton("down", "Move down");
+        up.disabled = index === 0;
+        down.disabled = index === introItems.length - 1;
+        up.addEventListener("click", function () { var m = introItems[index]; introItems[index] = introItems[index - 1]; introItems[index - 1] = m; drawIntro(); });
+        down.addEventListener("click", function () { var m = introItems[index]; introItems[index] = introItems[index + 1]; introItems[index + 1] = m; drawIntro(); });
+        var remove = iconButton("trash", "Delete", "is-danger");
+        remove.addEventListener("click", function () { introItems.splice(index, 1); drawIntro(); });
+        introList.appendChild(el("div", { className: "social-row" }, [el("div", { className: "social-row__order" }, [up, down]), ta, remove]));
+      });
+    }
+    drawIntro();
+    addIntroBtn.addEventListener("click", function () { introItems.push(""); drawIntro(); });
+    saveAboutBtn.addEventListener("click", async function () {
+      saveAboutBtn.disabled = true;
+      setStatus(aboutStatus, "Saving about…", false);
+      try {
+        var payload = {};
+        try { if (about && typeof about === "object") { for (var k in about) { if (Object.prototype.hasOwnProperty.call(about, k)) payload[k] = about[k]; } } } catch (e) {}
+        var h = aboutHeadingInput.value;
+        var su = aboutSubtitleInput.value;
+        var st = aboutStoryTitleInput.value;
+        var storyClean = storyItems.map(function (t) { return String(t || ""); }).filter(function (t) { return t.trim() !== ""; });
+        var introClean = introItems.map(function (t) { return String(t || ""); }).filter(function (t) { return t.trim() !== ""; });
+        if (h.trim() !== "") payload.heading = h;
+        if (su.trim() !== "") payload.subtitle = su;
+        if (st.trim() !== "") payload.storyTitle = st;
+        if (storyClean.length) payload.story = storyClean;
+        if (introClean.length) payload.intro = introClean;
+        await saveSettingValue("about", payload);
+        setStatus(aboutStatus, "About saved.", false);
+        showToast("About saved.", false);
+      } catch (error) {
+        if (error.message !== SESSION_MESSAGE) { setStatus(aboutStatus, error.message, true); showToast(error.message, true); }
+      } finally {
+        saveAboutBtn.disabled = false;
+      }
+    });
+    var aboutCard = el("section", { className: "card settings-card settings-card--wide" }, [
+      el("div", { className: "card__head" }, [el("h2", { text: "About section" })]),
+      el("div", { className: "form-grid" }, [
+        el("div", { className: "field field--wide" }, [el("label", { text: "Heading" }), aboutHeadingInput]),
+        el("div", { className: "field field--wide" }, [el("label", { text: "Subtitle" }), aboutSubtitleInput]),
+        el("div", { className: "field field--wide" }, [el("label", { text: "My Story title" }), aboutStoryTitleInput]),
+        el("div", { className: "field field--wide" }, [el("span", { className: "field-label", text: "Story paragraphs" }), storyList, el("div", { className: "form-actions" }, [addStoryBtn])]),
+        el("div", { className: "field field--wide" }, [el("span", { className: "field-label", text: "Intro paragraphs" }), introList, el("div", { className: "form-actions" }, [addIntroBtn])])
+      ]),
+      el("div", { className: "form-actions" }, [saveAboutBtn]),
+      aboutStatus
+    ]);
+
+    view.appendChild(el("div", { className: "settings-grid" }, [heroCard, socialCard, visionCard, sectionsCard, passwordCard, aboutCard]));
     drawChips();
     drawSocialLinks();
     drawSections();
