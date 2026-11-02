@@ -281,6 +281,101 @@ function region(html,name){
       }
     } catch(e){results.push('SKILLS_CARDS: SKIPPED (error: '+e.message+')');}
 
+    // CONTACT
+    const contact=setMap.contact||{};
+    try {
+      const ch=region(html,'CONTACT_HEADING');
+      if(ch==='dup'||!ch){results.push('CONTACT_HEADING: SKIPPED ('+(ch==='dup'?'duplicate':'no markers')+')');}
+      else if(!contact.heading){results.push('CONTACT_HEADING: SKIPPED (no data)');}
+      else{html=html.slice(0,ch.i+ch.s.length)+highlight(contact.heading)+html.slice(ch.j);results.push('CONTACT_HEADING: FILLED');}
+    } catch(e){results.push('CONTACT_HEADING: SKIPPED (error: '+e.message+')');}
+    try {
+      const ci=region(html,'CONTACT_INTRO');
+      if(ci==='dup'||!ci){results.push('CONTACT_INTRO: SKIPPED ('+(ci==='dup'?'duplicate':'no markers')+')');}
+      else if(!contact.intro){results.push('CONTACT_INTRO: SKIPPED (no data)');}
+      else{html=html.slice(0,ci.i+ci.s.length)+esc(contact.intro)+html.slice(ci.j);results.push('CONTACT_INTRO: FILLED');}
+    } catch(e){results.push('CONTACT_INTRO: SKIPPED (error: '+e.message+')');}
+
+    // FOOTER
+    const footer=setMap.footer||{};
+    try {
+      const ft=region(html,'FOOTER_TAGLINE');
+      if(ft==='dup'||!ft){results.push('FOOTER_TAGLINE: SKIPPED ('+(ft==='dup'?'duplicate':'no markers')+')');}
+      else if(!footer.tagline){results.push('FOOTER_TAGLINE: SKIPPED (no data)');}
+      else{html=html.slice(0,ft.i+ft.s.length)+esc(footer.tagline)+html.slice(ft.j);results.push('FOOTER_TAGLINE: FILLED');}
+    } catch(e){results.push('FOOTER_TAGLINE: SKIPPED (error: '+e.message+')');}
+    try {
+      const fl=region(html,'FOOTER_LOCATION');
+      if(fl==='dup'||!fl){results.push('FOOTER_LOCATION: SKIPPED ('+(fl==='dup'?'duplicate':'no markers')+')');}
+      else if(!footer.location){results.push('FOOTER_LOCATION: SKIPPED (no data)');}
+      else{html=html.slice(0,fl.i+fl.s.length)+esc(footer.location)+html.slice(fl.j);results.push('FOOTER_LOCATION: FILLED');}
+    } catch(e){results.push('FOOTER_LOCATION: SKIPPED (error: '+e.message+')');}
+    try {
+      const links = Array.isArray(footer.links) ? footer.links : [];
+      if (!links.length) { results.push('FOOTER_QUICKLINKS: SKIPPED (no data)'); }
+      else {
+        const rq = region(html,'FOOTER_QUICKLINKS');
+        if (rq==='dup'||!rq) { results.push('FOOTER_QUICKLINKS: SKIPPED (no markers)'); }
+        else {
+          const inner = html.slice(rq.i+rq.s.length, rq.j);
+          const tplMatch = inner.match(/<li\b[^>]*>[\s\S]*?<\/li>/);
+          if (!tplMatch) {
+            const aMatch = inner.match(/<a\b[^>]*>[\s\S]*?<\/a>/);
+            if (!aMatch) { results.push('FOOTER_QUICKLINKS: SKIPPED (no template)'); }
+            else {
+              const tpl = aMatch[0];
+              const sep = '\n            ';
+              const out = links.filter(l=>String((l&&l.href)||'').trim()!=='').map(l=>{
+                let s = tpl;
+                // strip target/rel/aria-label from template copy
+                s = s.replace(/\s+target="[^"]*"/g, '');
+                s = s.replace(/\s+rel="[^"]*"/g, '');
+                s = s.replace(/\s+aria-label="[^"]*"/g, '');
+                const href = String(l.href||'');
+                const lower = href.toLowerCase();
+                const external = /^https?:\/\//i.test(href) || lower.endsWith('.pdf');
+                if (external) {
+                  s = s.replace(/class="([^"]*)"/, 'class="$1" target="_blank" rel="noopener"');
+                }
+                if (lower.endsWith('.pdf')) {
+                  s = s.replace(/class="([^"]*)"/, 'class="$1" aria-label="'+esc(l.label||'')+' (PDF)"');
+                }
+                s = s.replace(/href="[^"]*"/, 'href="'+esc(href)+'"');
+                s = s.replace(/>([^<]*)<\/a>/, '>'+esc(l.label||'')+'</a>');
+                return s;
+              }).join(sep);
+              html = html.slice(0,rq.i+rq.s.length)+'\n            '+out+'\n          '+html.slice(rq.j);
+              results.push('FOOTER_QUICKLINKS: FILLED ('+links.length+' links)');
+            }
+          } else {
+            const tpl = tplMatch[0];
+            const sep = '\n            ';
+            const out = links.filter(l=>String((l&&l.href)||'').trim()!=='').map(l=>{
+              let s = tpl;
+              // strip target/rel/aria-label from template copy
+              s = s.replace(/\s+target="[^"]*"/g, '');
+              s = s.replace(/\s+rel="[^"]*"/g, '');
+              s = s.replace(/\s+aria-label="[^"]*"/g, '');
+              const href = String(l.href||'');
+              const lower = href.toLowerCase();
+              const external = /^https?:\/\//i.test(href) || lower.endsWith('.pdf');
+              if (external) {
+                s = s.replace(/class="([^"]*)"/, 'class="$1" target="_blank" rel="noopener"');
+              }
+              if (lower.endsWith('.pdf')) {
+                s = s.replace(/class="([^"]*)"/, 'class="$1" aria-label="'+esc(l.label||'')+' (PDF)"');
+              }
+              s = s.replace(/href="[^"]*"/, 'href="'+esc(href)+'"');
+              s = s.replace(/>([^<]*)<\/a>/, '>'+esc(l.label||'')+'</a>');
+              return s;
+            }).join(sep);
+            html = html.slice(0,rq.i+rq.s.length)+'\n            '+out+'\n          '+html.slice(rq.j);
+            results.push('FOOTER_QUICKLINKS: FILLED ('+links.length+' links)');
+          }
+        }
+      }
+    } catch(e){results.push('FOOTER_QUICKLINKS: SKIPPED (error: '+e.message+')');}
+
     const pr=region(html,'PROJECTS');
     if(pr==='dup'||!pr){results.push('PROJECTS: SKIPPED ('+(pr==='dup'?'duplicate':'no markers')+')');}
     else{results.push('PROJECTS: FILLED (cms-projects embedded)');}

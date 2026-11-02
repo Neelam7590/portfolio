@@ -3893,7 +3893,118 @@
       skillsStatus
     ]);
 
-    view.appendChild(el("div", { className: "settings-grid" }, [heroCard, socialCard, visionCard, sectionsCard, passwordCard, aboutCard, skillsCard]));
+    var contact = settings.contact || {};
+    var contactStatus = el("p", { className: "inline-status", role: "status", "aria-live": "polite", hidden: true });
+    var contactHeadingInput = el("input", { type: "text", value: contact.heading || "", autocomplete: "off", "aria-label": "Contact heading" });
+    contactHeadingInput.placeholder = "empty = keep current website text";
+    var contactIntroInput = el("textarea", { rows: "3", "aria-label": "Contact intro" });
+    contactIntroInput.value = contact.intro || "";
+    contactIntroInput.placeholder = "empty = keep current website text";
+    var saveContactBtn = el("button", { type: "button", className: "btn", text: "Save contact" });
+    saveContactBtn.addEventListener("click", async function () {
+      saveContactBtn.disabled = true;
+      setStatus(contactStatus, "Saving contact…", false);
+      try {
+        var payload = {};
+        try { if (contact && typeof contact === "object") { for (var k in contact) { if (Object.prototype.hasOwnProperty.call(contact, k)) payload[k] = contact[k]; } } } catch (e) {}
+        var h = contactHeadingInput.value;
+        var i = contactIntroInput.value;
+        if (h.trim() !== "") payload.heading = h; else delete payload.heading;
+        if (i.trim() !== "") payload.intro = i; else delete payload.intro;
+        await saveSettingValue("contact", payload);
+        setStatus(contactStatus, "Contact saved.", false);
+        showToast("Contact saved.", false);
+      } catch (error) {
+        if (error.message !== SESSION_MESSAGE) { setStatus(contactStatus, error.message, true); showToast(error.message, true); }
+      } finally {
+        saveContactBtn.disabled = false;
+      }
+    });
+    var contactCard = el("section", { className: "card settings-card settings-card--wide" }, [
+      el("div", { className: "card__head" }, [el("h2", { text: "Contact section" })]),
+      el("p", { className: "field-hint", text: "Wrap words in ** ** to colour them." }),
+      el("div", { className: "form-grid" }, [
+        el("div", { className: "field field--wide" }, [el("label", { text: "Heading" }), contactHeadingInput]),
+        el("div", { className: "field field--wide" }, [el("label", { text: "Intro line" }), contactIntroInput])
+      ]),
+      el("div", { className: "form-actions" }, [saveContactBtn]),
+      contactStatus
+    ]);
+
+    var footer = settings.footer || {};
+    var footerStatus = el("p", { className: "inline-status", role: "status", "aria-live": "polite", hidden: true });
+    var footerTaglineInput = el("textarea", { rows: "3", "aria-label": "Tagline" });
+    footerTaglineInput.value = footer.tagline || "";
+    footerTaglineInput.placeholder = "empty = keep current website text";
+    var footerLocationInput = el("input", { type: "text", value: footer.location || "", autocomplete: "off", "aria-label": "Location" });
+    footerLocationInput.placeholder = "empty = keep current website text";
+    var footerLinks = Array.isArray(footer.links) ? footer.links.map(function (l) { return { label: String((l && l.label) || ""), href: String((l && l.href) || "") }; }) : [];
+    var footerLinksList = el("div", { className: "social-list" });
+    var addFooterLinkBtn = el("button", { type: "button", className: "btn btn--secondary btn--small", text: "Add link" });
+    var saveFooterBtn = el("button", { type: "button", className: "btn", text: "Save footer" });
+    function drawFooterLinks() {
+      clearNode(footerLinksList);
+      if (footerLinks.length === 0) {
+        footerLinksList.appendChild(el("p", { className: "field-hint", text: "No links. Add one; empty = keep current website text." }));
+        return;
+      }
+      footerLinks.forEach(function (link, index) {
+        var labelInput = el("input", { type: "text", value: link.label, autocomplete: "off", "aria-label": "Link name " + (index + 1) });
+        var hrefInput = el("input", { type: "text", value: link.href, autocomplete: "off", "aria-label": "Link href " + (index + 1) });
+        labelInput.addEventListener("input", function () { link.label = labelInput.value; });
+        hrefInput.addEventListener("input", function () { link.href = hrefInput.value; });
+        var up = iconButton("up", "Move up");
+        var down = iconButton("down", "Move down");
+        up.disabled = index === 0;
+        down.disabled = index === footerLinks.length - 1;
+        up.addEventListener("click", function () { var m = footerLinks[index]; footerLinks[index] = footerLinks[index - 1]; footerLinks[index - 1] = m; drawFooterLinks(); });
+        down.addEventListener("click", function () { var m = footerLinks[index]; footerLinks[index] = footerLinks[index + 1]; footerLinks[index + 1] = m; drawFooterLinks(); });
+        var remove = iconButton("trash", "Delete", "is-danger");
+        remove.addEventListener("click", function () { footerLinks.splice(index, 1); drawFooterLinks(); });
+        footerLinksList.appendChild(el("div", { className: "social-row" }, [
+          el("div", { className: "social-row__order" }, [up, down]),
+          el("div", { className: "field field--wide" }, [el("label", { text: "Name" }), labelInput]),
+          el("div", { className: "field field--wide" }, [el("label", { text: "Link" }), hrefInput]),
+          remove
+        ]));
+      });
+    }
+    drawFooterLinks();
+    addFooterLinkBtn.addEventListener("click", function () { footerLinks.push({ label: "", href: "" }); drawFooterLinks(); });
+    saveFooterBtn.addEventListener("click", async function () {
+      saveFooterBtn.disabled = true;
+      setStatus(footerStatus, "Saving footer…", false);
+      try {
+        var payload = {};
+        try { if (footer && typeof footer === "object") { for (var k in footer) { if (Object.prototype.hasOwnProperty.call(footer, k)) payload[k] = footer[k]; } } } catch (e) {}
+        var t = footerTaglineInput.value;
+        var l = footerLocationInput.value;
+        var cleaned = footerLinks.map(function (x) { return { label: String(x.label || ""), href: String(x.href || "") }; }).filter(function (x) { return x.label.trim() !== "" || x.href.trim() !== ""; });
+        if (t.trim() !== "") payload.tagline = t; else delete payload.tagline;
+        if (l.trim() !== "") payload.location = l; else delete payload.location;
+        if (cleaned.length) payload.links = cleaned; else delete payload.links;
+        await saveSettingValue("footer", payload);
+        setStatus(footerStatus, "Footer saved.", false);
+        showToast("Footer saved.", false);
+      } catch (error) {
+        if (error.message !== SESSION_MESSAGE) { setStatus(footerStatus, error.message, true); showToast(error.message, true); }
+      } finally {
+        saveFooterBtn.disabled = false;
+      }
+    });
+    var footerCard = el("section", { className: "card settings-card settings-card--wide" }, [
+      el("div", { className: "card__head" }, [el("h2", { text: "Footer" })]),
+      el("p", { className: "field-hint", text: "Copyright year and email are set automatically and are not edited here." }),
+      el("div", { className: "form-grid" }, [
+        el("div", { className: "field field--wide" }, [el("label", { text: "Tagline" }), footerTaglineInput]),
+        el("div", { className: "field field--wide" }, [el("label", { text: "Location" }), footerLocationInput]),
+        el("div", { className: "field field--wide" }, [el("span", { className: "field-label", text: "Quick links" }), footerLinksList, el("div", { className: "form-actions" }, [addFooterLinkBtn])])
+      ]),
+      el("div", { className: "form-actions" }, [saveFooterBtn]),
+      footerStatus
+    ]);
+
+    view.appendChild(el("div", { className: "settings-grid" }, [heroCard, socialCard, visionCard, sectionsCard, passwordCard, aboutCard, skillsCard, contactCard, footerCard]));
     drawChips();
     drawSocialLinks();
     drawSections();
