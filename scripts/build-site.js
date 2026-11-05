@@ -242,7 +242,55 @@ function region(html,name){
       else if(!skills.group2Title){results.push('SKILLS_GROUP2: SKIPPED (no data)');}
       else{html=html.slice(0,sg2.i+sg2.s.length)+esc(skills.group2Title)+html.slice(sg2.j);results.push('SKILLS_GROUP2: FILLED');}
     } catch(e){results.push('SKILLS_GROUP2: SKIPPED (error: '+e.message+')');}
-
+    // JOURNEY
+    const journey=setMap.journey||{};
+    try {
+      const je=region(html,'JOURNEY_EYEBROW');
+      if(je==='dup'||!je){results.push('JOURNEY_EYEBROW: SKIPPED ('+(je==='dup'?'duplicate':'no markers')+')');}
+      else if(!journey.eyebrow){results.push('JOURNEY_EYEBROW: SKIPPED (no data)');}
+      else{html=html.slice(0,je.i+je.s.length)+esc(journey.eyebrow)+html.slice(je.j);results.push('JOURNEY_EYEBROW: FILLED');}
+    } catch(e){results.push('JOURNEY_EYEBROW: SKIPPED (error: '+e.message+')');}
+    try {
+      const jt=region(html,'JOURNEY_TITLE');
+      if(jt==='dup'||!jt){results.push('JOURNEY_TITLE: SKIPPED ('+(jt==='dup'?'duplicate':'no markers')+')');}
+      else if(!journey.title){results.push('JOURNEY_TITLE: SKIPPED (no data)');}
+      else{html=html.slice(0,jt.i+jt.s.length)+esc(journey.title)+html.slice(jt.j);results.push('JOURNEY_TITLE: FILLED');}
+    } catch(e){results.push('JOURNEY_TITLE: SKIPPED (error: '+e.message+')');}
+    try {
+      const js=region(html,'JOURNEY_SUB');
+      if(js==='dup'||!js){results.push('JOURNEY_SUB: SKIPPED ('+(js==='dup'?'duplicate':'no markers')+')');}
+      else if(!journey.sub){results.push('JOURNEY_SUB: SKIPPED (no data)');}
+      else{html=html.slice(0,js.i+js.s.length)+esc(journey.sub)+html.slice(js.j);results.push('JOURNEY_SUB: FILLED');}
+    } catch(e){results.push('JOURNEY_SUB: SKIPPED (error: '+e.message+')');}
+    try {
+      const jitems=Array.isArray(journey.items)?journey.items.filter(x=>x&&(String(x.title||'').trim()!==''||String(x.year||'').trim()!=='')):[];
+      if(!jitems.length){results.push('JOURNEY: SKIPPED (no data)');}
+      else{
+        const jr=region(html,'JOURNEY');
+        if(jr==='dup'||!jr){results.push('JOURNEY: SKIPPED ('+(jr==='dup'?'duplicate':'no markers')+')');}
+        else{
+          const out=jitems.map(x=>{
+            let badges='<span class="journey-badge">'+esc(x.year||'')+'</span>';
+            if(String(x.badge||'').trim()!==''){
+              const mod=x.badgeType==='score'?' journey-badge--score':(x.badgeType==='live'?' journey-badge--live':'');
+              badges+='\n                  <span class="journey-badge'+mod+'">'+esc(x.badge)+'</span>';
+            }
+            return '            <li class="journey-item">\n'+
+              '              <span class="journey-dot" aria-hidden="true"></span>\n'+
+              '              <article class="journey-card">\n'+
+              '                <div class="journey-badges">\n'+
+              '                  '+badges+'\n'+
+              '                </div>\n'+
+              '                <h3 class="journey-card-title">'+esc(x.title||'')+'</h3>\n'+
+              '                <p class="journey-card-desc">'+esc(x.desc||'')+'</p>\n'+
+              '              </article>\n'+
+              '            </li>';
+          }).join('\n\n');
+          html=html.slice(0,jr.i+jr.s.length)+'\n'+out+'\n          '+html.slice(jr.j);
+          results.push('JOURNEY: FILLED ('+jitems.length+' items)');
+        }
+      }
+    } catch(e){results.push('JOURNEY: SKIPPED (error: '+e.message+')');}
     // SKILLS_CARDS
     try {
       const cards = Array.isArray(skills.cards) ? skills.cards : [];

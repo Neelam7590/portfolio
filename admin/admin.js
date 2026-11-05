@@ -4003,8 +4003,109 @@
       el("div", { className: "form-actions" }, [saveFooterBtn]),
       footerStatus
     ]);
-
-    view.appendChild(el("div", { className: "settings-grid" }, [heroCard, socialCard, visionCard, sectionsCard, passwordCard, aboutCard, skillsCard, contactCard, footerCard]));
+    var journey = settings.journey || {};
+    var journeyStatus = el("p", { className: "inline-status", role: "status", "aria-live": "polite", hidden: true });
+    var journeyEyebrowInput = el("input", { type: "text", value: journey.eyebrow || "", autocomplete: "off", "aria-label": "Journey small label" });
+    journeyEyebrowInput.placeholder = "empty = keep current website text";
+    var journeyTitleInput = el("input", { type: "text", value: journey.title || "", autocomplete: "off", "aria-label": "Journey heading" });
+    journeyTitleInput.placeholder = "empty = keep current website text";
+    var journeySubInput = el("textarea", { rows: "3", "aria-label": "Journey intro line" });
+    journeySubInput.value = journey.sub || "";
+    journeySubInput.placeholder = "empty = keep current website text";
+    var journeyItems = Array.isArray(journey.items) ? journey.items.map(function (it) {
+      return {
+        year: String((it && it.year) || ""),
+        badge: String((it && it.badge) || ""),
+        badgeType: String((it && it.badgeType) || ""),
+        title: String((it && it.title) || ""),
+        desc: String((it && it.desc) || "")
+      };
+    }) : [];
+    var journeyItemsList = el("div", { className: "social-list" });
+    var addJourneyItemBtn = el("button", { type: "button", className: "btn btn--secondary btn--small", text: "Add item" });
+    var saveJourneyBtn = el("button", { type: "button", className: "btn", text: "Save journey" });
+    function drawJourneyItems() {
+      clearNode(journeyItemsList);
+      if (journeyItems.length === 0) {
+        journeyItemsList.appendChild(el("p", { className: "field-hint", text: "No items. Add one; empty = keep current website text." }));
+        return;
+      }
+      journeyItems.forEach(function (item, index) {
+        var yearInput = el("input", { type: "text", value: item.year, autocomplete: "off", "aria-label": "Year " + (index + 1) });
+        var badgeInput = el("input", { type: "text", value: item.badge, autocomplete: "off", "aria-label": "Extra badge " + (index + 1) });
+        var typeSelect = el("select", { "aria-label": "Badge type " + (index + 1) }, [
+          el("option", { value: "", text: "None" }),
+          el("option", { value: "score", text: "Score" }),
+          el("option", { value: "live", text: "Pursuing" })
+        ]);
+        typeSelect.value = item.badgeType;
+        var titleInput = el("input", { type: "text", value: item.title, autocomplete: "off", "aria-label": "Title " + (index + 1) });
+        var descInput = el("textarea", { rows: "2", "aria-label": "Description " + (index + 1) });
+        descInput.value = item.desc;
+        yearInput.addEventListener("input", function () { item.year = yearInput.value; });
+        badgeInput.addEventListener("input", function () { item.badge = badgeInput.value; });
+        typeSelect.addEventListener("change", function () { item.badgeType = typeSelect.value; });
+        titleInput.addEventListener("input", function () { item.title = titleInput.value; });
+        descInput.addEventListener("input", function () { item.desc = descInput.value; });
+        var up = iconButton("up", "Move up");
+        var down = iconButton("down", "Move down");
+        up.disabled = index === 0;
+        down.disabled = index === journeyItems.length - 1;
+        up.addEventListener("click", function () { var m = journeyItems[index]; journeyItems[index] = journeyItems[index - 1]; journeyItems[index - 1] = m; drawJourneyItems(); });
+        down.addEventListener("click", function () { var m = journeyItems[index]; journeyItems[index] = journeyItems[index + 1]; journeyItems[index + 1] = m; drawJourneyItems(); });
+        var remove = iconButton("trash", "Delete", "is-danger");
+        remove.addEventListener("click", function () { journeyItems.splice(index, 1); drawJourneyItems(); });
+        journeyItemsList.appendChild(el("div", { className: "social-row" }, [
+          el("div", { className: "social-row__order" }, [up, down]),
+          el("div", { className: "field field--wide" }, [el("label", { text: "Year" }), yearInput]),
+          el("div", { className: "field field--wide" }, [el("label", { text: "Extra badge text (e.g. 81.2% or Pursuing)" }), badgeInput]),
+          el("div", { className: "field field--wide" }, [el("label", { text: "Badge type" }), typeSelect]),
+          el("div", { className: "field field--wide" }, [el("label", { text: "Title" }), titleInput]),
+          el("div", { className: "field field--wide" }, [el("label", { text: "Description" }), descInput]),
+          remove
+        ]));
+      });
+    }
+    drawJourneyItems();
+    addJourneyItemBtn.addEventListener("click", function () { journeyItems.push({ year: "", badge: "", badgeType: "", title: "", desc: "" }); drawJourneyItems(); });
+    saveJourneyBtn.addEventListener("click", async function () {
+      saveJourneyBtn.disabled = true;
+      setStatus(journeyStatus, "Saving journey…", false);
+      try {
+        var payload = {};
+        try { if (journey && typeof journey === "object") { for (var k in journey) { if (Object.prototype.hasOwnProperty.call(journey, k)) payload[k] = journey[k]; } } } catch (e) {}
+        var ey = journeyEyebrowInput.value;
+        var ti = journeyTitleInput.value;
+        var su = journeySubInput.value;
+        var cleaned = journeyItems.map(function (x) {
+          return { year: String(x.year || ""), badge: String(x.badge || ""), badgeType: String(x.badgeType || ""), title: String(x.title || ""), desc: String(x.desc || "") };
+        }).filter(function (x) { return x.title.trim() !== "" || x.year.trim() !== ""; });
+        if (ey.trim() !== "") payload.eyebrow = ey; else delete payload.eyebrow;
+        if (ti.trim() !== "") payload.title = ti; else delete payload.title;
+        if (su.trim() !== "") payload.sub = su; else delete payload.sub;
+        if (cleaned.length) payload.items = cleaned; else delete payload.items;
+        await saveSettingValue("journey", payload);
+        setStatus(journeyStatus, "Journey saved.", false);
+        showToast("Journey saved.", false);
+      } catch (error) {
+        if (error.message !== SESSION_MESSAGE) { setStatus(journeyStatus, error.message, true); showToast(error.message, true); }
+      } finally {
+        saveJourneyBtn.disabled = false;
+      }
+    });
+    var journeyCard = el("section", { className: "card settings-card settings-card--wide" }, [
+      el("div", { className: "card__head" }, [el("h2", { text: "Journey" })]),
+      el("p", { className: "field-hint", text: "Cards alternate left and right automatically. Badge type: Score for percentages, Pursuing for ongoing." }),
+      el("div", { className: "form-grid" }, [
+        el("div", { className: "field field--wide" }, [el("label", { text: "Small label" }), journeyEyebrowInput]),
+        el("div", { className: "field field--wide" }, [el("label", { text: "Heading" }), journeyTitleInput]),
+        el("div", { className: "field field--wide" }, [el("label", { text: "Intro line" }), journeySubInput]),
+        el("div", { className: "field field--wide" }, [el("span", { className: "field-label", text: "Items" }), journeyItemsList, el("div", { className: "form-actions" }, [addJourneyItemBtn])])
+      ]),
+      el("div", { className: "form-actions" }, [saveJourneyBtn]),
+      journeyStatus
+    ]);
+    view.appendChild(el("div", { className: "settings-grid" }, [heroCard, socialCard, visionCard, sectionsCard, passwordCard, aboutCard, skillsCard, contactCard, footerCard, journeyCard]));
     drawChips();
     drawSocialLinks();
     drawSections();
