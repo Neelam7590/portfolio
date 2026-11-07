@@ -1,0 +1,33 @@
+# Neelam Dhiman
+
+> Neelam Dhiman is a web developer from Kaithal, Haryana, India. Neelam builds websites, games and automation tools, and helps small businesses, schools and creators grow online with SEO, social media and video content.
+
+## About
+- Based in Kaithal, Haryana. Works with clients across Haryana, including Kurukshetra, Karnal, Hisar, Panipat, Sonipat, Ambala, Rohtak, Faridabad and Gurugram.
+- Bachelor of Arts student at Kurukshetra University. Completed the O Level course from NIELIT and is now doing Digital Marketing with AI at NIELIT.
+- Works with HTML, CSS and JavaScript, and is learning Python and IoT.
+
+## Services
+- Website & App Building
+- YouTube SEO & Digital Marketing
+- Social Media Management
+- Video Editing & Content Creation
+- AI Tools & Vibe Coding
+- Python Automation & Teamwork
+
+## Pages
+- [Portfolio](https://neelamdhiman.vercel.app/)
+- [FAQ](https://neelamdhiman.vercel.app/faq.html)
+- [Resume (PDF)](https://neelamdhiman.vercel.app/assets/Neelam-Dhiman-Resume.pdf)
+
+## Profiles
+- [GitHub](https://github.com/Neelam7590)
+- [LinkedIn](https://www.linkedin.com/in/neelam-dhiman-b5a8b4422/)
+- [Medium](https://medium.com/@Neelam7590)
+- [CodePen](https://codepen.io/Neelam7590)
+- [dev.to](https://dev.to/neelam7590)
+- [Behance](https://www.behance.net/neelamdhiman5)
+- [Dribbble](https://dribbble.com/Neelam-Dhiman)
+
+## Contact
+Use the contact form on the portfolio page.
