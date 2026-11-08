@@ -48,7 +48,7 @@ insert into public.site_settings (key, value, updated_at)
 select v.key, v.value, now()
 from (values
   ($seed_0095$hero$seed_0095$, $seed_0096${"subtitle":"Web Developer in Kaithal, Haryana","paragraph":"I build clean, responsive websites and small digital tools, and I help small businesses in Kaithal and nearby areas get online and grow on social media.","skills_line":"Website building · YouTube SEO · Social media · AI-assisted development","roles":["Web Developer in Kaithal, Haryana","Web Developer","Aspiring Full Stack Developer","YouTube SEO","Video Editing","Social Media Management","AI Content Creation"]}$seed_0096$::jsonb),
-  ($seed_0097$social$seed_0097$, $seed_0098${"github":"https://github.com/Neelam7590","linkedin":"https://www.linkedin.com/in/neelam-dhiman-b5a8b4422/"}$seed_0098$::jsonb),
+  ($seed_0097$social$seed_0097$, $seed_0098${"github":"https://github.com/Neelam7590","linkedin":"https://www.linkedin.com/in/neelamdhiman/"}$seed_0098$::jsonb),
   ($seed_0099$vision$seed_0099$, $seed_0100${"paragraph":"I want to grow from a front-end builder into a full stack developer who can design a page and also build the backend behind it. Over the next year I'm focusing on stronger JavaScript, Node.js with a database, and shipping one real full stack project. Along the way I want to keep helping small local businesses get online with simple, honest, practical websites."}$seed_0100$::jsonb),
   ($seed_0101$images$seed_0101$, $seed_0102${"profile":{"webp400":"/assets/neelam-400.webp","webp800":"/assets/neelam-800.webp","jpg800":"/assets/neelam-800.jpg","alt":"Neelam Dhiman, web developer from Kaithal, Haryana"}}$seed_0102$::jsonb)
 ) as v(key, value)

@@ -17,3 +17,18 @@ Thumbs.db
 # Unused leftovers from an earlier experiment — not part of the site.
 replit-logo/
 .build-preview/
+# Local helper files, not part of the site
+scripts/*.bak
+tools/_out.html
+tools/content-*.json
+tools/gen-*.js
+tools/seed-*.sql
+tools/set-*.sql
+tools/update-about.sql
+tools/test-*.js
+tools/extract-content.js
+tools/make-keys.js
+tools/diff-markers.js
+tools/verify-markers.js
+tools/compare-text.js
+write_gen.py
