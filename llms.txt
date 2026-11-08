@@ -22,12 +22,12 @@
 
 ## Profiles
 - [GitHub](https://github.com/Neelam7590)
-- [LinkedIn](https://www.linkedin.com/in/neelam-dhiman-b5a8b4422/)
-- [Medium](https://medium.com/@Neelam7590)
-- [CodePen](https://codepen.io/Neelam7590)
-- [dev.to](https://dev.to/neelam7590)
-- [Behance](https://www.behance.net/neelamdhiman5)
-- [Dribbble](https://dribbble.com/Neelam-Dhiman)
+- [LinkedIn](https://www.linkedin.com/in/neelamdhiman/)
+- [Medium](https://medium.com/@Neelamdhiman)
+- [CodePen](https://codepen.io/Neelamdhiman)
+- [dev.to](https://dev.to/neelamdhiman)
+- [Behance](https://www.behance.net/neelam_dhiman)
+- [Dribbble](https://dribbble.com/Neelamdhiman)
 
 ## Contact
 Use the contact form on the portfolio page.
