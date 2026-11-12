@@ -90,6 +90,7 @@ const projects = [
       "Clean, easy-to-use layout",
       "Responsive on phone, tablet and desktop",
       "Multiple sections for school information",
+      "Built-in chatbot gives a guided tour",
     ],
     stack: ["HTML", "CSS", "JavaScript"],
     images: [
@@ -132,11 +133,12 @@ const projects = [
     slug: "calc-notebook",
     tag: "Web Tool",
     description:
-      "An all-in-one calculator website for EMI, Age, Percentage, BMI and GST, in a notebook-style design.",
+      "An all-in-one calculator website for Stamp Duty, EMI, Age, Percentage, BMI, GST and CGPA, in a notebook-style design.",
     features: [
-      "Five calculators in one place",
+      "Seven calculators in one place",
       "Notebook-style design",
       "Works on phone and desktop",
+      "Includes a blog section",
     ],
     stack: ["HTML", "CSS", "JavaScript"],
     images: [
@@ -159,6 +161,7 @@ const projects = [
       "An AI math mentor that helps you learn by guiding you with questions instead of just giving answers.",
     features: [
       "Guides step by step with questions",
+      "Solves math questions step by step",
       "Built in Google AI Studio",
       "Deployed on Vercel through GitHub",
     ],
@@ -182,9 +185,9 @@ const projects = [
     description:
       "A recipe assistant app that helps you decide what to cook and how to make it.",
     features: [
+      "Ask for any recipe",
       "Recipe suggestions and cooking help",
-      "Built on Replit",
-      "Live on Render",
+      "Simple chat-based interface",
     ],
     stack: ["Replit", "Render"],
     images: [
@@ -253,7 +256,15 @@ try {
   if (__cmsProjectsEl) {
     const __cmsProjects = JSON.parse(__cmsProjectsEl.textContent);
     if (Array.isArray(__cmsProjects) && __cmsProjects.length) {
-      __cmsProjects.forEach((p) => { if ((!Array.isArray(p.buttons) || !p.buttons.length) && Array.isArray(p.links)) p.buttons = p.links.map((l, i) => ({ label: l.label === "Code" ? (i > 0 ? "View Code" : "View on GitHub") : l.label, url: l.url, style: i === 0 ? "primary" : "secondary" })); }); projects.length = 0;
+      const __hardcodedProjects = projects.slice();
+      __cmsProjects.forEach((p) => {
+        if (!Array.isArray(p.features) || !p.features.length) {
+          const __match = __hardcodedProjects.find((h) => (p.slug && h.slug) ? p.slug === h.slug : String(h.title || "").trim().toLowerCase() === String(p.title || "").trim().toLowerCase());
+          if (__match && Array.isArray(__match.features)) p.features = __match.features.slice();
+        }
+        if ((!Array.isArray(p.buttons) || !p.buttons.length) && Array.isArray(p.links)) p.buttons = p.links.map((l, i) => ({ label: l.label === "Code" ? (i > 0 ? "View Code" : "View on GitHub") : l.label, url: l.url, style: i === 0 ? "primary" : "secondary" }));
+      });
+      projects.length = 0;
       projects.push.apply(projects, __cmsProjects);
     }
   }
@@ -745,6 +756,7 @@ function initCursor() {
   let mouseY = window.innerHeight / 2;
   let ringX = mouseX;
   let ringY = mouseY;
+  const BROWN_BACKGROUND_SELECTOR = ".btn-primary, .btn:hover, .btn-nav-hire, .resume-fab, .to-top:hover, .lightbox__btn:hover, .carousel-btn:hover, .carousel-dot.is-active, .resume-modal__download, .resume-modal__close:hover, .skill-card__num, .journey-item.in-view .journey-dot, .hero-orbit-dot, .journey-line-fill";
 
   document.addEventListener("mousemove", (event) => {
     mouseX = event.clientX;
@@ -752,6 +764,9 @@ function initCursor() {
 
     // The dot tracks the mouse instantly.
     dot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+    const brownTarget = event.target.closest(BROWN_BACKGROUND_SELECTOR);
+    dot.classList.toggle("is-on-accent", !!brownTarget);
+    ring.classList.toggle("is-on-accent", !!brownTarget);
   });
 
   // The ring eases toward the pointer every frame for a smooth lag.
@@ -1112,10 +1127,6 @@ function detailsMarkup(project) {
     .map((feature) => `<li class="project-feature">${escapeHtml(feature)}</li>`)
     .join("");
 
-  const chips = (project.stack || [])
-    .map((tech) => `<span class="project-chip">${escapeHtml(tech)}</span>`)
-    .join("");
-
   const buttons = (project.buttons || [])
     .map((button) => buttonMarkup(button, project.title))
     .join("");
@@ -1135,9 +1146,6 @@ function detailsMarkup(project) {
 
       <h4 class="project-subtitle">Key Features</h4>
       <ul class="project-features">${features}</ul>
-
-      <h4 class="project-subtitle">Technology Stack</h4>
-      <div class="project-chips">${chips}</div>
 
       ${buttons ? `<div class="project-links">${buttons}</div>` : ""}
     </div>`;

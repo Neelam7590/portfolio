@@ -652,7 +652,7 @@ html {
   margin: -3px 0 0 -3px;
   background-color: var(--accent);
   box-shadow: 0 0 8px var(--glow);
-  transition: opacity 0.25s var(--ease-out);
+  transition: opacity 0.25s var(--ease-out), background-color 0.2s var(--ease-out);
 }
 
 /* 32px teal ring — follows with smooth lag */
@@ -679,6 +679,14 @@ html {
   background-color: var(--accent-soft);
   border-color: var(--accent);
   opacity: 1;
+}
+
+.cursor-dot.is-on-accent {
+  background-color: #FFFFFF;
+}
+
+.cursor-ring.is-on-accent {
+  border-color: #FFFFFF;
 }
 
 body.has-custom-cursor,

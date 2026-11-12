@@ -19,6 +19,11 @@
       "source": "/blog/:path*",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/assets/Neelam-Dhiman-Resume.pdf",
+      "destination": "/assets/Neelam-Dhiman.pdf",
+      "permanent": true
     }
   ],
   "headers": [
