@@ -18,7 +18,7 @@
 ## Pages
 - [Portfolio](https://neelamdhiman.vercel.app/)
 - [FAQ](https://neelamdhiman.vercel.app/faq.html)
-- [Resume (PDF)](https://neelamdhiman.vercel.app/assets/Neelam-Dhiman-Resume.pdf)
+- [Resume (PDF)](https://neelamdhiman.vercel.app/assets/Neelam-Dhiman.pdf)
 
 ## Profiles
 - [GitHub](https://github.com/Neelam7590)
