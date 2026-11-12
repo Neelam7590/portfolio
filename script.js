@@ -123,7 +123,7 @@ const projects = [
     aspect: "16 / 9",
     fit: "contain",
     buttons: [
-      { label: "Try Now", url: "https://tic-tac-toe-game-pearl-chi.vercel.app", style: "primary" },
+      { label: "Play Now", url: "https://tic-tac-toe-game-pearl-chi.vercel.app", style: "primary" },
       { label: "View Code", url: "https://github.com/Neelam7590/Tic-Tac-Toe-Game", style: "secondary" },
     ],
   },
@@ -253,7 +253,7 @@ try {
   if (__cmsProjectsEl) {
     const __cmsProjects = JSON.parse(__cmsProjectsEl.textContent);
     if (Array.isArray(__cmsProjects) && __cmsProjects.length) {
-      projects.length = 0;
+      __cmsProjects.forEach((p) => { if ((!Array.isArray(p.buttons) || !p.buttons.length) && Array.isArray(p.links)) p.buttons = p.links.map((l, i) => ({ label: l.label === "Code" ? (i > 0 ? "View Code" : "View on GitHub") : l.label, url: l.url, style: i === 0 ? "primary" : "secondary" })); }); projects.length = 0;
       projects.push.apply(projects, __cmsProjects);
     }
   }
